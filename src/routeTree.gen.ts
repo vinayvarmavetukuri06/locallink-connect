@@ -18,6 +18,7 @@ import { Route as AuthIndexRouteImport } from './routes/auth.index'
 import { Route as UserProfileRouteImport } from './routes/user.profile'
 import { Route as UserChatRouteImport } from './routes/user.chat'
 import { Route as UserBookingsRouteImport } from './routes/user.bookings'
+import { Route as MemberBookingsRouteImport } from './routes/member.bookings'
 import { Route as AuthUserRouteImport } from './routes/auth.user'
 import { Route as AuthMemberRouteImport } from './routes/auth.member'
 import { Route as UserWorkerIdRouteImport } from './routes/user.worker.$id'
@@ -68,6 +69,11 @@ const UserBookingsRoute = UserBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => UserRoute,
 } as any)
+const MemberBookingsRoute = MemberBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => MemberRoute,
+} as any)
 const AuthUserRoute = AuthUserRouteImport.update({
   id: '/auth/user',
   path: '/auth/user',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/user': typeof UserRouteWithChildren
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
+  '/member/bookings': typeof MemberBookingsRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/profile': typeof UserProfileRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
+  '/member/bookings': typeof MemberBookingsRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/profile': typeof UserProfileRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/user': typeof UserRouteWithChildren
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
+  '/member/bookings': typeof MemberBookingsRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/profile': typeof UserProfileRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/user'
     | '/auth/member'
     | '/auth/user'
+    | '/member/bookings'
     | '/user/bookings'
     | '/user/chat'
     | '/user/profile'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth/member'
     | '/auth/user'
+    | '/member/bookings'
     | '/user/bookings'
     | '/user/chat'
     | '/user/profile'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/user'
     | '/auth/member'
     | '/auth/user'
+    | '/member/bookings'
     | '/user/bookings'
     | '/user/chat'
     | '/user/profile'
@@ -253,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserBookingsRouteImport
       parentRoute: typeof UserRoute
     }
+    '/member/bookings': {
+      id: '/member/bookings'
+      path: '/bookings'
+      fullPath: '/member/bookings'
+      preLoaderRoute: typeof MemberBookingsRouteImport
+      parentRoute: typeof MemberRoute
+    }
     '/auth/user': {
       id: '/auth/user'
       path: '/auth/user'
@@ -285,10 +304,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface MemberRouteChildren {
+  MemberBookingsRoute: typeof MemberBookingsRoute
   MemberIndexRoute: typeof MemberIndexRoute
 }
 
 const MemberRouteChildren: MemberRouteChildren = {
+  MemberBookingsRoute: MemberBookingsRoute,
   MemberIndexRoute: MemberIndexRoute,
 }
 
