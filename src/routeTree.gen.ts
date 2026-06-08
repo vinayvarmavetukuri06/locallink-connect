@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth.index'
 import { Route as AuthUserRouteImport } from './routes/auth.user'
+import { Route as AuthMemberRouteImport } from './routes/auth.member'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,33 +29,42 @@ const AuthUserRoute = AuthUserRouteImport.update({
   path: '/auth/user',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthMemberRoute = AuthMemberRouteImport.update({
+  id: '/auth/member',
+  path: '/auth/member',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/auth/': typeof AuthIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/auth': typeof AuthIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/auth/': typeof AuthIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth/user' | '/auth/'
+  fullPaths: '/' | '/auth/member' | '/auth/user' | '/auth/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/user' | '/auth'
-  id: '__root__' | '/' | '/auth/user' | '/auth/'
+  to: '/' | '/auth/member' | '/auth/user' | '/auth'
+  id: '__root__' | '/' | '/auth/member' | '/auth/user' | '/auth/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthMemberRoute: typeof AuthMemberRoute
   AuthUserRoute: typeof AuthUserRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
@@ -82,11 +92,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthUserRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/member': {
+      id: '/auth/member'
+      path: '/auth/member'
+      fullPath: '/auth/member'
+      preLoaderRoute: typeof AuthMemberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthMemberRoute: AuthMemberRoute,
   AuthUserRoute: AuthUserRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
