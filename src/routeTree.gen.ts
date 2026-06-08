@@ -27,6 +27,7 @@ import { Route as MemberBookingsRouteImport } from './routes/member.bookings'
 import { Route as AuthUserRouteImport } from './routes/auth.user'
 import { Route as AuthMemberRouteImport } from './routes/auth.member'
 import { Route as AdminWorkersRouteImport } from './routes/admin.workers'
+import { Route as AdminSubscriptionsRouteImport } from './routes/admin.subscriptions'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
 import { Route as UserWorkerIdRouteImport } from './routes/user.worker.$id'
@@ -122,6 +123,11 @@ const AdminWorkersRoute = AdminWorkersRouteImport.update({
   path: '/workers',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSubscriptionsRoute = AdminSubscriptionsRouteImport.update({
+  id: '/subscriptions',
+  path: '/subscriptions',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   id: '/categories',
   path: '/categories',
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/user': typeof UserRouteWithChildren
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/workers': typeof AdminWorkersRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/workers': typeof AdminWorkersRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/user': typeof UserRouteWithChildren
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/workers': typeof AdminWorkersRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/user'
     | '/admin/bookings'
     | '/admin/categories'
+    | '/admin/subscriptions'
     | '/admin/workers'
     | '/auth/member'
     | '/auth/user'
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/bookings'
     | '/admin/categories'
+    | '/admin/subscriptions'
     | '/admin/workers'
     | '/auth/member'
     | '/auth/user'
@@ -267,6 +278,7 @@ export interface FileRouteTypes {
     | '/user'
     | '/admin/bookings'
     | '/admin/categories'
+    | '/admin/subscriptions'
     | '/admin/workers'
     | '/auth/member'
     | '/auth/user'
@@ -423,6 +435,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminWorkersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/subscriptions': {
+      id: '/admin/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/admin/subscriptions'
+      preLoaderRoute: typeof AdminSubscriptionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/categories': {
       id: '/admin/categories'
       path: '/categories'
@@ -457,6 +476,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminBookingsRoute: typeof AdminBookingsRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminSubscriptionsRoute: typeof AdminSubscriptionsRoute
   AdminWorkersRoute: typeof AdminWorkersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -464,6 +484,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBookingsRoute: AdminBookingsRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminSubscriptionsRoute: AdminSubscriptionsRoute,
   AdminWorkersRoute: AdminWorkersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
