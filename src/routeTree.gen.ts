@@ -18,6 +18,7 @@ import { Route as AuthIndexRouteImport } from './routes/auth.index'
 import { Route as UserProfileRouteImport } from './routes/user.profile'
 import { Route as UserChatRouteImport } from './routes/user.chat'
 import { Route as UserBookingsRouteImport } from './routes/user.bookings'
+import { Route as MemberProfileRouteImport } from './routes/member.profile'
 import { Route as MemberMembershipRouteImport } from './routes/member.membership'
 import { Route as MemberBookingsRouteImport } from './routes/member.bookings'
 import { Route as AuthUserRouteImport } from './routes/auth.user'
@@ -70,6 +71,11 @@ const UserBookingsRoute = UserBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => UserRoute,
 } as any)
+const MemberProfileRoute = MemberProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => MemberRoute,
+} as any)
 const MemberMembershipRoute = MemberMembershipRouteImport.update({
   id: '/membership',
   path: '/membership',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
   '/member/membership': typeof MemberMembershipRoute
+  '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/profile': typeof UserProfileRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
   '/member/membership': typeof MemberMembershipRoute
+  '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/profile': typeof UserProfileRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
   '/member/membership': typeof MemberMembershipRoute
+  '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/profile': typeof UserProfileRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/auth/user'
     | '/member/bookings'
     | '/member/membership'
+    | '/member/profile'
     | '/user/bookings'
     | '/user/chat'
     | '/user/profile'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/auth/user'
     | '/member/bookings'
     | '/member/membership'
+    | '/member/profile'
     | '/user/bookings'
     | '/user/chat'
     | '/user/profile'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/auth/user'
     | '/member/bookings'
     | '/member/membership'
+    | '/member/profile'
     | '/user/bookings'
     | '/user/chat'
     | '/user/profile'
@@ -277,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserBookingsRouteImport
       parentRoute: typeof UserRoute
     }
+    '/member/profile': {
+      id: '/member/profile'
+      path: '/profile'
+      fullPath: '/member/profile'
+      preLoaderRoute: typeof MemberProfileRouteImport
+      parentRoute: typeof MemberRoute
+    }
     '/member/membership': {
       id: '/member/membership'
       path: '/membership'
@@ -325,12 +344,14 @@ declare module '@tanstack/react-router' {
 interface MemberRouteChildren {
   MemberBookingsRoute: typeof MemberBookingsRoute
   MemberMembershipRoute: typeof MemberMembershipRoute
+  MemberProfileRoute: typeof MemberProfileRoute
   MemberIndexRoute: typeof MemberIndexRoute
 }
 
 const MemberRouteChildren: MemberRouteChildren = {
   MemberBookingsRoute: MemberBookingsRoute,
   MemberMembershipRoute: MemberMembershipRoute,
+  MemberProfileRoute: MemberProfileRoute,
   MemberIndexRoute: MemberIndexRoute,
 }
 
