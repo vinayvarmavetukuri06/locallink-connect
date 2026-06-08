@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as UserIndexRouteImport } from './routes/user.index'
 import { Route as MemberIndexRouteImport } from './routes/member.index'
 import { Route as AuthIndexRouteImport } from './routes/auth.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UserProfileRouteImport } from './routes/user.profile'
 import { Route as UserChatRouteImport } from './routes/user.chat'
 import { Route as UserBookingsRouteImport } from './routes/user.bookings'
@@ -62,6 +63,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/auth/',
   path: '/auth/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const UserProfileRoute = UserProfileRouteImport.update({
   id: '/profile',
@@ -121,7 +127,7 @@ const UserCategorySlugRoute = UserCategorySlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/member': typeof MemberRouteWithChildren
   '/user': typeof UserRouteWithChildren
   '/auth/member': typeof AuthMemberRoute
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/profile': typeof UserProfileRoute
+  '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/member/': typeof MemberIndexRoute
   '/user/': typeof UserIndexRoute
@@ -141,7 +148,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
@@ -151,6 +157,7 @@ export interface FileRoutesByTo {
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/profile': typeof UserProfileRoute
+  '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
   '/member': typeof MemberIndexRoute
   '/user': typeof UserIndexRoute
@@ -160,7 +167,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/member': typeof MemberRouteWithChildren
   '/user': typeof UserRouteWithChildren
   '/auth/member': typeof AuthMemberRoute
@@ -172,6 +179,7 @@ export interface FileRoutesById {
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/profile': typeof UserProfileRoute
+  '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/member/': typeof MemberIndexRoute
   '/user/': typeof UserIndexRoute
@@ -194,6 +202,7 @@ export interface FileRouteTypes {
     | '/user/bookings'
     | '/user/chat'
     | '/user/profile'
+    | '/admin/'
     | '/auth/'
     | '/member/'
     | '/user/'
@@ -202,7 +211,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/auth/member'
     | '/auth/user'
     | '/member/bookings'
@@ -212,6 +220,7 @@ export interface FileRouteTypes {
     | '/user/bookings'
     | '/user/chat'
     | '/user/profile'
+    | '/admin'
     | '/auth'
     | '/member'
     | '/user'
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/user/bookings'
     | '/user/chat'
     | '/user/profile'
+    | '/admin/'
     | '/auth/'
     | '/member/'
     | '/user/'
@@ -241,7 +251,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   MemberRoute: typeof MemberRouteWithChildren
   UserRoute: typeof UserRouteWithChildren
   AuthMemberRoute: typeof AuthMemberRoute
@@ -299,6 +309,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/'
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/user/profile': {
       id: '/user/profile'
@@ -380,6 +397,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface MemberRouteChildren {
   MemberBookingsRoute: typeof MemberBookingsRoute
   MemberChatRoute: typeof MemberChatRoute
@@ -421,7 +448,7 @@ const UserRouteWithChildren = UserRoute._addFileChildren(UserRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   MemberRoute: MemberRouteWithChildren,
   UserRoute: UserRouteWithChildren,
   AuthMemberRoute: AuthMemberRoute,
