@@ -26,6 +26,7 @@ import { Route as MemberChatRouteImport } from './routes/member.chat'
 import { Route as MemberBookingsRouteImport } from './routes/member.bookings'
 import { Route as AuthUserRouteImport } from './routes/auth.user'
 import { Route as AuthMemberRouteImport } from './routes/auth.member'
+import { Route as AdminWorkersRouteImport } from './routes/admin.workers'
 import { Route as UserWorkerIdRouteImport } from './routes/user.worker.$id'
 import { Route as UserCategorySlugRouteImport } from './routes/user.category.$slug'
 
@@ -114,6 +115,11 @@ const AuthMemberRoute = AuthMemberRouteImport.update({
   path: '/auth/member',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminWorkersRoute = AdminWorkersRouteImport.update({
+  id: '/workers',
+  path: '/workers',
+  getParentRoute: () => AdminRoute,
+} as any)
 const UserWorkerIdRoute = UserWorkerIdRouteImport.update({
   id: '/worker/$id',
   path: '/worker/$id',
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/member': typeof MemberRouteWithChildren
   '/user': typeof UserRouteWithChildren
+  '/admin/workers': typeof AdminWorkersRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/workers': typeof AdminWorkersRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
@@ -170,6 +178,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/member': typeof MemberRouteWithChildren
   '/user': typeof UserRouteWithChildren
+  '/admin/workers': typeof AdminWorkersRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/member'
     | '/user'
+    | '/admin/workers'
     | '/auth/member'
     | '/auth/user'
     | '/member/bookings'
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin/workers'
     | '/auth/member'
     | '/auth/user'
     | '/member/bookings'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/member'
     | '/user'
+    | '/admin/workers'
     | '/auth/member'
     | '/auth/user'
     | '/member/bookings'
@@ -380,6 +392,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthMemberRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/workers': {
+      id: '/admin/workers'
+      path: '/workers'
+      fullPath: '/admin/workers'
+      preLoaderRoute: typeof AdminWorkersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/user/worker/$id': {
       id: '/user/worker/$id'
       path: '/worker/$id'
@@ -398,10 +417,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminWorkersRoute: typeof AdminWorkersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminWorkersRoute: AdminWorkersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
