@@ -1,0 +1,56 @@
+import { Link, useRouterState } from "@tanstack/react-router";
+import { Home, Calendar, MessageCircle, User, LayoutDashboard, BadgeIndianRupee, Users, Tag } from "lucide-react";
+import type { ReactNode } from "react";
+
+type NavItem = { to: string; label: string; icon: ReactNode };
+
+const userNav: NavItem[] = [
+  { to: "/user", label: "Home", icon: <Home className="size-5" /> },
+  { to: "/user/bookings", label: "Bookings", icon: <Calendar className="size-5" /> },
+  { to: "/user/chat", label: "Chat", icon: <MessageCircle className="size-5" /> },
+  { to: "/user/profile", label: "Profile", icon: <User className="size-5" /> },
+];
+
+const memberNav: NavItem[] = [
+  { to: "/member", label: "Home", icon: <LayoutDashboard className="size-5" /> },
+  { to: "/member/bookings", label: "Bookings", icon: <Calendar className="size-5" /> },
+  { to: "/member/chat", label: "Chat", icon: <MessageCircle className="size-5" /> },
+  { to: "/member/membership", label: "Plan", icon: <BadgeIndianRupee className="size-5" /> },
+  { to: "/member/profile", label: "Profile", icon: <User className="size-5" /> },
+];
+
+const adminNav: NavItem[] = [
+  { to: "/admin", label: "Home", icon: <LayoutDashboard className="size-5" /> },
+  { to: "/admin/workers", label: "Workers", icon: <Users className="size-5" /> },
+  { to: "/admin/categories", label: "Cats", icon: <Tag className="size-5" /> },
+  { to: "/admin/bookings", label: "Bookings", icon: <Calendar className="size-5" /> },
+  { to: "/admin/subscriptions", label: "Plans", icon: <BadgeIndianRupee className="size-5" /> },
+];
+
+export function BottomNav({ variant }: { variant: "user" | "member" | "admin" }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const items = variant === "user" ? userNav : variant === "member" ? memberNav : adminNav;
+
+  return (
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-card/95 backdrop-blur-md border-t border-border px-4 py-2.5 flex justify-around items-center z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.04)]">
+      {items.map((item) => {
+        const active =
+          item.to === `/${variant}`
+            ? pathname === item.to
+            : pathname === item.to || pathname.startsWith(item.to + "/");
+        return (
+          <Link
+            key={item.to}
+            to={item.to}
+            className={`flex flex-col items-center gap-0.5 py-1.5 px-2 rounded-xl transition-colors ${
+              active ? "text-primary" : "text-muted-foreground"
+            }`}
+          >
+            <div className={active ? "scale-110 transition-transform" : ""}>{item.icon}</div>
+            <span className="text-[10px] font-bold">{item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
