@@ -27,6 +27,7 @@ import { Route as MemberBookingsRouteImport } from './routes/member.bookings'
 import { Route as AuthUserRouteImport } from './routes/auth.user'
 import { Route as AuthMemberRouteImport } from './routes/auth.member'
 import { Route as AdminWorkersRouteImport } from './routes/admin.workers'
+import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as UserWorkerIdRouteImport } from './routes/user.worker.$id'
 import { Route as UserCategorySlugRouteImport } from './routes/user.category.$slug'
 
@@ -120,6 +121,11 @@ const AdminWorkersRoute = AdminWorkersRouteImport.update({
   path: '/workers',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
 const UserWorkerIdRoute = UserWorkerIdRouteImport.update({
   id: '/worker/$id',
   path: '/worker/$id',
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/member': typeof MemberRouteWithChildren
   '/user': typeof UserRouteWithChildren
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/workers': typeof AdminWorkersRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
@@ -155,6 +162,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/workers': typeof AdminWorkersRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
@@ -178,6 +186,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/member': typeof MemberRouteWithChildren
   '/user': typeof UserRouteWithChildren
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/workers': typeof AdminWorkersRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
@@ -202,6 +211,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/member'
     | '/user'
+    | '/admin/categories'
     | '/admin/workers'
     | '/auth/member'
     | '/auth/user'
@@ -221,6 +231,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin/categories'
     | '/admin/workers'
     | '/auth/member'
     | '/auth/user'
@@ -243,6 +254,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/member'
     | '/user'
+    | '/admin/categories'
     | '/admin/workers'
     | '/auth/member'
     | '/auth/user'
@@ -399,6 +411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminWorkersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/user/worker/$id': {
       id: '/user/worker/$id'
       path: '/worker/$id'
@@ -417,11 +436,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminWorkersRoute: typeof AdminWorkersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminCategoriesRoute: AdminCategoriesRoute,
   AdminWorkersRoute: AdminWorkersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
