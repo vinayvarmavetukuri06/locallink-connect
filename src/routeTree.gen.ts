@@ -9,38 +9,327 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UserRouteImport } from './routes/user'
+import { Route as MemberRouteImport } from './routes/member'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UserIndexRouteImport } from './routes/user.index'
+import { Route as MemberIndexRouteImport } from './routes/member.index'
+import { Route as AuthIndexRouteImport } from './routes/auth.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as UserProfileRouteImport } from './routes/user.profile'
+import { Route as UserChatRouteImport } from './routes/user.chat'
+import { Route as UserBookingsRouteImport } from './routes/user.bookings'
+import { Route as MemberProfileRouteImport } from './routes/member.profile'
+import { Route as MemberMembershipRouteImport } from './routes/member.membership'
+import { Route as MemberChatRouteImport } from './routes/member.chat'
+import { Route as MemberBookingsRouteImport } from './routes/member.bookings'
+import { Route as AuthUserRouteImport } from './routes/auth.user'
+import { Route as AuthMemberRouteImport } from './routes/auth.member'
+import { Route as AdminWorkersRouteImport } from './routes/admin.workers'
+import { Route as AdminSubscriptionsRouteImport } from './routes/admin.subscriptions'
+import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
+import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
+import { Route as UserWorkerIdRouteImport } from './routes/user.worker.$id'
+import { Route as UserCategorySlugRouteImport } from './routes/user.category.$slug'
 
+const UserRoute = UserRouteImport.update({
+  id: '/user',
+  path: '/user',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemberRoute = MemberRouteImport.update({
+  id: '/member',
+  path: '/member',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserIndexRoute = UserIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UserRoute,
+} as any)
+const MemberIndexRoute = MemberIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MemberRoute,
+} as any)
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/auth/',
+  path: '/auth/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const UserProfileRoute = UserProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => UserRoute,
+} as any)
+const UserChatRoute = UserChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => UserRoute,
+} as any)
+const UserBookingsRoute = UserBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => UserRoute,
+} as any)
+const MemberProfileRoute = MemberProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => MemberRoute,
+} as any)
+const MemberMembershipRoute = MemberMembershipRouteImport.update({
+  id: '/membership',
+  path: '/membership',
+  getParentRoute: () => MemberRoute,
+} as any)
+const MemberChatRoute = MemberChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => MemberRoute,
+} as any)
+const MemberBookingsRoute = MemberBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => MemberRoute,
+} as any)
+const AuthUserRoute = AuthUserRouteImport.update({
+  id: '/auth/user',
+  path: '/auth/user',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthMemberRoute = AuthMemberRouteImport.update({
+  id: '/auth/member',
+  path: '/auth/member',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminWorkersRoute = AdminWorkersRouteImport.update({
+  id: '/workers',
+  path: '/workers',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSubscriptionsRoute = AdminSubscriptionsRouteImport.update({
+  id: '/subscriptions',
+  path: '/subscriptions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBookingsRoute = AdminBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const UserWorkerIdRoute = UserWorkerIdRouteImport.update({
+  id: '/worker/$id',
+  path: '/worker/$id',
+  getParentRoute: () => UserRoute,
+} as any)
+const UserCategorySlugRoute = UserCategorySlugRouteImport.update({
+  id: '/category/$slug',
+  path: '/category/$slug',
+  getParentRoute: () => UserRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/member': typeof MemberRouteWithChildren
+  '/user': typeof UserRouteWithChildren
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/subscriptions': typeof AdminSubscriptionsRoute
+  '/admin/workers': typeof AdminWorkersRoute
+  '/auth/member': typeof AuthMemberRoute
+  '/auth/user': typeof AuthUserRoute
+  '/member/bookings': typeof MemberBookingsRoute
+  '/member/chat': typeof MemberChatRoute
+  '/member/membership': typeof MemberMembershipRoute
+  '/member/profile': typeof MemberProfileRoute
+  '/user/bookings': typeof UserBookingsRoute
+  '/user/chat': typeof UserChatRoute
+  '/user/profile': typeof UserProfileRoute
+  '/admin/': typeof AdminIndexRoute
+  '/auth/': typeof AuthIndexRoute
+  '/member/': typeof MemberIndexRoute
+  '/user/': typeof UserIndexRoute
+  '/user/category/$slug': typeof UserCategorySlugRoute
+  '/user/worker/$id': typeof UserWorkerIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/subscriptions': typeof AdminSubscriptionsRoute
+  '/admin/workers': typeof AdminWorkersRoute
+  '/auth/member': typeof AuthMemberRoute
+  '/auth/user': typeof AuthUserRoute
+  '/member/bookings': typeof MemberBookingsRoute
+  '/member/chat': typeof MemberChatRoute
+  '/member/membership': typeof MemberMembershipRoute
+  '/member/profile': typeof MemberProfileRoute
+  '/user/bookings': typeof UserBookingsRoute
+  '/user/chat': typeof UserChatRoute
+  '/user/profile': typeof UserProfileRoute
+  '/admin': typeof AdminIndexRoute
+  '/auth': typeof AuthIndexRoute
+  '/member': typeof MemberIndexRoute
+  '/user': typeof UserIndexRoute
+  '/user/category/$slug': typeof UserCategorySlugRoute
+  '/user/worker/$id': typeof UserWorkerIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/member': typeof MemberRouteWithChildren
+  '/user': typeof UserRouteWithChildren
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/subscriptions': typeof AdminSubscriptionsRoute
+  '/admin/workers': typeof AdminWorkersRoute
+  '/auth/member': typeof AuthMemberRoute
+  '/auth/user': typeof AuthUserRoute
+  '/member/bookings': typeof MemberBookingsRoute
+  '/member/chat': typeof MemberChatRoute
+  '/member/membership': typeof MemberMembershipRoute
+  '/member/profile': typeof MemberProfileRoute
+  '/user/bookings': typeof UserBookingsRoute
+  '/user/chat': typeof UserChatRoute
+  '/user/profile': typeof UserProfileRoute
+  '/admin/': typeof AdminIndexRoute
+  '/auth/': typeof AuthIndexRoute
+  '/member/': typeof MemberIndexRoute
+  '/user/': typeof UserIndexRoute
+  '/user/category/$slug': typeof UserCategorySlugRoute
+  '/user/worker/$id': typeof UserWorkerIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/member'
+    | '/user'
+    | '/admin/bookings'
+    | '/admin/categories'
+    | '/admin/subscriptions'
+    | '/admin/workers'
+    | '/auth/member'
+    | '/auth/user'
+    | '/member/bookings'
+    | '/member/chat'
+    | '/member/membership'
+    | '/member/profile'
+    | '/user/bookings'
+    | '/user/chat'
+    | '/user/profile'
+    | '/admin/'
+    | '/auth/'
+    | '/member/'
+    | '/user/'
+    | '/user/category/$slug'
+    | '/user/worker/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin/bookings'
+    | '/admin/categories'
+    | '/admin/subscriptions'
+    | '/admin/workers'
+    | '/auth/member'
+    | '/auth/user'
+    | '/member/bookings'
+    | '/member/chat'
+    | '/member/membership'
+    | '/member/profile'
+    | '/user/bookings'
+    | '/user/chat'
+    | '/user/profile'
+    | '/admin'
+    | '/auth'
+    | '/member'
+    | '/user'
+    | '/user/category/$slug'
+    | '/user/worker/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/member'
+    | '/user'
+    | '/admin/bookings'
+    | '/admin/categories'
+    | '/admin/subscriptions'
+    | '/admin/workers'
+    | '/auth/member'
+    | '/auth/user'
+    | '/member/bookings'
+    | '/member/chat'
+    | '/member/membership'
+    | '/member/profile'
+    | '/user/bookings'
+    | '/user/chat'
+    | '/user/profile'
+    | '/admin/'
+    | '/auth/'
+    | '/member/'
+    | '/user/'
+    | '/user/category/$slug'
+    | '/user/worker/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  MemberRoute: typeof MemberRouteWithChildren
+  UserRoute: typeof UserRouteWithChildren
+  AuthMemberRoute: typeof AuthMemberRoute
+  AuthUserRoute: typeof AuthUserRoute
+  AuthIndexRoute: typeof AuthIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/user': {
+      id: '/user'
+      path: '/user'
+      fullPath: '/user'
+      preLoaderRoute: typeof UserRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/member': {
+      id: '/member'
+      path: '/member'
+      fullPath: '/member'
+      preLoaderRoute: typeof MemberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +337,208 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/user/': {
+      id: '/user/'
+      path: '/'
+      fullPath: '/user/'
+      preLoaderRoute: typeof UserIndexRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/member/': {
+      id: '/member/'
+      path: '/'
+      fullPath: '/member/'
+      preLoaderRoute: typeof MemberIndexRouteImport
+      parentRoute: typeof MemberRoute
+    }
+    '/auth/': {
+      id: '/auth/'
+      path: '/auth'
+      fullPath: '/auth/'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/user/profile': {
+      id: '/user/profile'
+      path: '/profile'
+      fullPath: '/user/profile'
+      preLoaderRoute: typeof UserProfileRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/user/chat': {
+      id: '/user/chat'
+      path: '/chat'
+      fullPath: '/user/chat'
+      preLoaderRoute: typeof UserChatRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/user/bookings': {
+      id: '/user/bookings'
+      path: '/bookings'
+      fullPath: '/user/bookings'
+      preLoaderRoute: typeof UserBookingsRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/member/profile': {
+      id: '/member/profile'
+      path: '/profile'
+      fullPath: '/member/profile'
+      preLoaderRoute: typeof MemberProfileRouteImport
+      parentRoute: typeof MemberRoute
+    }
+    '/member/membership': {
+      id: '/member/membership'
+      path: '/membership'
+      fullPath: '/member/membership'
+      preLoaderRoute: typeof MemberMembershipRouteImport
+      parentRoute: typeof MemberRoute
+    }
+    '/member/chat': {
+      id: '/member/chat'
+      path: '/chat'
+      fullPath: '/member/chat'
+      preLoaderRoute: typeof MemberChatRouteImport
+      parentRoute: typeof MemberRoute
+    }
+    '/member/bookings': {
+      id: '/member/bookings'
+      path: '/bookings'
+      fullPath: '/member/bookings'
+      preLoaderRoute: typeof MemberBookingsRouteImport
+      parentRoute: typeof MemberRoute
+    }
+    '/auth/user': {
+      id: '/auth/user'
+      path: '/auth/user'
+      fullPath: '/auth/user'
+      preLoaderRoute: typeof AuthUserRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/member': {
+      id: '/auth/member'
+      path: '/auth/member'
+      fullPath: '/auth/member'
+      preLoaderRoute: typeof AuthMemberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/workers': {
+      id: '/admin/workers'
+      path: '/workers'
+      fullPath: '/admin/workers'
+      preLoaderRoute: typeof AdminWorkersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/subscriptions': {
+      id: '/admin/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/admin/subscriptions'
+      preLoaderRoute: typeof AdminSubscriptionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/user/worker/$id': {
+      id: '/user/worker/$id'
+      path: '/worker/$id'
+      fullPath: '/user/worker/$id'
+      preLoaderRoute: typeof UserWorkerIdRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/user/category/$slug': {
+      id: '/user/category/$slug'
+      path: '/category/$slug'
+      fullPath: '/user/category/$slug'
+      preLoaderRoute: typeof UserCategorySlugRouteImport
+      parentRoute: typeof UserRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminBookingsRoute: typeof AdminBookingsRoute
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminSubscriptionsRoute: typeof AdminSubscriptionsRoute
+  AdminWorkersRoute: typeof AdminWorkersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminBookingsRoute: AdminBookingsRoute,
+  AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminSubscriptionsRoute: AdminSubscriptionsRoute,
+  AdminWorkersRoute: AdminWorkersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface MemberRouteChildren {
+  MemberBookingsRoute: typeof MemberBookingsRoute
+  MemberChatRoute: typeof MemberChatRoute
+  MemberMembershipRoute: typeof MemberMembershipRoute
+  MemberProfileRoute: typeof MemberProfileRoute
+  MemberIndexRoute: typeof MemberIndexRoute
+}
+
+const MemberRouteChildren: MemberRouteChildren = {
+  MemberBookingsRoute: MemberBookingsRoute,
+  MemberChatRoute: MemberChatRoute,
+  MemberMembershipRoute: MemberMembershipRoute,
+  MemberProfileRoute: MemberProfileRoute,
+  MemberIndexRoute: MemberIndexRoute,
+}
+
+const MemberRouteWithChildren =
+  MemberRoute._addFileChildren(MemberRouteChildren)
+
+interface UserRouteChildren {
+  UserBookingsRoute: typeof UserBookingsRoute
+  UserChatRoute: typeof UserChatRoute
+  UserProfileRoute: typeof UserProfileRoute
+  UserIndexRoute: typeof UserIndexRoute
+  UserCategorySlugRoute: typeof UserCategorySlugRoute
+  UserWorkerIdRoute: typeof UserWorkerIdRoute
+}
+
+const UserRouteChildren: UserRouteChildren = {
+  UserBookingsRoute: UserBookingsRoute,
+  UserChatRoute: UserChatRoute,
+  UserProfileRoute: UserProfileRoute,
+  UserIndexRoute: UserIndexRoute,
+  UserCategorySlugRoute: UserCategorySlugRoute,
+  UserWorkerIdRoute: UserWorkerIdRoute,
+}
+
+const UserRouteWithChildren = UserRoute._addFileChildren(UserRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  MemberRoute: MemberRouteWithChildren,
+  UserRoute: UserRouteWithChildren,
+  AuthMemberRoute: AuthMemberRoute,
+  AuthUserRoute: AuthUserRoute,
+  AuthIndexRoute: AuthIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
