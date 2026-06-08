@@ -13,6 +13,7 @@ import { Route as UserRouteImport } from './routes/user'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UserIndexRouteImport } from './routes/user.index'
 import { Route as AuthIndexRouteImport } from './routes/auth.index'
+import { Route as UserBookingsRouteImport } from './routes/user.bookings'
 import { Route as AuthUserRouteImport } from './routes/auth.user'
 import { Route as AuthMemberRouteImport } from './routes/auth.member'
 import { Route as UserWorkerIdRouteImport } from './routes/user.worker.$id'
@@ -37,6 +38,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/auth/',
   path: '/auth/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const UserBookingsRoute = UserBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => UserRoute,
 } as any)
 const AuthUserRoute = AuthUserRouteImport.update({
   id: '/auth/user',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/user': typeof UserRouteWithChildren
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
+  '/user/bookings': typeof UserBookingsRoute
   '/auth/': typeof AuthIndexRoute
   '/user/': typeof UserIndexRoute
   '/user/category/$slug': typeof UserCategorySlugRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
+  '/user/bookings': typeof UserBookingsRoute
   '/auth': typeof AuthIndexRoute
   '/user': typeof UserIndexRoute
   '/user/category/$slug': typeof UserCategorySlugRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/user': typeof UserRouteWithChildren
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
+  '/user/bookings': typeof UserBookingsRoute
   '/auth/': typeof AuthIndexRoute
   '/user/': typeof UserIndexRoute
   '/user/category/$slug': typeof UserCategorySlugRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/user'
     | '/auth/member'
     | '/auth/user'
+    | '/user/bookings'
     | '/auth/'
     | '/user/'
     | '/user/category/$slug'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth/member'
     | '/auth/user'
+    | '/user/bookings'
     | '/auth'
     | '/user'
     | '/user/category/$slug'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/user'
     | '/auth/member'
     | '/auth/user'
+    | '/user/bookings'
     | '/auth/'
     | '/user/'
     | '/user/category/$slug'
@@ -159,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/user/bookings': {
+      id: '/user/bookings'
+      path: '/bookings'
+      fullPath: '/user/bookings'
+      preLoaderRoute: typeof UserBookingsRouteImport
+      parentRoute: typeof UserRoute
+    }
     '/auth/user': {
       id: '/auth/user'
       path: '/auth/user'
@@ -191,12 +210,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface UserRouteChildren {
+  UserBookingsRoute: typeof UserBookingsRoute
   UserIndexRoute: typeof UserIndexRoute
   UserCategorySlugRoute: typeof UserCategorySlugRoute
   UserWorkerIdRoute: typeof UserWorkerIdRoute
 }
 
 const UserRouteChildren: UserRouteChildren = {
+  UserBookingsRoute: UserBookingsRoute,
   UserIndexRoute: UserIndexRoute,
   UserCategorySlugRoute: UserCategorySlugRoute,
   UserWorkerIdRoute: UserWorkerIdRoute,
