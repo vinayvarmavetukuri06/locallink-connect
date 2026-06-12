@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Phone, User, MapPin, Briefcase, Clock, IndianRupee, FileText, Camera } from "lucide-react";
 import { categories } from "@/lib/mock-data";
+import { setMemberProfile } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/auth/member")({
   component: MemberAuth,
@@ -12,6 +13,11 @@ function MemberAuth() {
   const [step, setStep] = useState<"mobile" | "otp" | "details" | "pending">("mobile");
   const [mobile, setMobile] = useState("");
   const [cat, setCat] = useState(categories[0].slug);
+  const [fullName, setFullName] = useState("");
+  const [area, setArea] = useState("");
+  const [experience, setExperience] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [bio, setBio] = useState("");
 
   return (
     <div className="mobile-shell px-5 py-6">
@@ -93,8 +99,36 @@ function MemberAuth() {
           <p className="text-sm text-muted-foreground mt-1">Help customers find you.</p>
 
           <div className="mt-6 space-y-4">
-            <Field icon={<User className="size-4" />} label="Full Name" placeholder="Your name" />
-            <Field icon={<Phone className="size-4" />} label="Mobile" value={`+91 ${mobile}`} disabled />
+            <Field
+              icon={<User className="size-4" />}
+              label="Full Name"
+              placeholder="Your name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Mobile
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setStep("mobile")}
+                  className="text-xs font-bold text-primary"
+                >
+                  Change
+                </button>
+              </div>
+              <div className="mt-2 flex items-center gap-2 bg-secondary/60 rounded-2xl px-4 py-3.5 opacity-70">
+                <span className="text-muted-foreground"><Phone className="size-4" /></span>
+                <input
+                  readOnly
+                  value={`+91 ${mobile}`}
+                  className="flex-1 bg-transparent outline-none text-sm font-medium text-muted-foreground"
+                />
+              </div>
+            </div>
 
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -113,8 +147,21 @@ function MemberAuth() {
               </select>
             </div>
 
-            <Field icon={<MapPin className="size-4" />} label="Location / Service Area" placeholder="City, area" />
-            <Field icon={<Clock className="size-4" />} label="Years of Experience" placeholder="e.g. 5" inputMode="numeric" />
+            <Field
+              icon={<MapPin className="size-4" />}
+              label="Location / Service Area"
+              placeholder="City, area"
+              value={area}
+              onChange={(e) => setArea(e.target.value)}
+            />
+            <Field
+              icon={<Clock className="size-4" />}
+              label="Years of Experience"
+              placeholder="e.g. 5"
+              inputMode="numeric"
+              value={experience}
+              onChange={(e) => setExperience(e.target.value)}
+            />
 
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -125,6 +172,8 @@ function MemberAuth() {
                 <input
                   inputMode="numeric"
                   placeholder="299"
+                  value={hourlyRate}
+                  onChange={(e) => setHourlyRate(e.target.value)}
                   className="flex-1 bg-transparent outline-none text-sm font-medium"
                 />
               </div>
@@ -139,6 +188,8 @@ function MemberAuth() {
                 <textarea
                   rows={4}
                   placeholder="Describe your skills and experience..."
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
                   className="flex-1 bg-transparent outline-none text-sm font-medium resize-none"
                 />
               </div>
@@ -162,13 +213,26 @@ function MemberAuth() {
           </div>
 
           <button
-            onClick={() => setStep("pending")}
-            className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold"
+            onClick={() => {
+              setMemberProfile({
+                name: fullName.trim() || "Worker",
+                mobile: `+91 ${mobile}`,
+                category: cat,
+                area: area.trim() || "Your area",
+                experience,
+                hourlyRate,
+                bio,
+              });
+              setStep("pending");
+            }}
+            disabled={!fullName.trim() || !area.trim()}
+            className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold disabled:opacity-40"
           >
             Submit for Approval
           </button>
         </>
       )}
+
 
       {step === "pending" && (
         <div className="pt-10 text-center">

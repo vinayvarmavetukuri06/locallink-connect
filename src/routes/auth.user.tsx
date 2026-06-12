@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Phone, User, MapPin } from "lucide-react";
+import { setUserProfile } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/auth/user")({
   component: UserAuth,
@@ -11,6 +12,8 @@ function UserAuth() {
   const [step, setStep] = useState<"mobile" | "otp" | "details">("mobile");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
+  const [fullName, setFullName] = useState("");
+  const [location, setLocation] = useState("");
 
   return (
     <div className="mobile-shell px-5 py-6">
@@ -97,19 +100,57 @@ function UserAuth() {
           <p className="text-sm text-muted-foreground mt-1">Tell us a bit about you.</p>
 
           <div className="mt-6 space-y-4">
-            <Field icon={<User className="size-4" />} label="Full Name" placeholder="Rahul Sharma" />
             <Field
-              icon={<Phone className="size-4" />}
-              label="Mobile"
-              value={`+91 ${mobile}`}
-              disabled
+              icon={<User className="size-4" />}
+              label="Full Name"
+              placeholder="Rahul Sharma"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
             />
-            <Field icon={<MapPin className="size-4" />} label="Location" placeholder="City, area" />
+
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Mobile
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setStep("mobile")}
+                  className="text-xs font-bold text-primary"
+                >
+                  Change
+                </button>
+              </div>
+              <div className="mt-2 flex items-center gap-2 bg-secondary/60 rounded-2xl px-4 py-3.5 opacity-70">
+                <span className="text-muted-foreground"><Phone className="size-4" /></span>
+                <input
+                  readOnly
+                  value={`+91 ${mobile}`}
+                  className="flex-1 bg-transparent outline-none text-sm font-medium text-muted-foreground"
+                />
+              </div>
+            </div>
+
+            <Field
+              icon={<MapPin className="size-4" />}
+              label="Location"
+              placeholder="City, area"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
           </div>
 
           <button
-            onClick={() => navigate({ to: "/user" })}
-            className="mt-8 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold active:scale-[0.99]"
+            onClick={() => {
+              setUserProfile({
+                name: fullName.trim() || "User",
+                mobile: `+91 ${mobile}`,
+                location: location.trim() || "Your area",
+              });
+              navigate({ to: "/user" });
+            }}
+            disabled={!fullName.trim() || !location.trim()}
+            className="mt-8 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold active:scale-[0.99] disabled:opacity-40"
           >
             Continue to Dashboard
           </button>
