@@ -84,7 +84,7 @@ function UserHome() {
             Verified Experts
           </span>
         </div>
-        <div className="flex overflow-x-auto gap-4 px-5 pb-2 no-scrollbar">
+        <div className="flex overflow-x-auto gap-4 px-5 pb-2 no-scrollbar [&>*:last-child]:mr-4">
           {featured.map((w) => (
             <FeaturedWorkerCard key={w.id} worker={w} />
           ))}
