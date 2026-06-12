@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Search, Wrench, ChevronRight } from "lucide-react";
+import { ArrowLeft, Search, Wrench, ChevronRight, Users, CalendarCheck, Star, MousePointerClick, UserCheck, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/auth/")({
   component: AuthChooser,
