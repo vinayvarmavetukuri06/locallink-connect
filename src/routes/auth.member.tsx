@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Phone, User, MapPin, Briefcase, Clock } from "lucide-react";
+import { ArrowLeft, Phone, User, MapPin, Briefcase, Clock, IndianRupee, FileText, Camera } from "lucide-react";
 import { categories } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/auth/member")({
