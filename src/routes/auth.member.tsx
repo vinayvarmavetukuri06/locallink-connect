@@ -24,6 +24,10 @@ function MemberAuth() {
 
       {step === "mobile" && (
         <>
+          <div className="flex items-center gap-2 mb-6">
+            <div className="size-10 rounded-2xl bg-success text-success-foreground flex items-center justify-center font-bold font-serif text-lg">L</div>
+            <span className="font-serif text-xl font-bold">LocalConnect</span>
+          </div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-success/10 text-success rounded-full text-[10px] font-bold uppercase tracking-wider mb-3">
             <Briefcase className="size-3" /> For Workers
           </div>
@@ -31,6 +35,7 @@ function MemberAuth() {
           <p className="text-sm text-muted-foreground mt-1">
             Get bookings from customers near you.
           </p>
+          <p className="text-xs text-muted-foreground/80 mt-2">Your number is safe with us — we never share it.</p>
 
           <div className="mt-8">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
