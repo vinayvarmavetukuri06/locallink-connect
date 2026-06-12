@@ -1,98 +1,180 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { workers, bookings } from "@/lib/mock-data";
-import { Users, Briefcase, IndianRupee, Calendar, TrendingUp, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Users, Briefcase, Calendar, ShieldCheck } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminHome,
 });
 
+type WorkerProfile = {
+  id: string;
+  user_id: string | null;
+  service_category: string | null;
+  years_of_experience: number | null;
+  hourly_rate: number | null;
+  bio: string | null;
+  status: string;
+  created_at: string;
+};
+
+type Booking = {
+  id: string;
+  customer_id: string | null;
+  worker_id: string | null;
+  service: string | null;
+  date: string | null;
+  time: string | null;
+  status: string;
+  amount: number | null;
+  address: string | null;
+  problem_description: string | null;
+  created_at: string;
+};
+
+type Profile = { id: string; full_name: string | null; mobile: string | null; role: string | null };
+
 function AdminHome() {
-  const totalUsers = 1248;
-  const totalWorkers = workers.length;
-  const activeMembers = workers.filter((w) => w.approvalStatus === "approved").length;
-  const revenue = 124500;
-  const totalBookings = bookings.length + 312;
+  const [pending, setPending] = useState<WorkerProfile[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [profiles, setProfiles] = useState<Record<string, Profile>>({});
+  const [counts, setCounts] = useState({ users: 0, workers: 0, bookings: 0 });
+  const [busy, setBusy] = useState<string | null>(null);
+
+  const load = async () => {
+    const [wp, bk, pr] = await Promise.all([
+      supabase.from("worker_profiles").select("*").order("created_at", { ascending: false }),
+      supabase.from("bookings").select("*").order("created_at", { ascending: false }),
+      supabase.from("profiles").select("id, full_name, mobile, role"),
+    ]);
+    const allWorkers = (wp.data ?? []) as WorkerProfile[];
+    const allBookings = (bk.data ?? []) as Booking[];
+    const allProfiles = (pr.data ?? []) as Profile[];
+    setPending(allWorkers.filter((w) => w.status === "pending"));
+    setBookings(allBookings);
+    setProfiles(Object.fromEntries(allProfiles.map((p) => [p.id, p])));
+    setCounts({
+      users: allProfiles.filter((p) => p.role === "customer").length,
+      workers: allWorkers.length,
+      bookings: allBookings.length,
+    });
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const updateWorker = async (id: string, status: "approved" | "rejected") => {
+    setBusy(id);
+    const { error } = await supabase.from("worker_profiles").update({ status }).eq("id", id);
+    setBusy(null);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(`Worker ${status}`);
+    setPending((prev) => prev.filter((w) => w.id !== id));
+  };
 
   return (
     <>
-      <header className="bg-foreground text-background px-5 pt-6 pb-16 rounded-b-3xl relative">
-        <div className="flex items-center gap-2 text-xs font-bold opacity-80">
+      <header className="px-5 pt-4 pb-6">
+        <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
           <ShieldCheck className="size-4" /> ADMIN PANEL
         </div>
-        <h1 className="font-serif text-3xl mt-2">LocalConnect Console</h1>
-        <p className="text-xs opacity-70 mt-1">Overview · Today</p>
+        <h1 className="font-serif text-3xl mt-1">LocalConnect Console</h1>
       </header>
 
-      <div className="px-5 -mt-10">
-        <div className="grid grid-cols-2 gap-3">
-          <Card label="Total Users" value={totalUsers.toLocaleString("en-IN")} icon={<Users className="size-4" />} tint="bg-primary/10 text-primary" />
-          <Card label="Total Workers" value={String(totalWorkers)} icon={<Briefcase className="size-4" />} tint="bg-success/15 text-success" />
-          <Card label="Active Members" value={String(activeMembers)} icon={<TrendingUp className="size-4" />} tint="bg-accent/20 text-accent-foreground" />
-          <Card label="Revenue" value={`₹${(revenue / 1000).toFixed(0)}K`} icon={<IndianRupee className="size-4" />} tint="bg-primary/10 text-primary" />
-        </div>
-      </div>
+      <section className="px-5 grid grid-cols-3 gap-3">
+        <Stat label="Users" value={counts.users} icon={<Users className="size-4" />} />
+        <Stat label="Workers" value={counts.workers} icon={<Briefcase className="size-4" />} />
+        <Stat label="Bookings" value={counts.bookings} icon={<Calendar className="size-4" />} />
+      </section>
 
-      <section className="px-5 mt-5">
-        <div className="bg-card border border-border rounded-3xl p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Total Bookings</p>
-              <p className="font-serif text-3xl mt-1">{totalBookings}</p>
-            </div>
-            <Calendar className="size-8 text-primary" />
-          </div>
-          <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-            <Mini label="Pending" value={String(bookings.filter((b) => b.status === "pending").length)} />
-            <Mini label="Active" value={String(bookings.filter((b) => b.status === "in_progress" || b.status === "accepted").length)} />
-            <Mini label="Done" value={String(bookings.filter((b) => b.status === "completed").length)} />
-          </div>
+      <section className="px-5 mt-6">
+        <h2 className="font-bold text-lg font-sans mb-3">Pending Worker Applications</h2>
+        <div className="space-y-2">
+          {pending.length === 0 && (
+            <p className="text-xs text-muted-foreground py-3">No pending applications.</p>
+          )}
+          {pending.map((w) => {
+            const p = w.user_id ? profiles[w.user_id] : undefined;
+            return (
+              <div key={w.id} className="bg-card border border-border rounded-2xl p-4">
+                <p className="font-bold text-sm font-sans">{p?.full_name ?? "Unnamed worker"}</p>
+                <p className="text-[11px] text-muted-foreground">
+                  {w.service_category ?? "—"} · {w.years_of_experience ?? 0} yrs · ₹{w.hourly_rate ?? 0}/hr
+                </p>
+                {p?.mobile && <p className="text-[11px] text-muted-foreground">📱 {p.mobile}</p>}
+                {w.bio && <p className="text-xs mt-2 line-clamp-2">{w.bio}</p>}
+                <div className="flex gap-2 mt-3">
+                  <button
+                    disabled={busy === w.id}
+                    onClick={() => updateWorker(w.id, "rejected")}
+                    className="flex-1 py-2 text-xs font-bold rounded-lg bg-destructive/10 text-destructive disabled:opacity-50"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    disabled={busy === w.id}
+                    onClick={() => updateWorker(w.id, "approved")}
+                    className="flex-1 py-2 text-xs font-bold rounded-lg bg-success text-success-foreground disabled:opacity-50"
+                  >
+                    Approve
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      <section className="px-5 mt-5">
-        <h2 className="font-bold text-lg font-sans mb-3">Pending Worker Approvals</h2>
+      <section className="px-5 mt-6">
+        <h2 className="font-bold text-lg font-sans mb-3">All Bookings</h2>
         <div className="space-y-2">
-          {workers
-            .filter((w) => w.approvalStatus === "pending")
-            .map((w) => (
-              <div key={w.id} className="bg-card border border-border rounded-2xl p-3 flex items-center gap-3">
-                <div className={`size-10 ${w.tint} rounded-xl flex items-center justify-center font-bold text-slate-700 text-xs`}>
-                  {w.initials}
+          {bookings.length === 0 && (
+            <p className="text-xs text-muted-foreground py-3">No bookings yet.</p>
+          )}
+          {bookings.map((b) => {
+            const customer = b.customer_id ? profiles[b.customer_id] : undefined;
+            return (
+              <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="font-bold text-sm font-sans truncate">
+                      {customer?.full_name ?? "Customer"} · {b.service ?? "Service"}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {b.date ?? "—"} · {b.time ?? "—"}
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wide bg-secondary px-2 py-0.5 rounded-full whitespace-nowrap">
+                    {b.status}
+                  </span>
                 </div>
-                <div className="flex-1">
-                  <p className="font-bold text-sm font-sans">{w.name}</p>
-                  <p className="text-[11px] text-muted-foreground">{w.trade} · {w.area}</p>
-                </div>
-                <div className="flex gap-1">
-                  <button className="px-3 py-1.5 text-[10px] font-bold rounded-lg bg-secondary">Reject</button>
-                  <button className="px-3 py-1.5 text-[10px] font-bold rounded-lg bg-success text-success-foreground">Approve</button>
+                {b.problem_description && (
+                  <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{b.problem_description}</p>
+                )}
+                <div className="flex justify-between mt-2 text-[11px]">
+                  <span className="text-muted-foreground truncate">{b.address ?? ""}</span>
+                  {b.amount != null && <span className="font-bold">₹{b.amount}</span>}
                 </div>
               </div>
-            ))}
-          {workers.filter((w) => w.approvalStatus === "pending").length === 0 && (
-            <p className="text-xs text-muted-foreground py-2">No pending approvals.</p>
-          )}
+            );
+          })}
         </div>
       </section>
     </>
   );
 }
 
-function Card({ label, value, icon, tint }: { label: string; value: string; icon: React.ReactNode; tint: string }) {
+function Stat({ label, value, icon }: { label: string; value: number; icon: React.ReactNode }) {
   return (
-    <div className="bg-card border border-border rounded-2xl p-4 shadow-sm">
-      <div className={`size-8 rounded-xl flex items-center justify-center ${tint}`}>{icon}</div>
+    <div className="bg-card border border-border rounded-2xl p-3">
+      <div className="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">{icon}</div>
       <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-2">{label}</p>
       <p className="font-bold text-xl font-sans">{value}</p>
-    </div>
-  );
-}
-
-function Mini({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-secondary rounded-xl py-2">
-      <p className="text-sm font-bold font-sans">{value}</p>
-      <p className="text-[10px] text-muted-foreground uppercase">{label}</p>
     </div>
   );
 }
