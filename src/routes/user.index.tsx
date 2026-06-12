@@ -9,6 +9,7 @@ export const Route = createFileRoute("/user/")({
 });
 
 function UserHome() {
+  const currentUser = useUserProfile();
   const featured = workers.filter((w) => w.premium && w.approvalStatus === "approved");
   const nearby = workers
     .filter((w) => w.approvalStatus === "approved")
