@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { chatThreads, workerById } from "@/lib/mock-data";
 import { WorkerAvatar } from "@/components/worker-card";
 import { useState } from "react";
-import { Send, ArrowLeft, ImagePlus } from "lucide-react";
+import { Send, ArrowLeft, ImagePlus, MessageSquareOff } from "lucide-react";
 
 export const Route = createFileRoute("/user/chat")({
   component: Chat,
