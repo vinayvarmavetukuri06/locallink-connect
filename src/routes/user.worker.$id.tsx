@@ -315,3 +315,12 @@ function Stat({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-3">
+      <span className="text-xs text-muted-foreground shrink-0">{label}</span>
+      <span className="text-xs font-semibold text-right break-words">{value}</span>
+    </div>
+  );
+}
