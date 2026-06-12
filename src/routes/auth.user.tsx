@@ -141,8 +141,8 @@ function UserAuth() {
           </div>
 
           <button
-            onClick={() => {
-              setUserProfile({
+            onClick={async () => {
+              await saveUserProfile({
                 name: fullName.trim() || "User",
                 mobile: `+91 ${mobile}`,
                 location: location.trim() || "Your area",
