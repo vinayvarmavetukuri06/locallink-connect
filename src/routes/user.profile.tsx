@@ -9,11 +9,11 @@ export const Route = createFileRoute("/user/profile")({
 function UserProfile() {
   return (
     <>
-      <header className="bg-primary text-primary-foreground px-5 pt-8 pb-12 rounded-b-3xl">
+      <header className="bg-primary text-primary-foreground px-5 pt-8 pb-20 rounded-b-3xl min-h-[160px]">
         <h1 className="font-serif text-2xl">Profile</h1>
       </header>
 
-      <div className="px-5 -mt-8">
+      <div className="px-5 -mt-16">
         <div className="bg-card border border-border rounded-3xl p-5 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="size-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center text-xl font-bold">
