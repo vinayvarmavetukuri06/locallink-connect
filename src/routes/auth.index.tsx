@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Search, Wrench, ChevronRight } from "lucide-react";
+import { ArrowLeft, Search, Wrench, ChevronRight, Users, CalendarCheck, Star, MousePointerClick, UserCheck, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/auth/")({
   component: AuthChooser,
@@ -63,6 +63,45 @@ function AuthChooser() {
             </div>
           </div>
         </Link>
+      </div>
+
+      {/* Trust stats */}
+      <div className="mt-8 grid grid-cols-3 gap-3">
+        {[
+          { icon: <Users className="size-4" />, value: "10,000+", label: "Workers" },
+          { icon: <CalendarCheck className="size-4" />, value: "50,000+", label: "Bookings" },
+          { icon: <Star className="size-4 fill-current" />, value: "4.8★", label: "Rating" },
+        ].map((s) => (
+          <div key={s.label} className="bg-card border border-border rounded-2xl p-3 text-center">
+            <div className="mx-auto size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-1.5">
+              {s.icon}
+            </div>
+            <p className="text-sm font-bold font-sans leading-tight">{s.value}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* How it works */}
+      <div className="mt-8">
+        <h2 className="font-bold text-sm font-sans uppercase tracking-wider text-muted-foreground mb-3">How it works</h2>
+        <div className="space-y-2.5">
+          {[
+            { icon: <MousePointerClick className="size-4" />, title: "Choose a service", desc: "Pick from 12+ local services." },
+            { icon: <UserCheck className="size-4" />, title: "Pick a worker", desc: "Compare ratings and prices." },
+            { icon: <Zap className="size-4" />, title: "Book instantly", desc: "Confirm in seconds, get help fast." },
+          ].map((s, i) => (
+            <div key={s.title} className="bg-card border border-border rounded-2xl p-3 flex items-center gap-3">
+              <div className="size-10 rounded-xl bg-success/10 text-success flex items-center justify-center shrink-0">
+                {s.icon}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold font-sans">{i + 1}. {s.title}</p>
+                <p className="text-[11px] text-muted-foreground">{s.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="mt-10 text-center">

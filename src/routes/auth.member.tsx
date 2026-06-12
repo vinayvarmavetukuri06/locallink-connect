@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Phone, User, MapPin, Briefcase, Clock } from "lucide-react";
+import { ArrowLeft, Phone, User, MapPin, Briefcase, Clock, IndianRupee, FileText, Camera } from "lucide-react";
 import { categories } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/auth/member")({
@@ -24,6 +24,10 @@ function MemberAuth() {
 
       {step === "mobile" && (
         <>
+          <div className="flex items-center gap-2 mb-6">
+            <div className="size-10 rounded-2xl bg-success text-success-foreground flex items-center justify-center font-bold font-serif text-lg">L</div>
+            <span className="font-serif text-xl font-bold">LocalConnect</span>
+          </div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-success/10 text-success rounded-full text-[10px] font-bold uppercase tracking-wider mb-3">
             <Briefcase className="size-3" /> For Workers
           </div>
@@ -31,6 +35,7 @@ function MemberAuth() {
           <p className="text-sm text-muted-foreground mt-1">
             Get bookings from customers near you.
           </p>
+          <p className="text-xs text-muted-foreground/80 mt-2">Your number is safe with us — we never share it.</p>
 
           <div className="mt-8">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -110,6 +115,50 @@ function MemberAuth() {
 
             <Field icon={<MapPin className="size-4" />} label="Location / Service Area" placeholder="City, area" />
             <Field icon={<Clock className="size-4" />} label="Years of Experience" placeholder="e.g. 5" inputMode="numeric" />
+
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Hourly Rate
+              </label>
+              <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-3.5">
+                <span className="text-muted-foreground"><IndianRupee className="size-4" /></span>
+                <input
+                  inputMode="numeric"
+                  placeholder="299"
+                  className="flex-1 bg-transparent outline-none text-sm font-medium"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Bio / About
+              </label>
+              <div className="mt-2 flex items-start gap-2 bg-secondary rounded-2xl px-4 py-3.5">
+                <span className="text-muted-foreground pt-0.5"><FileText className="size-4" /></span>
+                <textarea
+                  rows={4}
+                  placeholder="Describe your skills and experience..."
+                  className="flex-1 bg-transparent outline-none text-sm font-medium resize-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Profile Photo
+              </label>
+              <label className="mt-2 cursor-pointer flex items-center gap-3 bg-secondary rounded-2xl px-4 py-4 border-2 border-dashed border-border hover:border-success/40 transition-colors">
+                <span className="size-10 rounded-xl bg-success/10 text-success flex items-center justify-center">
+                  <Camera className="size-4" />
+                </span>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold">Upload Photo</p>
+                  <p className="text-[11px] text-muted-foreground">JPG or PNG, max 5MB</p>
+                </div>
+                <input type="file" accept="image/*" className="hidden" />
+              </label>
+            </div>
           </div>
 
           <button
@@ -139,7 +188,7 @@ function MemberAuth() {
 
           <button
             onClick={() => navigate({ to: "/member" })}
-            className="mt-8 w-full bg-foreground text-background py-4 rounded-2xl font-bold"
+            className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold"
           >
             Preview Member Dashboard
           </button>

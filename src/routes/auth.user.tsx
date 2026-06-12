@@ -23,8 +23,13 @@ function UserAuth() {
 
       {step === "mobile" && (
         <>
+          <div className="flex items-center gap-2 mb-6">
+            <div className="size-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center font-bold font-serif text-lg">L</div>
+            <span className="font-serif text-xl font-bold">LocalConnect</span>
+          </div>
           <h1 className="font-serif text-3xl font-bold">Login as User</h1>
           <p className="text-sm text-muted-foreground mt-1">We'll send an OTP to verify.</p>
+          <p className="text-xs text-muted-foreground/80 mt-2">Your number is safe with us — we never share it.</p>
 
           <div className="mt-8">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
