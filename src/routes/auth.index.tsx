@@ -104,6 +104,11 @@ function AuthChooser() {
         </div>
       </div>
 
+      <div className="mt-10 text-center">
+        <Link to="/admin" className="text-xs text-muted-foreground underline">
+          Admin Panel
+        </Link>
+      </div>
     </div>
   );
 }
