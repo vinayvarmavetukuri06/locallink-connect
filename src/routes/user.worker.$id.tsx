@@ -1,8 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { workerById, categoryBySlug, reviews } from "@/lib/mock-data";
 import { WorkerAvatar } from "@/components/worker-card";
-import { ArrowLeft, BadgeCheck, Crown, Star, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Crown, Star, MapPin, MessageCircle, Phone, Calendar, Clock, MapPinned, FileText, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useUserProfile } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/user/worker/$id")({
   component: WorkerProfile,
