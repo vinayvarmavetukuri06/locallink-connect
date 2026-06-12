@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Phone, User, MapPin } from "lucide-react";
+import { setUserProfile } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/auth/user")({
   component: UserAuth,
@@ -11,6 +12,8 @@ function UserAuth() {
   const [step, setStep] = useState<"mobile" | "otp" | "details">("mobile");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
+  const [fullName, setFullName] = useState("");
+  const [location, setLocation] = useState("");
 
   return (
     <div className="mobile-shell px-5 py-6">
