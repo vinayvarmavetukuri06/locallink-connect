@@ -65,14 +65,14 @@ export function FeaturedWorkerCard({ worker }: { worker: Worker }) {
           <p className={`text-lg font-bold ${worker.premium ? "" : "text-foreground"}`}>₹{worker.startingPrice}</p>
         </div>
       </div>
-      <div>
+      <div className="min-w-0">
         <div className="flex items-center gap-1 mb-1">
-          <Star className="size-3 text-accent fill-current" />
+          <Star className="size-3 text-accent fill-current shrink-0" />
           <span className="text-[10px] font-bold">{worker.rating}</span>
           <span className="text-[10px] opacity-80">({worker.reviews})</span>
         </div>
-        <h3 className="font-bold text-base leading-tight font-sans">{worker.name}</h3>
-        <p className="text-xs opacity-80 mt-0.5">{worker.trade}</p>
+        <h3 className="font-bold text-base leading-tight font-sans truncate">{worker.name}</h3>
+        <p className="text-xs opacity-80 mt-0.5 truncate">{worker.trade}</p>
       </div>
     </Link>
   );
