@@ -72,14 +72,10 @@ function UserAuth() {
                 }}
                 maxLength={1}
                 inputMode="numeric"
-                className="size-14 text-center text-2xl font-bold bg-secondary rounded-2xl outline-none focus:ring-2 focus:ring-primary"
+                className="w-14 h-16 text-center text-3xl font-bold bg-secondary rounded-2xl outline-none focus:ring-2 focus:ring-primary"
               />
             ))}
           </div>
-
-          <p className="text-center text-xs text-muted-foreground mt-4">
-            Demo OTP: 1234 • <button className="text-primary font-bold">Resend</button>
-          </p>
 
           <button
             onClick={() => setStep("details")}

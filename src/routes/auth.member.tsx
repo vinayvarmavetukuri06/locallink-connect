@@ -69,11 +69,10 @@ function MemberAuth() {
                 key={i}
                 maxLength={1}
                 inputMode="numeric"
-                className="size-14 text-center text-2xl font-bold bg-secondary rounded-2xl outline-none focus:ring-2 focus:ring-success"
+                className="w-14 h-16 text-center text-3xl font-bold bg-secondary rounded-2xl outline-none focus:ring-2 focus:ring-success"
               />
             ))}
           </div>
-          <p className="text-center text-xs text-muted-foreground mt-4">Demo OTP: 1234</p>
           <button
             onClick={() => setStep("details")}
             className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold"
