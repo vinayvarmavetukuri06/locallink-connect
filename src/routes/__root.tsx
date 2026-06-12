@@ -92,6 +92,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "LocalConnect — Find Trusted Local Workers Near You" },
+      { name: "description", content: "LocalLink Connect is a mobile marketplace connecting users with local service providers." },
+      { property: "og:description", content: "LocalLink Connect is a mobile marketplace connecting users with local service providers." },
+      { name: "twitter:description", content: "LocalLink Connect is a mobile marketplace connecting users with local service providers." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b6b2d4fb-9646-4840-a0ee-4c92f12402a1/id-preview-68e3dac0--cebd4817-b1ee-41dc-8e01-afec2d33c1ec.lovable.app-1781241429430.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b6b2d4fb-9646-4840-a0ee-4c92f12402a1/id-preview-68e3dac0--cebd4817-b1ee-41dc-8e01-afec2d33c1ec.lovable.app-1781241429430.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
