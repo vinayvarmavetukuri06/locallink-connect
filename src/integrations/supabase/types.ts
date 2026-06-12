@@ -14,7 +14,172 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          address: string | null
+          amount: number | null
+          created_at: string
+          customer_id: string | null
+          date: string | null
+          id: string
+          problem_description: string | null
+          service: string | null
+          status: string
+          time: string | null
+          worker_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          amount?: number | null
+          created_at?: string
+          customer_id?: string | null
+          date?: string | null
+          id?: string
+          problem_description?: string | null
+          service?: string | null
+          status?: string
+          time?: string | null
+          worker_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          amount?: number | null
+          created_at?: string
+          customer_id?: string | null
+          date?: string | null
+          id?: string
+          problem_description?: string | null
+          service?: string | null
+          status?: string
+          time?: string | null
+          worker_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_worker_id_fkey"
+            columns: ["worker_id"]
+            isOneToOne: false
+            referencedRelation: "worker_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          location: string | null
+          mobile: string | null
+          role: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          location?: string | null
+          mobile?: string | null
+          role?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          location?: string | null
+          mobile?: string | null
+          role?: string | null
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          booking_id: string | null
+          comment: string | null
+          created_at: string
+          customer_id: string | null
+          id: string
+          rating: number | null
+          worker_id: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          comment?: string | null
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          rating?: number | null
+          worker_id?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          comment?: string | null
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          rating?: number | null
+          worker_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      worker_profiles: {
+        Row: {
+          bio: string | null
+          created_at: string
+          hourly_rate: number | null
+          id: string
+          rating: number
+          service_category: string | null
+          status: string
+          user_id: string | null
+          years_of_experience: number | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          hourly_rate?: number | null
+          id?: string
+          rating?: number
+          service_category?: string | null
+          status?: string
+          user_id?: string | null
+          years_of_experience?: number | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          hourly_rate?: number | null
+          id?: string
+          rating?: number
+          service_category?: string | null
+          status?: string
+          user_id?: string | null
+          years_of_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "worker_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
