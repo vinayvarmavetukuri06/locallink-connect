@@ -188,7 +188,7 @@ function MemberAuth() {
 
           <button
             onClick={() => navigate({ to: "/member" })}
-            className="mt-8 w-full bg-foreground text-background py-4 rounded-2xl font-bold"
+            className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold"
           >
             Preview Member Dashboard
           </button>
