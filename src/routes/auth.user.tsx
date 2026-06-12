@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Phone, User, MapPin } from "lucide-react";
-import { setUserProfile } from "@/lib/profile-store";
+import { saveUserProfile } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/auth/user")({
   component: UserAuth,
@@ -141,8 +141,8 @@ function UserAuth() {
           </div>
 
           <button
-            onClick={() => {
-              setUserProfile({
+            onClick={async () => {
+              await saveUserProfile({
                 name: fullName.trim() || "User",
                 mobile: `+91 ${mobile}`,
                 location: location.trim() || "Your area",

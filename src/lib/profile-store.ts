@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { currentUser as defaultUser, currentMember as defaultMember } from "./mock-data";
+import { supabase } from "@/integrations/supabase/client";
 
 export type UserProfile = {
   name: string;
@@ -62,6 +63,67 @@ export function setMemberProfile(m: MemberProfile) {
   state = { ...state, member: m };
   if (typeof window !== "undefined") localStorage.setItem(MEMBER_KEY, JSON.stringify(m));
   emit();
+}
+
+export async function saveUserProfile(u: UserProfile) {
+  setUserProfile(u);
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .upsert(
+        { full_name: u.name, mobile: u.mobile, location: u.location, role: "customer" },
+        { onConflict: "mobile" }
+      )
+      .select("id")
+      .maybeSingle();
+    if (error) throw error;
+    if (data?.id && typeof window !== "undefined") {
+      localStorage.setItem("lc:user-id", data.id);
+    }
+    return data?.id ?? null;
+  } catch (e) {
+    console.error("saveUserProfile failed", e);
+    return null;
+  }
+}
+
+export async function saveMemberProfile(m: MemberProfile) {
+  setMemberProfile(m);
+  try {
+    const { data: profile, error: pErr } = await supabase
+      .from("profiles")
+      .upsert(
+        { full_name: m.name, mobile: m.mobile, location: m.area, role: "worker" },
+        { onConflict: "mobile" }
+      )
+      .select("id")
+      .maybeSingle();
+    if (pErr) throw pErr;
+    const profileId = profile?.id;
+    if (!profileId) return null;
+
+    const { data: worker, error: wErr } = await supabase
+      .from("worker_profiles")
+      .insert({
+        user_id: profileId,
+        service_category: m.category,
+        years_of_experience: m.experience ? parseInt(m.experience, 10) : null,
+        hourly_rate: m.hourlyRate ? Number(m.hourlyRate) : null,
+        bio: m.bio,
+        status: "pending",
+      })
+      .select("id")
+      .maybeSingle();
+    if (wErr) throw wErr;
+    if (typeof window !== "undefined") {
+      localStorage.setItem("lc:member-profile-id", profileId);
+      if (worker?.id) localStorage.setItem("lc:worker-id", worker.id);
+    }
+    return worker?.id ?? null;
+  } catch (e) {
+    console.error("saveMemberProfile failed", e);
+    return null;
+  }
 }
 
 function subscribe(l: () => void) {
