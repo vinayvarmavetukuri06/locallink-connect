@@ -1,14 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { bookings, workerById, categoryBySlug } from "@/lib/mock-data";
-import type { BookingStatus } from "@/lib/mock-data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const TABS: { key: "all" | BookingStatus; label: string }[] = [
+type Booking = {
+  id: string;
+  customer_id: string | null;
+  service: string | null;
+  date: string | null;
+  time: string | null;
+  address: string | null;
+  problem_description: string | null;
+  amount: number | null;
+  status: string;
+  created_at: string;
+};
+
+const TABS = [
   { key: "all", label: "All" },
   { key: "pending", label: "Pending" },
   { key: "accepted", label: "Upcoming" },
+  { key: "in_progress", label: "Active" },
   { key: "completed", label: "Completed" },
-];
+  { key: "declined", label: "Declined" },
+] as const;
 
 export const Route = createFileRoute("/user/bookings")({
   component: UserBookings,
@@ -16,6 +31,27 @@ export const Route = createFileRoute("/user/bookings")({
 
 function UserBookings() {
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("all");
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  async function load() {
+    const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
+    let q = supabase.from("bookings").select("*").order("created_at", { ascending: false });
+    if (customerId) q = q.eq("customer_id", customerId);
+    const { data, error } = await q;
+    if (!error && data) setBookings(data as Booking[]);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    load();
+    const channel = supabase
+      .channel("user-bookings")
+      .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, () => load())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
   const filtered = tab === "all" ? bookings : bookings.filter((b) => b.status === tab);
 
   return (
@@ -39,51 +75,46 @@ function UserBookings() {
       </div>
 
       <section className="px-5 py-5 space-y-3">
-        {filtered.length === 0 && (
+        {loading && (
+          <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
+        )}
+        {!loading && filtered.length === 0 && (
           <div className="text-center py-10 text-sm text-muted-foreground">No bookings yet.</div>
         )}
-        {filtered.map((b) => {
-          const w = workerById(b.workerId);
-          const cat = w ? categoryBySlug(w.category) : undefined;
-          if (!w) return null;
-          return (
-            <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className={`size-12 ${cat?.tint} rounded-2xl flex items-center justify-center text-xl`}>
-                    {cat?.emoji}
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm font-sans">{w.name}</p>
-                    <p className="text-[11px] text-muted-foreground">{w.trade}</p>
-                  </div>
-                </div>
-                <StatusPill status={b.status} />
+        {filtered.map((b) => (
+          <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
+            <div className="flex items-start justify-between mb-2">
+              <div>
+                <p className="font-bold text-sm font-sans">{b.service}</p>
+                <p className="text-[11px] text-muted-foreground">#{b.id.slice(0, 8).toUpperCase()}</p>
               </div>
-              <div className="text-xs text-muted-foreground border-t border-border pt-3">
-                <p className="line-clamp-2">{b.description}</p>
-                <div className="flex justify-between mt-2">
-                  <span>{b.date} · {b.time}</span>
-                  <span className="font-bold text-foreground">₹{b.amount}</span>
-                </div>
+              <StatusPill status={b.status} />
+            </div>
+            <div className="text-xs text-muted-foreground border-t border-border pt-3">
+              <p className="line-clamp-2">{b.problem_description ?? "—"}</p>
+              <p className="mt-1">{b.address}</p>
+              <div className="flex justify-between mt-2">
+                <span>{b.date} · {b.time}</span>
+                <span className="font-bold text-foreground">₹{b.amount ?? 0}</span>
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </section>
     </>
   );
 }
 
-function StatusPill({ status }: { status: BookingStatus }) {
-  const map: Record<BookingStatus, { label: string; cls: string }> = {
+function StatusPill({ status }: { status: string }) {
+  const map: Record<string, { label: string; cls: string }> = {
     pending: { label: "Pending", cls: "bg-warning/15 text-warning" },
     accepted: { label: "Accepted", cls: "bg-primary/15 text-primary" },
     in_progress: { label: "In Progress", cls: "bg-accent/20 text-accent-foreground" },
     completed: { label: "Completed", cls: "bg-success/15 text-success" },
+    declined: { label: "Declined", cls: "bg-destructive/15 text-destructive" },
     cancelled: { label: "Cancelled", cls: "bg-destructive/15 text-destructive" },
   };
-  const m = map[status];
+  const m = map[status] ?? { label: status, cls: "bg-secondary text-muted-foreground" };
   return (
     <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide ${m.cls}`}>
       {m.label}

@@ -1,15 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { bookings } from "@/lib/mock-data";
-import type { BookingStatus } from "@/lib/mock-data";
-import { useState } from "react";
-import { Phone, MapPin } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Phone, MapPin, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const TABS: { key: "all" | BookingStatus; label: string }[] = [
+type Booking = {
+  id: string;
+  customer_id: string | null;
+  worker_id: string | null;
+  service: string | null;
+  date: string | null;
+  time: string | null;
+  address: string | null;
+  problem_description: string | null;
+  amount: number | null;
+  status: string;
+  created_at: string;
+};
+
+type Profile = { id: string; full_name: string | null; mobile: string | null };
+
+const TABS = [
   { key: "pending", label: "New" },
   { key: "accepted", label: "Upcoming" },
   { key: "in_progress", label: "Active" },
   { key: "completed", label: "Done" },
-];
+  { key: "declined", label: "Declined" },
+] as const;
 
 export const Route = createFileRoute("/member/bookings")({
   component: MemberBookings,
@@ -17,6 +33,54 @@ export const Route = createFileRoute("/member/bookings")({
 
 function MemberBookings() {
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("pending");
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [customers, setCustomers] = useState<Record<string, Profile>>({});
+  const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  async function load() {
+    const { data, error } = await supabase
+      .from("bookings")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error && data) {
+      setBookings(data as Booking[]);
+      const ids = Array.from(new Set(data.map((b) => b.customer_id).filter(Boolean))) as string[];
+      if (ids.length) {
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id, full_name, mobile")
+          .in("id", ids);
+        if (profs) {
+          const map: Record<string, Profile> = {};
+          profs.forEach((p) => { map[p.id] = p as Profile; });
+          setCustomers(map);
+        }
+      }
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    load();
+    const channel = supabase
+      .channel("member-bookings")
+      .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, () => load())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  async function updateStatus(id: string, status: string) {
+    setUpdatingId(id);
+    setBookings((bs) => bs.map((b) => (b.id === id ? { ...b, status } : b)));
+    const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
+    if (error) {
+      console.error(error);
+      load();
+    }
+    setUpdatingId(null);
+  }
+
   const filtered = bookings.filter((b) => b.status === tab);
 
   return (
@@ -27,62 +91,92 @@ function MemberBookings() {
       </header>
 
       <div className="px-5 pt-4 flex gap-2 overflow-x-auto no-scrollbar">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`text-xs font-bold px-4 py-2 rounded-full whitespace-nowrap ${
-              tab === t.key ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+        {TABS.map((t) => {
+          const count = bookings.filter((b) => b.status === t.key).length;
+          return (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`text-xs font-bold px-4 py-2 rounded-full whitespace-nowrap ${
+                tab === t.key ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"
+              }`}
+            >
+              {t.label} {count > 0 && <span className="ml-1 opacity-70">({count})</span>}
+            </button>
+          );
+        })}
       </div>
 
       <section className="px-5 py-5 space-y-3">
-        {filtered.length === 0 && (
+        {loading && (
+          <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
+        )}
+        {!loading && filtered.length === 0 && (
           <div className="text-center py-10 text-sm text-muted-foreground">No bookings in this tab.</div>
         )}
-        {filtered.map((b) => (
-          <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="font-bold text-sm font-sans">{b.customerName}</p>
-                <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                  <Phone className="size-3" /> {b.customerMobile}
-                </p>
-                <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                  <MapPin className="size-3" /> {b.customerAddress}
-                </p>
+        {filtered.map((b) => {
+          const cust = b.customer_id ? customers[b.customer_id] : null;
+          const name = cust?.full_name ?? "Customer";
+          const mobile = cust?.mobile ?? "—";
+          return (
+            <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-bold text-sm font-sans">{name}</p>
+                  <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                    <Phone className="size-3" /> {mobile}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                    <MapPin className="size-3" /> {b.address ?? "—"}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs font-bold text-primary block">₹{b.amount ?? 0}</span>
+                  <span className="text-[10px] text-muted-foreground">{b.service}</span>
+                </div>
               </div>
-              <span className="text-xs font-bold text-primary">₹{b.amount}</span>
-            </div>
-            <div className="mt-3 bg-secondary rounded-xl p-3">
-              <p className="text-xs">{b.description}</p>
-              <p className="text-[10px] text-muted-foreground mt-1">{b.date} · {b.time}</p>
-            </div>
+              <div className="mt-3 bg-secondary rounded-xl p-3">
+                <p className="text-xs">{b.problem_description ?? "—"}</p>
+                <p className="text-[10px] text-muted-foreground mt-1">{b.date} · {b.time}</p>
+              </div>
 
-            {tab === "pending" && (
-              <div className="flex gap-2 mt-3">
-                <button className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-secondary">Reject</button>
-                <button className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground">
-                  Accept
+              {b.status === "pending" && (
+                <div className="flex gap-2 mt-3">
+                  <button
+                    disabled={updatingId === b.id}
+                    onClick={() => updateStatus(b.id, "declined")}
+                    className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-destructive text-destructive-foreground disabled:opacity-60"
+                  >
+                    Decline
+                  </button>
+                  <button
+                    disabled={updatingId === b.id}
+                    onClick={() => updateStatus(b.id, "accepted")}
+                    className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground disabled:opacity-60"
+                  >
+                    Accept
+                  </button>
+                </div>
+              )}
+              {b.status === "accepted" && (
+                <button
+                  onClick={() => updateStatus(b.id, "in_progress")}
+                  className="mt-3 w-full py-2.5 text-xs font-bold rounded-xl bg-primary text-primary-foreground"
+                >
+                  Mark In Progress
                 </button>
-              </div>
-            )}
-            {tab === "accepted" && (
-              <button className="mt-3 w-full py-2.5 text-xs font-bold rounded-xl bg-primary text-primary-foreground">
-                Mark In Progress
-              </button>
-            )}
-            {tab === "in_progress" && (
-              <button className="mt-3 w-full py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground">
-                Mark Completed
-              </button>
-            )}
-          </div>
-        ))}
+              )}
+              {b.status === "in_progress" && (
+                <button
+                  onClick={() => updateStatus(b.id, "completed")}
+                  className="mt-3 w-full py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground"
+                >
+                  Mark Completed
+                </button>
+              )}
+            </div>
+          );
+        })}
       </section>
     </>
   );
