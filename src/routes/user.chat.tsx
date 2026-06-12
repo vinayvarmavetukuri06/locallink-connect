@@ -104,6 +104,20 @@ function Chat() {
             </button>
           );
         })}
+
+        <div className="mt-8 bg-card border border-dashed border-border rounded-3xl p-6 text-center">
+          <div className="mx-auto size-16 rounded-2xl bg-secondary flex items-center justify-center mb-3">
+            <MessageSquareOff className="size-7 text-muted-foreground" />
+          </div>
+          <p className="font-bold text-sm font-sans">No more messages</p>
+          <p className="text-xs text-muted-foreground mt-1 mb-4">Start a new conversation by booking a worker.</p>
+          <Link
+            to="/user"
+            className="inline-flex items-center justify-center bg-primary text-primary-foreground text-sm font-bold px-5 py-3 rounded-2xl active:scale-95 transition"
+          >
+            Find a Worker
+          </Link>
+        </div>
       </div>
     </>
   );
