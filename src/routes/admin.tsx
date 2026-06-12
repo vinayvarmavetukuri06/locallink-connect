@@ -6,14 +6,12 @@ export const Route = createFileRoute("/admin")({
   component: AdminLayout,
 });
 
-const ADMIN_EMAIL = "admin@localconnect.com";
-const ADMIN_PASSWORD = "admin@123";
+const ADMIN_PASSWORD = "admin123";
 const STORAGE_KEY = "admin_authed";
 
 function AdminLayout() {
   const [authed, setAuthed] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -33,31 +31,24 @@ function AdminLayout() {
             <Lock className="size-5" />
           </div>
           <h1 className="font-serif text-2xl font-bold">Admin Login</h1>
-          <p className="text-xs text-muted-foreground mt-1">Restricted access. Authorized personnel only.</p>
+          <p className="text-xs text-muted-foreground mt-1">Enter the admin password to continue.</p>
           <form
             className="mt-5 space-y-3"
             onSubmit={(e) => {
               e.preventDefault();
-              if (email.trim().toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+              if (password === ADMIN_PASSWORD) {
                 sessionStorage.setItem(STORAGE_KEY, "1");
                 setAuthed(true);
                 setError("");
               } else {
-                setError("Invalid credentials");
+                setError("Incorrect password");
               }
             }}
           >
             <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Admin email"
-              className="w-full px-4 py-3 rounded-xl border border-border bg-background text-sm"
-            />
-            <input
               type="password"
               required
+              autoFocus
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"

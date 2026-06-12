@@ -33,20 +33,20 @@ type Booking = {
   created_at: string;
 };
 
-type Profile = { id: string; full_name: string | null; mobile: string | null; role: string | null };
+type Profile = { id: string; full_name: string | null; mobile: string | null; location: string | null; role: string | null };
 
 function AdminHome() {
   const [pending, setPending] = useState<WorkerProfile[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
-  const [counts, setCounts] = useState({ users: 0, workers: 0, bookings: 0 });
+  const [counts, setCounts] = useState({ approved: 0, pending: 0, bookings: 0 });
   const [busy, setBusy] = useState<string | null>(null);
 
   const load = async () => {
     const [wp, bk, pr] = await Promise.all([
       supabase.from("worker_profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("bookings").select("*").order("created_at", { ascending: false }),
-      supabase.from("profiles").select("id, full_name, mobile, role"),
+      supabase.from("profiles").select("id, full_name, mobile, location, role"),
     ]);
     const allWorkers = (wp.data ?? []) as WorkerProfile[];
     const allBookings = (bk.data ?? []) as Booking[];
@@ -55,8 +55,8 @@ function AdminHome() {
     setBookings(allBookings);
     setProfiles(Object.fromEntries(allProfiles.map((p) => [p.id, p])));
     setCounts({
-      users: allProfiles.filter((p) => p.role === "customer").length,
-      workers: allWorkers.length,
+      approved: allWorkers.filter((w) => w.status === "approved").length,
+      pending: allWorkers.filter((w) => w.status === "pending").length,
       bookings: allBookings.length,
     });
   };
@@ -75,6 +75,11 @@ function AdminHome() {
     }
     toast.success(`Worker ${status}`);
     setPending((prev) => prev.filter((w) => w.id !== id));
+    setCounts((c) => ({
+      ...c,
+      pending: c.pending - 1,
+      approved: status === "approved" ? c.approved + 1 : c.approved,
+    }));
   };
 
   return (
@@ -87,8 +92,8 @@ function AdminHome() {
       </header>
 
       <section className="px-5 grid grid-cols-3 gap-3">
-        <Stat label="Users" value={counts.users} icon={<Users className="size-4" />} />
-        <Stat label="Workers" value={counts.workers} icon={<Briefcase className="size-4" />} />
+        <Stat label="Approved" value={counts.approved} icon={<Briefcase className="size-4" />} />
+        <Stat label="Pending" value={counts.pending} icon={<Users className="size-4" />} />
         <Stat label="Bookings" value={counts.bookings} icon={<Calendar className="size-4" />} />
       </section>
 
@@ -104,9 +109,10 @@ function AdminHome() {
               <div key={w.id} className="bg-card border border-border rounded-2xl p-4">
                 <p className="font-bold text-sm font-sans">{p?.full_name ?? "Unnamed worker"}</p>
                 <p className="text-[11px] text-muted-foreground">
-                  {w.service_category ?? "—"} · {w.years_of_experience ?? 0} yrs · ₹{w.hourly_rate ?? 0}/hr
+                  {w.service_category ?? "—"} · {w.years_of_experience ?? 0} yrs experience
                 </p>
                 {p?.mobile && <p className="text-[11px] text-muted-foreground">📱 {p.mobile}</p>}
+                {p?.location && <p className="text-[11px] text-muted-foreground">📍 {p.location}</p>}
                 {w.bio && <p className="text-xs mt-2 line-clamp-2">{w.bio}</p>}
                 <div className="flex gap-2 mt-3">
                   <button
