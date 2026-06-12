@@ -173,65 +173,130 @@ function WorkerProfile() {
       </div>
 
       {bookingOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-end" onClick={() => setBookingOpen(false)}>
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-end" onClick={() => { setBookingOpen(false); }}>
           <div
-            className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-6 pb-10"
+            className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-6 pb-10 max-h-[92vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {!confirmed ? (
               <>
-                <div className="size-10 h-1.5 bg-border rounded-full mx-auto mb-4" />
+                <div className="w-10 h-1.5 bg-border rounded-full mx-auto mb-4" />
                 <h2 className="font-serif text-2xl">Book {w.name}</h2>
                 <p className="text-sm text-muted-foreground mt-1">{w.trade}</p>
 
                 <div className="mt-6 space-y-4">
                   <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">
-                      Describe your problem
+                    <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
+                      <Calendar className="size-3.5" /> Date
+                    </label>
+                    <input
+                      type="date"
+                      value={date}
+                      min={new Date().toISOString().split("T")[0]}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
+                      <Clock className="size-3.5" /> Time Slot
+                    </label>
+                    <div className="mt-2 grid grid-cols-3 gap-2">
+                      {TIME_SLOTS.map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setTime(t)}
+                          className={`py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+                            time === t
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-secondary border-transparent text-foreground"
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
+                      <MapPinned className="size-3.5" /> Address
+                    </label>
+                    <input
+                      type="text"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="House no., street, area, city"
+                      className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
+                      <FileText className="size-3.5" /> Describe your problem
                     </label>
                     <textarea
                       rows={3}
+                      value={problem}
+                      onChange={(e) => setProblem(e.target.value)}
                       placeholder="e.g. AC not cooling properly"
                       className="mt-2 w-full bg-secondary rounded-2xl p-3 text-sm outline-none resize-none"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">
-                        Date
-                      </label>
-                      <input type="date" className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none" />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">
-                        Time
-                      </label>
-                      <input type="time" className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none" />
-                    </div>
-                  </div>
                 </div>
 
+                {errMsg && <p className="mt-3 text-xs text-destructive">{errMsg}</p>}
+
                 <button
-                  onClick={() => setConfirmed(true)}
-                  className="mt-6 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold"
+                  onClick={handleConfirm}
+                  disabled={submitting}
+                  className="mt-6 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold flex items-center justify-center gap-2 disabled:opacity-60"
                 >
+                  {submitting && <Loader2 className="size-4 animate-spin" />}
                   Confirm Booking · ₹{w.startingPrice}
                 </button>
               </>
             ) : (
-              <div className="text-center py-6">
+              <div className="py-2">
                 <div className="size-16 mx-auto bg-success/15 text-success rounded-full flex items-center justify-center text-3xl">
                   ✓
                 </div>
-                <h2 className="font-serif text-2xl mt-4">Booking Sent!</h2>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {w.name} will confirm shortly. Track it under My Bookings.
+                <h2 className="font-serif text-2xl mt-4 text-center">Booking Confirmed!</h2>
+                <p className="text-sm text-muted-foreground mt-2 text-center">
+                  {w.name} will confirm shortly.
                 </p>
+
+                <div className="mt-6 bg-secondary rounded-2xl p-4 space-y-3">
+                  <DetailRow label="Booking ID" value={savedBooking?.id ? `#${savedBooking.id.slice(0, 8).toUpperCase()}` : "—"} />
+                  <DetailRow label="Service" value={savedBooking?.service ?? ""} />
+                  <DetailRow label="Worker" value={w.name} />
+                  <DetailRow label="Date" value={savedBooking?.date ?? ""} />
+                  <DetailRow label="Time" value={savedBooking?.time ?? ""} />
+                  <DetailRow label="Address" value={savedBooking?.address ?? ""} />
+                  <DetailRow label="Issue" value={savedBooking?.problem ?? ""} />
+                  <div className="border-t border-border pt-3 flex justify-between">
+                    <span className="text-sm font-semibold">Amount</span>
+                    <span className="text-sm font-bold text-primary">₹{savedBooking?.amount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-semibold">Status</span>
+                    <span className="text-xs font-bold uppercase text-accent bg-accent/10 px-2 py-1 rounded-full">Pending</span>
+                  </div>
+                </div>
+
                 <button
                   onClick={() => navigate({ to: "/user/bookings" })}
                   className="mt-6 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold"
                 >
                   View My Bookings
+                </button>
+                <button
+                  onClick={() => { setBookingOpen(false); setConfirmed(false); setSavedBooking(null); setProblem(""); setDate(""); setTime(""); }}
+                  className="mt-2 w-full bg-secondary text-foreground py-3 rounded-2xl font-semibold text-sm"
+                >
+                  Close
                 </button>
               </div>
             )}
