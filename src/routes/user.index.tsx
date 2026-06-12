@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, Search, Mic, Bell, Star } from "lucide-react";
-import { categories, workers, currentUser, bookings, workerById } from "@/lib/mock-data";
+import { categories, workers, bookings, workerById } from "@/lib/mock-data";
+import { useUserProfile } from "@/lib/profile-store";
 import { FeaturedWorkerCard, WorkerListCard } from "@/components/worker-card";
 
 export const Route = createFileRoute("/user/")({
