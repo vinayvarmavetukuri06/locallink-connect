@@ -149,7 +149,7 @@ function UserAuth() {
               });
               navigate({ to: "/user" });
             }}
-            disabled={!fullName.trim() || !location.trim()}
+            disabled={!fullName.trim()}
             className="mt-8 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold active:scale-[0.99] disabled:opacity-40"
           >
             Continue to Dashboard
