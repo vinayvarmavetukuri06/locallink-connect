@@ -13,11 +13,67 @@ export const Route = createFileRoute("/user/worker/$id")({
 function WorkerProfile() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
+  const userProfile = useUserProfile();
   const w = workerById(id);
   const cat = w ? categoryBySlug(w.category) : undefined;
   const workerReviews = reviews.filter((r) => r.workerId === id);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errMsg, setErrMsg] = useState<string | null>(null);
+  const [problem, setProblem] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [address, setAddress] = useState(userProfile.location ?? "");
+  const [savedBooking, setSavedBooking] = useState<{
+    id?: string;
+    service: string;
+    date: string;
+    time: string;
+    address: string;
+    problem: string;
+    amount: number;
+  } | null>(null);
+
+  const TIME_SLOTS = ["09:00", "11:00", "13:00", "15:00", "17:00", "19:00"];
+
+  async function handleConfirm() {
+    if (!w) return;
+    setErrMsg(null);
+    if (!date || !time || !address.trim() || !problem.trim()) {
+      setErrMsg("Please fill date, time, address, and problem description.");
+      return;
+    }
+    setSubmitting(true);
+    const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
+    const payload = {
+      customer_id: customerId,
+      worker_id: null as string | null,
+      service: w.trade,
+      date,
+      time,
+      address,
+      problem_description: problem,
+      status: "pending",
+      amount: w.startingPrice,
+    };
+    const { data, error } = await supabase.from("bookings").insert(payload).select("id").maybeSingle();
+    setSubmitting(false);
+    if (error) {
+      setErrMsg(error.message);
+      return;
+    }
+    setSavedBooking({
+      id: data?.id,
+      service: w.trade,
+      date,
+      time,
+      address,
+      problem,
+      amount: w.startingPrice,
+    });
+    setConfirmed(true);
+  }
 
   if (!w) return <div className="p-5">Worker not found. <Link to="/user" className="text-primary">Home</Link></div>;
 
