@@ -115,6 +115,50 @@ function MemberAuth() {
 
             <Field icon={<MapPin className="size-4" />} label="Location / Service Area" placeholder="City, area" />
             <Field icon={<Clock className="size-4" />} label="Years of Experience" placeholder="e.g. 5" inputMode="numeric" />
+
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Hourly Rate
+              </label>
+              <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-3.5">
+                <span className="text-muted-foreground"><IndianRupee className="size-4" /></span>
+                <input
+                  inputMode="numeric"
+                  placeholder="299"
+                  className="flex-1 bg-transparent outline-none text-sm font-medium"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Bio / About
+              </label>
+              <div className="mt-2 flex items-start gap-2 bg-secondary rounded-2xl px-4 py-3.5">
+                <span className="text-muted-foreground pt-0.5"><FileText className="size-4" /></span>
+                <textarea
+                  rows={4}
+                  placeholder="Describe your skills and experience..."
+                  className="flex-1 bg-transparent outline-none text-sm font-medium resize-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Profile Photo
+              </label>
+              <label className="mt-2 cursor-pointer flex items-center gap-3 bg-secondary rounded-2xl px-4 py-4 border-2 border-dashed border-border hover:border-success/40 transition-colors">
+                <span className="size-10 rounded-xl bg-success/10 text-success flex items-center justify-center">
+                  <Camera className="size-4" />
+                </span>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold">Upload Photo</p>
+                  <p className="text-[11px] text-muted-foreground">JPG or PNG, max 5MB</p>
+                </div>
+                <input type="file" accept="image/*" className="hidden" />
+              </label>
+            </div>
           </div>
 
           <button
