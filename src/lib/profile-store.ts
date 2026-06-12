@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { currentUser as defaultUser, currentMember as defaultMember } from "./mock-data";
+import { supabase } from "@/integrations/supabase/client";
 
 export type UserProfile = {
   name: string;
