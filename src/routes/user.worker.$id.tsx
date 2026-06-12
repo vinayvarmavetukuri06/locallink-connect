@@ -181,8 +181,17 @@ function WorkerProfile() {
             {!confirmed ? (
               <>
                 <div className="w-10 h-1.5 bg-border rounded-full mx-auto mb-4" />
-                <h2 className="font-serif text-2xl">Book {w.name}</h2>
-                <p className="text-sm text-muted-foreground mt-1">{w.trade}</p>
+                <div className="flex items-center gap-3">
+                  <WorkerAvatar worker={w} size="md" />
+                  <div className="flex-1 min-w-0">
+                    <h2 className="font-serif text-xl truncate">{w.name}</h2>
+                    <p className="text-xs text-muted-foreground">{w.trade}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] uppercase text-muted-foreground tracking-wider">Starts at</p>
+                    <p className="font-bold text-primary">₹{w.startingPrice}</p>
+                  </div>
+                </div>
 
                 <div className="mt-6 space-y-4">
                   <div>
