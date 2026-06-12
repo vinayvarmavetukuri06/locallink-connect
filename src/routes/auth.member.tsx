@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Phone, User, MapPin, Briefcase, Clock, IndianRupee, FileText, Camera } from "lucide-react";
 import { categories } from "@/lib/mock-data";
+import { setMemberProfile } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/auth/member")({
   component: MemberAuth,
@@ -12,6 +13,11 @@ function MemberAuth() {
   const [step, setStep] = useState<"mobile" | "otp" | "details" | "pending">("mobile");
   const [mobile, setMobile] = useState("");
   const [cat, setCat] = useState(categories[0].slug);
+  const [fullName, setFullName] = useState("");
+  const [area, setArea] = useState("");
+  const [experience, setExperience] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [bio, setBio] = useState("");
 
   return (
     <div className="mobile-shell px-5 py-6">
