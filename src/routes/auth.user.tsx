@@ -121,12 +121,12 @@ function UserAuth() {
                   Change
                 </button>
               </div>
-              <div className="mt-2 flex items-center gap-2 bg-secondary/60 rounded-2xl px-4 py-3.5 opacity-70">
-                <span className="text-muted-foreground"><Phone className="size-4" /></span>
+              <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-3.5">
+                <span className="text-foreground"><Phone className="size-4" /></span>
                 <input
                   readOnly
                   value={`+91 ${mobile}`}
-                  className="flex-1 bg-transparent outline-none text-sm font-medium text-muted-foreground"
+                  className="flex-1 bg-transparent outline-none text-sm font-semibold text-foreground"
                 />
               </div>
             </div>
