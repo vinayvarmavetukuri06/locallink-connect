@@ -213,8 +213,8 @@ function MemberAuth() {
           </div>
 
           <button
-            onClick={() => {
-              setMemberProfile({
+            onClick={async () => {
+              await saveMemberProfile({
                 name: fullName.trim() || "Worker",
                 mobile: `+91 ${mobile}`,
                 category: cat,
