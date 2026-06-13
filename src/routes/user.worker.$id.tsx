@@ -48,7 +48,7 @@ function WorkerProfile() {
     const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
     const payload = {
       customer_id: customerId,
-      worker_id: w.userId,
+      worker_id: w.id,
       service: w.trade,
       date,
       time,

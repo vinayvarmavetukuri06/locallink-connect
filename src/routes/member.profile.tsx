@@ -43,24 +43,32 @@ function MemberProfile() {
     }
     let cancelled = false;
     (async () => {
-      const [{ data: prof }, { data: wp }, { data: reviewRows }, { count: jobsCount }] = await Promise.all([
+      const [{ data: prof }, { data: wp }] = await Promise.all([
         supabase.from("profiles").select("full_name, location").eq("id", workerUserId).maybeSingle(),
         supabase
           .from("worker_profiles")
-          .select("service_category, hourly_rate, years_of_experience")
+          .select("id, service_category, hourly_rate, years_of_experience")
           .eq("user_id", workerUserId)
           .maybeSingle(),
-        supabase
-          .from("reviews")
-          .select("id, rating, comment, customer_id, created_at")
-          .eq("worker_id", workerUserId)
-          .order("created_at", { ascending: false }),
-        supabase
-          .from("bookings")
-          .select("id", { count: "exact", head: true })
-          .eq("worker_id", workerUserId)
-          .eq("status", "completed"),
       ]);
+      const workerRowId = wp?.id ?? null;
+      const [{ data: reviewRows }, { count: jobsCount }] = await Promise.all([
+        workerRowId
+          ? supabase
+              .from("reviews")
+              .select("id, rating, comment, customer_id, created_at")
+              .eq("worker_id", workerRowId)
+              .order("created_at", { ascending: false })
+          : Promise.resolve({ data: [] as any[] }),
+        workerRowId
+          ? supabase
+              .from("bookings")
+              .select("id", { count: "exact", head: true })
+              .eq("worker_id", workerRowId)
+              .eq("status", "completed")
+          : Promise.resolve({ count: 0 as number | null }),
+      ]);
+
 
       const reviewsArr = (reviewRows ?? []) as any[];
       const avgRating =

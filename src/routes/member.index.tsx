@@ -43,6 +43,7 @@ type BookingRow = {
 function MemberHome() {
   const workerUserId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
   const [worker, setWorker] = useState<WorkerInfo | null>(null);
+  const [workerRowId, setWorkerRowId] = useState<string | null>(null);
   const [bookings, setBookings] = useState<BookingRow[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -57,6 +58,10 @@ function MemberHome() {
         .maybeSingle(),
     ]);
     const slug = wp?.service_category ?? "";
+    setWorkerRowId(wp?.id ?? null);
+    if (wp?.id && typeof window !== "undefined") {
+      localStorage.setItem("lc:worker-id", wp.id);
+    }
     setWorker({
       userId: workerUserId,
       rowId: wp?.id ?? null,
@@ -68,8 +73,8 @@ function MemberHome() {
     });
   }, [workerUserId]);
 
-  const loadBookings = useCallback(async () => {
-    if (!workerUserId) {
+  const loadBookings = useCallback(async (rowId: string | null) => {
+    if (!rowId) {
       setBookings([]);
       setLoading(false);
       return;
@@ -77,7 +82,7 @@ function MemberHome() {
     const { data } = await supabase
       .from("bookings")
       .select("id, customer_id, service, address, date, time, amount, status, problem_description, created_at")
-      .eq("worker_id", workerUserId)
+      .eq("worker_id", rowId)
       .order("created_at", { ascending: false });
     const rows = (data ?? []) as BookingRow[];
     const customerIds = Array.from(new Set(rows.map((r) => r.customer_id).filter(Boolean) as string[]));
@@ -93,28 +98,32 @@ function MemberHome() {
     }
     setBookings(rows);
     setLoading(false);
-  }, [workerUserId]);
+  }, []);
 
   useEffect(() => {
     loadWorker();
-    loadBookings();
-  }, [loadWorker, loadBookings]);
+  }, [loadWorker]);
+
+  useEffect(() => {
+    loadBookings(workerRowId);
+  }, [workerRowId, loadBookings]);
 
   // Realtime: bookings for this worker
   useEffect(() => {
-    if (!workerUserId) return;
+    if (!workerRowId) return;
     const channel = supabase
-      .channel(`member-bookings-${workerUserId}`)
+      .channel(`member-bookings-${workerRowId}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "bookings", filter: `worker_id=eq.${workerUserId}` },
-        () => loadBookings(),
+        { event: "*", schema: "public", table: "bookings", filter: `worker_id=eq.${workerRowId}` },
+        () => loadBookings(workerRowId),
       )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [workerUserId, loadBookings]);
+  }, [workerRowId, loadBookings]);
+
 
   const totalBookings = bookings.length;
   const earnings = useMemo(
@@ -191,7 +200,7 @@ function MemberHome() {
         ) : (
           <div className="space-y-3">
             {pending.slice(0, 5).map((b) => (
-              <RequestCard key={b.id} booking={b} onChanged={loadBookings} />
+              <RequestCard key={b.id} booking={b} onChanged={() => loadBookings(workerRowId)} />
             ))}
           </div>
         )}
@@ -270,11 +279,11 @@ function AvailabilityPill({
       }
     }
 
-    if (!next && workerUserId) {
+    if (!next && rowId) {
       const { data: cancelled } = await supabase
         .from("bookings")
         .update({ status: "cancelled" })
-        .eq("worker_id", workerUserId)
+        .eq("worker_id", rowId)
         .in("status", ["accepted", "in_progress"])
         .select("id");
       if (cancelled && cancelled.length > 0) {
