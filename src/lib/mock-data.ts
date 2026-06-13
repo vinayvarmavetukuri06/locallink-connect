@@ -337,5 +337,10 @@ export function categoryBySlug(slug: string) {
   return categories.find((c) => c.slug === slug);
 }
 export function workersByCategory(slug: string) {
-  return workers.filter((w) => w.category === slug && w.approvalStatus === "approved");
+  return workers.filter((w) => w.category === slug && w.approvalStatus === "approved" && w.available !== false);
+}
+export function categorySlugFromService(service: string | null | undefined) {
+  if (!service) return undefined;
+  const s = service.toLowerCase();
+  return categories.find((c) => s.includes(c.name.toLowerCase()) || s.includes(c.slug.replace("-", " ")))?.slug;
 }
