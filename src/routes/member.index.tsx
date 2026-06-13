@@ -279,11 +279,11 @@ function AvailabilityPill({
       }
     }
 
-    if (!next && workerUserId) {
+    if (!next && rowId) {
       const { data: cancelled } = await supabase
         .from("bookings")
         .update({ status: "cancelled" })
-        .eq("worker_id", workerUserId)
+        .eq("worker_id", rowId)
         .in("status", ["accepted", "in_progress"])
         .select("id");
       if (cancelled && cancelled.length > 0) {
