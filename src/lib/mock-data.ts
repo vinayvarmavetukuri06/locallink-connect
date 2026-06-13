@@ -36,6 +36,7 @@ export type Worker = {
   premium: boolean;
   verified: boolean;
   approvalStatus: "approved" | "pending" | "rejected";
+  available?: boolean; // defaults to true when omitted
   bio: string;
   initials: string;
   tint: string;
