@@ -85,6 +85,7 @@ export function FeaturedWorkerCard({ worker }: { worker: Worker }) {
         </div>
         <h3 className="font-bold text-base leading-tight font-sans truncate">{worker.name}</h3>
         <p className="text-xs opacity-80 mt-0.5 truncate">{worker.trade}</p>
+        <AvailabilityBadge available={worker.available !== false} />
       </div>
     </Link>
   );
