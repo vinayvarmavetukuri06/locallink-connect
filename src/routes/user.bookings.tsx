@@ -69,12 +69,60 @@ function UserBookings() {
   }, []);
 
   const filtered = tab === "all" ? bookings : bookings.filter((b) => b.status === tab);
+  const cancelledAlerts = bookings.filter((b) => b.status === "cancelled" && !dismissed.has(b.id));
 
   return (
     <>
       <header className="bg-card px-5 pt-6 pb-3 border-b border-border sticky top-0 z-30">
         <h1 className="font-serif text-2xl">My Bookings</h1>
       </header>
+
+      {cancelledAlerts.length > 0 && (
+        <div className="px-5 pt-4 space-y-3">
+          {cancelledAlerts.map((b) => {
+            const slug = categorySlugFromService(b.service);
+            return (
+              <div key={b.id} className="bg-destructive/10 border border-destructive/30 rounded-2xl p-4 relative">
+                <button
+                  onClick={() => dismiss(b.id)}
+                  className="absolute top-3 right-3 text-destructive/70 hover:text-destructive"
+                  aria-label="Dismiss"
+                >
+                  <X className="size-4" />
+                </button>
+                <div className="flex items-start gap-3 pr-6">
+                  <div className="size-9 rounded-xl bg-destructive/15 text-destructive flex items-center justify-center shrink-0">
+                    <AlertTriangle className="size-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm font-sans text-destructive">Your worker is unavailable, please rebook</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {b.service} on {b.date} · {b.time}
+                    </p>
+                    {slug ? (
+                      <Link
+                        to="/user/category/$slug"
+                        params={{ slug }}
+                        className="mt-3 inline-flex items-center gap-1 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-2 rounded-lg"
+                      >
+                        Find another worker
+                      </Link>
+                    ) : (
+                      <Link
+                        to="/user"
+                        className="mt-3 inline-flex items-center gap-1 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-2 rounded-lg"
+                      >
+                        Find another worker
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
 
       <div className="px-5 pt-4 flex gap-2 overflow-x-auto no-scrollbar">
         {TABS.map((t) => (
