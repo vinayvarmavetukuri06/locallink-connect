@@ -212,18 +212,19 @@ function AvailabilityPill() {
     <button
       onClick={toggle}
       disabled={available === null || saving}
-      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide transition-opacity disabled:opacity-60 ${
-        isOn
-          ? "bg-success/20 text-success"
-          : "bg-destructive/20 text-destructive"
-      }`}
+      className="relative inline-flex items-center shrink-0 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
+      aria-label="Toggle availability"
     >
-      {saving ? (
-        <Loader2 className="size-3 animate-spin" />
-      ) : (
-        <span>{isOn ? "🟢" : "🔴"}</span>
-      )}
-      {isOn ? "Available" : "Unavailable"}
+      <span
+        className={`block h-[26px] w-[46px] rounded-full transition-colors duration-200 ${
+          isOn ? "bg-success" : "bg-muted"
+        }`}
+      />
+      <span
+        className={`absolute top-0.5 left-0.5 block h-[22px] w-[22px] rounded-full bg-background shadow-md transition-transform duration-200 ${
+          isOn ? "translate-x-5" : "translate-x-0"
+        }`}
+      />
     </button>
   );
 }
