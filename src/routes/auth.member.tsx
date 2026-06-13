@@ -1,35 +1,101 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Phone, User, MapPin, Briefcase, Clock, IndianRupee, FileText, Camera } from "lucide-react";
+import { ArrowLeft, Phone, User, MapPin, Briefcase, Clock, IndianRupee, FileText, Camera, Loader2 } from "lucide-react";
 import { categories } from "@/lib/mock-data";
 import { saveMemberProfile } from "@/lib/profile-store";
+import { supabase } from "@/integrations/supabase/client";
+import { hashPassword, DEMO_OTP } from "@/lib/password";
+import { PasswordPair } from "./auth.login";
 
 export const Route = createFileRoute("/auth/member")({
   component: MemberAuth,
 });
 
+type Step = "mobile" | "otp" | "password" | "details" | "pending";
+
 function MemberAuth() {
   const navigate = useNavigate();
-  const [step, setStep] = useState<"mobile" | "otp" | "details" | "pending">("mobile");
+  const [step, setStep] = useState<Step>("mobile");
   const [mobile, setMobile] = useState("");
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+  const [showPw, setShowPw] = useState(false);
   const [cat, setCat] = useState(categories[0].slug);
   const [fullName, setFullName] = useState("");
   const [area, setArea] = useState("");
   const [experience, setExperience] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
   const [bio, setBio] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleMobileNext() {
+    setErr(null);
+    if (mobile.length !== 10) return setErr("Enter a valid 10-digit mobile number.");
+    setLoading(true);
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("mobile", `+91 ${mobile}`)
+      .maybeSingle();
+    setLoading(false);
+    if (existing) return setErr("This number is already registered. Please login instead.");
+    setStep("otp");
+  }
+
+  function handleVerifyOtp() {
+    setErr(null);
+    if (otp.join("") !== DEMO_OTP) return setErr("Incorrect OTP. Use 1234 for demo.");
+    setStep("password");
+  }
+
+  function handlePasswordNext() {
+    setErr(null);
+    if (pw.length < 6) return setErr("Password must be at least 6 characters.");
+    if (pw !== pw2) return setErr("Passwords do not match.");
+    setStep("details");
+  }
+
+  async function handleSubmit() {
+    setErr(null);
+    if (!fullName.trim() || !area.trim()) return setErr("Name and location are required.");
+    setLoading(true);
+    const hash = await hashPassword(pw);
+    await saveMemberProfile(
+      {
+        name: fullName.trim(),
+        mobile: `+91 ${mobile}`,
+        category: cat,
+        area: area.trim(),
+        experience,
+        hourlyRate,
+        bio,
+      },
+      hash,
+    );
+    setLoading(false);
+    setStep("pending");
+  }
 
   return (
     <div className="mobile-shell px-5 py-6">
       <button
-        onClick={() => (step === "mobile" ? history.back() : setStep("mobile"))}
+        type="button"
+        onClick={() => {
+          setErr(null);
+          if (step === "mobile" || step === "pending") history.back();
+          else if (step === "otp") setStep("mobile");
+          else if (step === "password") setStep("otp");
+          else setStep("password");
+        }}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-6"
       >
         <ArrowLeft className="size-4" /> Back
       </button>
 
       {step === "mobile" && (
-        <>
+        <form onSubmit={(e) => { e.preventDefault(); handleMobileNext(); }}>
           <div className="flex items-center gap-2 mb-6">
             <div className="size-10 rounded-2xl bg-success text-success-foreground flex items-center justify-center font-bold font-serif text-lg">L</div>
             <span className="font-serif text-xl font-bold">LocalConnect</span>
@@ -38,10 +104,7 @@ function MemberAuth() {
             <Briefcase className="size-3" /> For Workers
           </div>
           <h1 className="font-serif text-3xl font-bold">Grow Your Business</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Get bookings from customers near you.
-          </p>
-          <p className="text-xs text-muted-foreground/80 mt-2">Your number is safe with us — we never share it.</p>
+          <p className="text-sm text-muted-foreground mt-1">Get bookings from customers near you.</p>
 
           <div className="mt-8">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -51,50 +114,91 @@ function MemberAuth() {
               <span className="font-semibold text-sm">🇮🇳 +91</span>
               <input
                 value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
+                onChange={(e) => setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))}
                 maxLength={10}
                 inputMode="numeric"
                 placeholder="98765 43210"
+                autoFocus
                 className="flex-1 bg-transparent outline-none text-base font-medium"
               />
             </div>
           </div>
 
+          {err && <p className="mt-4 text-xs text-destructive text-center font-semibold">{err}</p>}
+
           <button
-            onClick={() => mobile.length >= 10 && setStep("otp")}
-            disabled={mobile.length < 10}
-            className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold disabled:opacity-40"
+            type="submit"
+            disabled={loading}
+            className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold disabled:opacity-40 flex items-center justify-center gap-2"
           >
+            {loading && <Loader2 className="size-4 animate-spin" />}
             Send OTP
           </button>
-        </>
+        </form>
       )}
 
       {step === "otp" && (
-        <>
+        <form onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }}>
           <h1 className="font-serif text-3xl font-bold">Enter OTP</h1>
           <p className="text-sm text-muted-foreground mt-1">Sent to +91 {mobile}</p>
+          <p className="text-[11px] text-muted-foreground mt-1">Demo OTP: {DEMO_OTP}</p>
           <div className="mt-8 flex gap-3 justify-center">
-            {[0, 1, 2, 3].map((i) => (
+            {otp.map((d, i) => (
               <input
                 key={i}
+                id={`motp-${i}`}
+                value={d}
+                autoFocus={i === 0}
+                onChange={(e) => {
+                  const v = e.target.value.replace(/\D/g, "").slice(0, 1);
+                  const next = [...otp];
+                  next[i] = v;
+                  setOtp(next);
+                  if (v && i < 3) {
+                    const el = document.getElementById(`motp-${i + 1}`) as HTMLInputElement | null;
+                    el?.focus();
+                  }
+                }}
                 maxLength={1}
                 inputMode="numeric"
                 className="w-14 h-16 text-center text-3xl font-bold bg-secondary rounded-2xl outline-none focus:ring-2 focus:ring-success"
               />
             ))}
           </div>
+          {err && <p className="mt-4 text-xs text-destructive text-center font-semibold">{err}</p>}
           <button
-            onClick={() => setStep("details")}
+            type="submit"
             className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold"
           >
             Verify & Continue
           </button>
-        </>
+        </form>
+      )}
+
+      {step === "password" && (
+        <form onSubmit={(e) => { e.preventDefault(); handlePasswordNext(); }}>
+          <h1 className="font-serif text-3xl font-bold">Create password</h1>
+          <p className="text-sm text-muted-foreground mt-1">Used for future logins.</p>
+          <PasswordPair
+            password={pw}
+            confirm={pw2}
+            setPassword={setPw}
+            setConfirm={setPw2}
+            show={showPw}
+            setShow={setShowPw}
+          />
+          {err && <p className="mt-4 text-xs text-destructive text-center font-semibold">{err}</p>}
+          <button
+            type="submit"
+            className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold"
+          >
+            Continue
+          </button>
+        </form>
       )}
 
       {step === "details" && (
-        <>
+        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
           <h1 className="font-serif text-3xl font-bold">Worker Profile</h1>
           <p className="text-sm text-muted-foreground mt-1">Help customers find you.</p>
 
@@ -103,25 +207,17 @@ function MemberAuth() {
               icon={<User className="size-4" />}
               label="Full Name"
               placeholder="Your name"
+              autoFocus
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
             />
 
             <div>
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Mobile
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setStep("mobile")}
-                  className="text-xs font-bold text-primary"
-                >
-                  Change
-                </button>
-              </div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Mobile
+              </label>
               <div className="mt-2 flex items-center gap-2 bg-secondary/60 rounded-2xl px-4 py-3.5 opacity-70">
-                <span className="text-muted-foreground"><Phone className="size-4" /></span>
+                <Phone className="size-4 text-muted-foreground" />
                 <input
                   readOnly
                   value={`+91 ${mobile}`}
@@ -168,7 +264,7 @@ function MemberAuth() {
                 Hourly Rate
               </label>
               <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-3.5">
-                <span className="text-muted-foreground"><IndianRupee className="size-4" /></span>
+                <IndianRupee className="size-4 text-muted-foreground" />
                 <input
                   inputMode="numeric"
                   placeholder="299"
@@ -184,7 +280,7 @@ function MemberAuth() {
                 Bio / About
               </label>
               <div className="mt-2 flex items-start gap-2 bg-secondary rounded-2xl px-4 py-3.5">
-                <span className="text-muted-foreground pt-0.5"><FileText className="size-4" /></span>
+                <FileText className="size-4 text-muted-foreground pt-0.5" />
                 <textarea
                   rows={4}
                   placeholder="Describe your skills and experience..."
@@ -212,27 +308,18 @@ function MemberAuth() {
             </div>
           </div>
 
+          {err && <p className="mt-4 text-xs text-destructive text-center font-semibold">{err}</p>}
+
           <button
-            onClick={async () => {
-              await saveMemberProfile({
-                name: fullName.trim() || "Worker",
-                mobile: `+91 ${mobile}`,
-                category: cat,
-                area: area.trim() || "Your area",
-                experience,
-                hourlyRate,
-                bio,
-              });
-              setStep("pending");
-            }}
-            disabled={!fullName.trim() || !area.trim()}
-            className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold disabled:opacity-40"
+            type="submit"
+            disabled={loading || !fullName.trim() || !area.trim()}
+            className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold disabled:opacity-40 flex items-center justify-center gap-2"
           >
+            {loading && <Loader2 className="size-4 animate-spin" />}
             Submit for Approval
           </button>
-        </>
+        </form>
       )}
-
 
       {step === "pending" && (
         <div className="pt-10 text-center">
