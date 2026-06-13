@@ -23,6 +23,7 @@ const TABS = [
   { key: "accepted", label: "Upcoming" },
   { key: "in_progress", label: "Active" },
   { key: "completed", label: "Completed" },
+  { key: "cancelled", label: "Cancelled" },
   { key: "declined", label: "Declined" },
 ] as const;
 
