@@ -142,6 +142,7 @@ export type Database = {
           created_at: string
           hourly_rate: number | null
           id: string
+          is_available: boolean
           rating: number
           service_category: string | null
           status: string
@@ -153,6 +154,7 @@ export type Database = {
           created_at?: string
           hourly_rate?: number | null
           id?: string
+          is_available?: boolean
           rating?: number
           service_category?: string | null
           status?: string
@@ -164,6 +166,7 @@ export type Database = {
           created_at?: string
           hourly_rate?: number | null
           id?: string
+          is_available?: boolean
           rating?: number
           service_category?: string | null
           status?: string

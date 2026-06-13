@@ -10,9 +10,9 @@ export const Route = createFileRoute("/user/")({
 
 function UserHome() {
   const currentUser = useUserProfile();
-  const featured = workers.filter((w) => w.premium && w.approvalStatus === "approved");
+  const featured = workers.filter((w) => w.premium && w.approvalStatus === "approved" && w.available !== false);
   const nearby = workers
-    .filter((w) => w.approvalStatus === "approved")
+    .filter((w) => w.approvalStatus === "approved" && w.available !== false)
     .sort((a, b) => a.distanceKm - b.distanceKm)
     .slice(0, 4);
   const lastBooking = bookings.find((b) => b.status === "completed");
