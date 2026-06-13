@@ -22,20 +22,18 @@ export const Route = createFileRoute("/member/")({
 function MemberHome() {
   return (
     <>
-      <header className="bg-primary text-primary-foreground px-5 pt-6 pb-16 rounded-b-3xl relative overflow-hidden">
-        <div className="flex items-center justify-between">
+      <header className="bg-primary text-primary-foreground px-5 pt-6 pb-14 rounded-b-3xl relative overflow-hidden">
+        <div className="flex items-start justify-between">
           <div>
             <p className="text-xs opacity-80 uppercase tracking-wider font-medium">Welcome back,</p>
             <h1 className="font-serif text-2xl mt-0.5">{currentMember.name}</h1>
             <p className="text-xs opacity-80 mt-0.5">{currentMember.category} · {currentMember.area.split(",")[0]}</p>
-          </div>
-          <div className="flex items-center gap-2">
             <AvailabilityPill />
-            <button className="size-10 rounded-full bg-background/10 backdrop-blur-md flex items-center justify-center relative">
-              <Bell className="size-4" />
-              <span className="absolute top-2.5 right-2.5 size-2 bg-warning rounded-full ring-2 ring-primary" />
-            </button>
           </div>
+          <button className="size-10 rounded-full bg-background/10 backdrop-blur-md flex items-center justify-center relative mt-1">
+            <Bell className="size-4" />
+            <span className="absolute top-2.5 right-2.5 size-2 bg-warning rounded-full ring-2 ring-primary" />
+          </button>
         </div>
       </header>
 
@@ -212,19 +210,24 @@ function AvailabilityPill() {
     <button
       onClick={toggle}
       disabled={available === null || saving}
-      className="relative inline-flex items-center shrink-0 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
+      className="flex items-center gap-2 mt-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
       aria-label="Toggle availability"
     >
-      <span
-        className={`block h-[26px] w-[46px] rounded-full transition-colors duration-200 ${
-          isOn ? "bg-success" : "bg-muted"
-        }`}
-      />
-      <span
-        className={`absolute top-0.5 left-0.5 block h-[22px] w-[22px] rounded-full bg-background shadow-md transition-transform duration-200 ${
-          isOn ? "translate-x-5" : "translate-x-0"
-        }`}
-      />
+      <span className="relative inline-flex items-center shrink-0">
+        <span
+          className={`block h-[22px] w-[38px] rounded-full transition-colors duration-200 ${
+            isOn ? "bg-success" : "bg-destructive"
+          }`}
+        />
+        <span
+          className={`absolute top-0.5 left-0.5 block h-[18px] w-[18px] rounded-full bg-background shadow transition-transform duration-200 ${
+            isOn ? "translate-x-4" : "translate-x-0"
+          }`}
+        />
+      </span>
+      <span className={`text-xs font-semibold ${isOn ? "text-success" : "text-destructive"}`}>
+        {isOn ? "Available" : "Unavailable"}
+      </span>
     </button>
   );
 }
