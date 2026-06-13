@@ -227,7 +227,6 @@ function AvailabilityPill() {
       />
     </button>
   );
-  );
 }
 
 function RequestCard({ bookingId }: { bookingId: string }) {
