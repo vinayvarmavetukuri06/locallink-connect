@@ -22,6 +22,10 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 
+export const Route = createFileRoute("/member/")({
+  component: MemberHome,
+});
+
 function MemberHome() {
   return (
     <>
