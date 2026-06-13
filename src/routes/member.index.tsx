@@ -26,9 +26,11 @@ function MemberHome() {
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs opacity-80 uppercase tracking-wider font-medium">Welcome back,</p>
-            <h1 className="font-serif text-2xl mt-0.5">{currentMember.name}</h1>
-            <p className="text-xs opacity-80 mt-0.5">{currentMember.category} · {currentMember.area.split(",")[0]}</p>
-            <AvailabilityPill />
+            <h1 className="font-serif text-2xl mt-1.5">{currentMember.name}</h1>
+            <p className="text-xs opacity-80 mt-1.5">{currentMember.category} · {currentMember.area.split(",")[0]}</p>
+            <div className="mt-2">
+              <AvailabilityPill />
+            </div>
           </div>
           <button className="size-10 rounded-full bg-background/10 backdrop-blur-md flex items-center justify-center relative mt-1">
             <Bell className="size-4" />
