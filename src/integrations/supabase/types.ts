@@ -78,6 +78,7 @@ export type Database = {
           id: string
           location: string | null
           mobile: string | null
+          password_hash: string | null
           role: string | null
         }
         Insert: {
@@ -86,6 +87,7 @@ export type Database = {
           id?: string
           location?: string | null
           mobile?: string | null
+          password_hash?: string | null
           role?: string | null
         }
         Update: {
@@ -94,6 +96,7 @@ export type Database = {
           id?: string
           location?: string | null
           mobile?: string | null
+          password_hash?: string | null
           role?: string | null
         }
         Relationships: []
