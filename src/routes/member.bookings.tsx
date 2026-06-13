@@ -159,20 +159,36 @@ function MemberBookings() {
                 </div>
               )}
               {b.status === "accepted" && (
-                <button
-                  onClick={() => updateStatus(b.id, "in_progress")}
-                  className="mt-3 w-full py-2.5 text-xs font-bold rounded-xl bg-primary text-primary-foreground"
-                >
-                  Mark In Progress
-                </button>
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={() => updateStatus(b.id, "cancelled")}
+                    className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-destructive text-destructive-foreground"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => updateStatus(b.id, "in_progress")}
+                    className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-primary text-primary-foreground"
+                  >
+                    Mark In Progress
+                  </button>
+                </div>
               )}
               {b.status === "in_progress" && (
-                <button
-                  onClick={() => updateStatus(b.id, "completed")}
-                  className="mt-3 w-full py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground"
-                >
-                  Mark Completed
-                </button>
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={() => updateStatus(b.id, "cancelled")}
+                    className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-destructive text-destructive-foreground"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => updateStatus(b.id, "completed")}
+                    className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground"
+                  >
+                    Mark Completed
+                  </button>
+                </div>
               )}
             </div>
           );
