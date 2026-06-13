@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { currentMember, bookings, workerById } from "@/lib/mock-data";
+import { currentMember, bookings } from "@/lib/mock-data";
 import {
   Bell,
   IndianRupee,
@@ -14,10 +14,13 @@ import {
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-export const Route = createFileRoute("/member/")({
-  component: MemberHome,
-});
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 function MemberHome() {
   return (
