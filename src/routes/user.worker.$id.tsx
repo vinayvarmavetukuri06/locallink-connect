@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { workerById, categoryBySlug, reviews } from "@/lib/mock-data";
+import { categoryBySlug } from "@/lib/mock-data";
 import { WorkerAvatar, AvailabilityBadge } from "@/components/worker-card";
-import { ArrowLeft, BadgeCheck, Crown, Star, MapPin, MessageCircle, Phone, Calendar, Clock, MapPinned, FileText, Loader2 } from "lucide-react";
+import { useWorkerById } from "@/lib/workers-api";
+import { ArrowLeft, Star, MapPin, MessageCircle, Phone, Calendar, Clock, MapPinned, FileText, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserProfile } from "@/lib/profile-store";
@@ -14,9 +15,8 @@ function WorkerProfile() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const userProfile = useUserProfile();
-  const w = workerById(id);
+  const { worker: w, loading } = useWorkerById(id);
   const cat = w ? categoryBySlug(w.category) : undefined;
-  const workerReviews = reviews.filter((r) => r.workerId === id);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -48,7 +48,7 @@ function WorkerProfile() {
     const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
     const payload = {
       customer_id: customerId,
-      worker_id: null as string | null,
+      worker_id: w.userId,
       service: w.trade,
       date,
       time,
@@ -75,7 +75,20 @@ function WorkerProfile() {
     setConfirmed(true);
   }
 
-  if (!w) return <div className="p-5">Worker not found. <Link to="/user" className="text-primary">Home</Link></div>;
+  if (loading) {
+    return (
+      <div className="p-10 flex items-center justify-center text-muted-foreground">
+        <Loader2 className="size-5 animate-spin" />
+      </div>
+    );
+  }
+  if (!w) {
+    return (
+      <div className="p-5">
+        Worker not found. <Link to="/user" className="text-primary">Home</Link>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -89,75 +102,51 @@ function WorkerProfile() {
         <div className="flex items-start gap-4">
           <WorkerAvatar worker={w} size="lg" />
           <div className="flex-1">
-            <div className="flex items-center gap-1.5">
-              <h1 className="font-serif text-2xl">{w.name}</h1>
-              {w.verified && <BadgeCheck className="size-5 text-primary" />}
-              {w.premium && <Crown className="size-5 text-accent" />}
-            </div>
+            <h1 className="font-serif text-2xl">{w.name}</h1>
             <p className="text-sm text-muted-foreground">{w.trade}</p>
             <div className="flex items-center gap-3 text-xs mt-2">
               <div className="flex items-center gap-1">
                 <Star className="size-3.5 text-accent fill-current" />
-                <span className="font-bold">{w.rating}</span>
-                <span className="text-muted-foreground">({w.reviews})</span>
+                <span className="font-bold">{w.rating.toFixed(1)}</span>
               </div>
-              <div className="flex items-center gap-1 text-muted-foreground">
-                <MapPin className="size-3.5" /> {w.distanceKm}km
-              </div>
-              <AvailabilityBadge available={w.available !== false} />
+              {w.area && (
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <MapPin className="size-3.5" /> {w.area}
+                </div>
+              )}
+              <AvailabilityBadge available={w.available} />
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-3 mt-6">
           <Stat label="Experience" value={`${w.experience} yrs`} />
-          <Stat label="Starts at" value={`₹${w.startingPrice}`} />
-          <Stat label="Jobs done" value={`${w.reviews}+`} />
+          <Stat label="Hourly" value={`₹${w.startingPrice}`} />
+          <Stat label="Rating" value={w.rating.toFixed(1)} />
         </div>
 
-        <div className="mt-6">
-          <h3 className="font-bold text-sm font-sans mb-2">About</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">{w.bio}</p>
-        </div>
+        {w.bio && (
+          <div className="mt-6">
+            <h3 className="font-bold text-sm font-sans mb-2">About</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">{w.bio}</p>
+          </div>
+        )}
 
         <div className="mt-6 bg-secondary rounded-2xl p-4">
           <h3 className="font-bold text-sm font-sans mb-1">Service Area</h3>
-          <p className="text-sm text-muted-foreground">{w.area} • {cat?.name}</p>
-        </div>
-
-        <div className="mt-6">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-sm font-sans">Reviews ({workerReviews.length})</h3>
-            <button className="text-xs text-primary font-bold">View all</button>
-          </div>
-          <div className="space-y-3">
-            {workerReviews.map((r) => (
-              <div key={r.id} className="bg-card border border-border rounded-2xl p-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm">{r.customerName}</span>
-                  <div className="flex items-center gap-0.5">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className={`size-3 ${i < r.rating ? "text-accent fill-current" : "text-muted"}`} />
-                    ))}
-                  </div>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1.5">{r.text}</p>
-                <p className="text-[10px] text-muted-foreground mt-1">{r.date}</p>
-              </div>
-            ))}
-            {workerReviews.length === 0 && (
-              <p className="text-xs text-muted-foreground">No reviews yet.</p>
-            )}
-          </div>
+          <p className="text-sm text-muted-foreground">{w.area || "—"}{cat ? ` • ${cat.name}` : ""}</p>
         </div>
       </section>
 
       {/* Sticky CTAs */}
       <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md px-5 pb-2 z-40">
         <div className="bg-card border border-border rounded-3xl p-3 shadow-lg shadow-black/5 flex gap-2">
-          <button className="size-12 rounded-2xl bg-secondary flex items-center justify-center">
+          <a
+            href={w.mobile ? `tel:${w.mobile.replace(/\s+/g, "")}` : undefined}
+            className="size-12 rounded-2xl bg-secondary flex items-center justify-center"
+          >
             <Phone className="size-5" />
-          </button>
+          </a>
           <button
             onClick={() => navigate({ to: "/user/chat" })}
             className="size-12 rounded-2xl bg-secondary flex items-center justify-center"
@@ -189,7 +178,7 @@ function WorkerProfile() {
                     <p className="text-xs text-muted-foreground">{w.trade}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] uppercase text-muted-foreground tracking-wider">Starts at</p>
+                    <p className="text-[10px] uppercase text-muted-foreground tracking-wider">Hourly</p>
                     <p className="font-bold text-primary">₹{w.startingPrice}</p>
                   </div>
                 </div>

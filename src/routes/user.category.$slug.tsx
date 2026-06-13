@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { categoryBySlug, workersByCategory } from "@/lib/mock-data";
-import { WorkerListCard } from "@/components/worker-card";
-import { ArrowLeft } from "lucide-react";
+import { categoryBySlug } from "@/lib/mock-data";
+import { WorkerListCard, NoWorkersCard } from "@/components/worker-card";
+import { useApprovedWorkers } from "@/lib/workers-api";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/user/category/$slug")({
   component: CategoryPage,
@@ -10,7 +12,8 @@ export const Route = createFileRoute("/user/category/$slug")({
 function CategoryPage() {
   const { slug } = Route.useParams();
   const cat = categoryBySlug(slug);
-  const list = workersByCategory(slug);
+  const { workers, loading, error } = useApprovedWorkers();
+  const list = useMemo(() => workers.filter((w) => w.category === slug), [workers, slug]);
 
   if (!cat) {
     return (
@@ -33,19 +36,24 @@ function CategoryPage() {
           </div>
           <div>
             <h1 className="font-serif text-2xl">{cat.name}</h1>
-            <p className="text-xs text-muted-foreground">{list.length} verified workers nearby</p>
+            <p className="text-xs text-muted-foreground">
+              {loading ? "Loading…" : `${list.length} verified worker${list.length === 1 ? "" : "s"} nearby`}
+            </p>
           </div>
         </div>
       </header>
 
       <section className="px-5 py-5 space-y-3">
-        {list.length === 0 ? (
-          <div className="text-center py-10 text-sm text-muted-foreground">
-            No workers in this category yet. Check back soon.
+        {loading ? (
+          <div className="flex items-center justify-center py-10 text-muted-foreground">
+            <Loader2 className="size-5 animate-spin" />
           </div>
+        ) : list.length === 0 ? (
+          <NoWorkersCard message={`No ${cat.name} workers in your area yet — check back soon!`} />
         ) : (
           list.map((w) => <WorkerListCard key={w.id} worker={w} />)
         )}
+        {error && <p className="text-xs text-destructive">{error}</p>}
       </section>
     </>
   );

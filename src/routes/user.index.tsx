@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MapPin, Search, Mic, Bell, Star } from "lucide-react";
-import { categories, workers, bookings, workerById } from "@/lib/mock-data";
+import { MapPin, Search, Mic, Bell, Star, Loader2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { categories, bookings, workerById } from "@/lib/mock-data";
 import { useUserProfile } from "@/lib/profile-store";
-import { FeaturedWorkerCard, WorkerListCard } from "@/components/worker-card";
+import { FeaturedWorkerCard, WorkerListCard, NoWorkersCard } from "@/components/worker-card";
+import { useApprovedWorkers } from "@/lib/workers-api";
 
 export const Route = createFileRoute("/user/")({
   component: UserHome,
@@ -10,11 +12,24 @@ export const Route = createFileRoute("/user/")({
 
 function UserHome() {
   const currentUser = useUserProfile();
-  const featured = workers.filter((w) => w.premium && w.approvalStatus === "approved" && w.available !== false);
-  const nearby = workers
-    .filter((w) => w.approvalStatus === "approved" && w.available !== false)
-    .sort((a, b) => a.distanceKm - b.distanceKm)
-    .slice(0, 4);
+  const { workers, loading, error } = useApprovedWorkers();
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return workers;
+    return workers.filter(
+      (w) =>
+        w.name.toLowerCase().includes(q) ||
+        w.trade.toLowerCase().includes(q) ||
+        w.category.toLowerCase().includes(q) ||
+        w.area.toLowerCase().includes(q),
+    );
+  }, [workers, query]);
+
+  const featured = filtered.slice(0, 6);
+  const nearby = filtered.slice(0, 8);
+
   const lastBooking = bookings.find((b) => b.status === "completed");
   const lastWorker = lastBooking ? workerById(lastBooking.workerId) : undefined;
 
@@ -46,7 +61,9 @@ function UserHome() {
         <div className="relative flex items-center">
           <Search className="absolute left-4 size-4 text-muted-foreground" />
           <input
-            placeholder="Search for 'Electrician'..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by name, service or area..."
             className="w-full bg-secondary border-none rounded-2xl py-3.5 pl-11 pr-12 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
           />
           <button className="absolute right-2 size-9 bg-primary text-primary-foreground rounded-xl flex items-center justify-center">
@@ -78,33 +95,72 @@ function UserHome() {
         </div>
       </section>
 
+      {/* Search results */}
+      {query.trim() && (
+        <section className="px-5 mb-6">
+          <h2 className="font-bold text-lg font-sans mb-4">
+            Results for “{query.trim()}”
+          </h2>
+          {loading ? (
+            <LoadingRow />
+          ) : filtered.length === 0 ? (
+            <NoWorkersCard message="No workers match your search yet — try a different service or area." />
+          ) : (
+            <div className="space-y-3">
+              {filtered.map((w) => (
+                <WorkerListCard key={w.id} worker={w} />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
       {/* Featured / Local Heroes */}
-      <section className="mb-6">
-        <div className="px-5 flex justify-between items-center mb-3">
-          <h2 className="font-bold text-lg font-sans">Local Heroes</h2>
-          <span className="text-[10px] bg-accent/15 text-accent-foreground px-2 py-0.5 rounded font-bold uppercase tracking-tight">
-            Verified Experts
-          </span>
-        </div>
-        <div className="flex overflow-x-auto gap-4 px-5 pb-2 no-scrollbar [&>*:last-child]:mr-4">
-          {featured.map((w) => (
-            <FeaturedWorkerCard key={w.id} worker={w} />
-          ))}
-        </div>
-      </section>
+      {!query.trim() && (
+        <section className="mb-6">
+          <div className="px-5 flex justify-between items-center mb-3">
+            <h2 className="font-bold text-lg font-sans">Local Heroes</h2>
+            <span className="text-[10px] bg-accent/15 text-accent-foreground px-2 py-0.5 rounded font-bold uppercase tracking-tight">
+              Verified Experts
+            </span>
+          </div>
+          {loading ? (
+            <div className="px-5"><LoadingRow /></div>
+          ) : featured.length === 0 ? (
+            <div className="px-5"><NoWorkersCard /></div>
+          ) : (
+            <div className="flex overflow-x-auto gap-4 px-5 pb-2 no-scrollbar [&>*:last-child]:mr-4">
+              {featured.map((w) => (
+                <FeaturedWorkerCard key={w.id} worker={w} />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Nearby Workers */}
-      <section className="px-5 mb-8">
-        <h2 className="font-bold text-lg font-sans mb-4">Nearby Workers</h2>
-        <div className="space-y-3">
-          {nearby.map((w) => (
-            <WorkerListCard key={w.id} worker={w} />
-          ))}
-        </div>
-      </section>
+      {!query.trim() && (
+        <section className="px-5 mb-8">
+          <h2 className="font-bold text-lg font-sans mb-4">Nearby Workers</h2>
+          {loading ? (
+            <LoadingRow />
+          ) : nearby.length === 0 ? (
+            <NoWorkersCard />
+          ) : (
+            <div className="space-y-3">
+              {nearby.map((w) => (
+                <WorkerListCard key={w.id} worker={w} />
+              ))}
+            </div>
+          )}
+          {error && (
+            <p className="mt-3 text-xs text-destructive">{error}</p>
+          )}
+        </section>
+      )}
 
       {/* Recent Booking */}
-      {lastBooking && lastWorker && (
+      {!query.trim() && lastBooking && lastWorker && (
         <section className="px-5 mb-8">
           <h2 className="font-bold text-lg font-sans mb-4">Recent Booking</h2>
           <div className="bg-foreground text-background rounded-2xl p-4 flex items-center justify-between">
@@ -130,5 +186,13 @@ function UserHome() {
         </section>
       )}
     </>
+  );
+}
+
+function LoadingRow() {
+  return (
+    <div className="flex items-center justify-center py-6 text-muted-foreground">
+      <Loader2 className="size-5 animate-spin" />
+    </div>
   );
 }
