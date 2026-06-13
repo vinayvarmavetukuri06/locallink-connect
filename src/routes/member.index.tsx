@@ -1,110 +1,200 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { currentMember, bookings } from "@/lib/mock-data";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   Bell,
   IndianRupee,
   Calendar,
   TrendingUp,
-  Crown,
-  ChevronRight,
   CircleCheck,
   CircleAlert,
-  Loader2,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { categoryBySlug } from "@/lib/mock-data";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/member/")({
   component: MemberHome,
 });
 
+type WorkerInfo = {
+  userId: string;
+  rowId: string | null;
+  name: string;
+  category: string;
+  trade: string;
+  area: string;
+  isAvailable: boolean;
+};
+
+type BookingRow = {
+  id: string;
+  customer_id: string | null;
+  service: string | null;
+  address: string | null;
+  date: string | null;
+  time: string | null;
+  amount: number | null;
+  status: string;
+  problem_description: string | null;
+  created_at: string;
+  customer_name?: string;
+};
+
 function MemberHome() {
+  const workerUserId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
+  const [worker, setWorker] = useState<WorkerInfo | null>(null);
+  const [bookings, setBookings] = useState<BookingRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadWorker = useCallback(async () => {
+    if (!workerUserId) return;
+    const [{ data: profile }, { data: wp }] = await Promise.all([
+      supabase.from("profiles").select("full_name, location").eq("id", workerUserId).maybeSingle(),
+      supabase
+        .from("worker_profiles")
+        .select("id, service_category, is_available")
+        .eq("user_id", workerUserId)
+        .maybeSingle(),
+    ]);
+    const slug = wp?.service_category ?? "";
+    setWorker({
+      userId: workerUserId,
+      rowId: wp?.id ?? null,
+      name: profile?.full_name ?? "Worker",
+      category: slug,
+      trade: categoryBySlug(slug)?.name ?? slug ?? "Service Pro",
+      area: profile?.location ?? "",
+      isAvailable: wp?.is_available ?? true,
+    });
+  }, [workerUserId]);
+
+  const loadBookings = useCallback(async () => {
+    if (!workerUserId) {
+      setBookings([]);
+      setLoading(false);
+      return;
+    }
+    const { data } = await supabase
+      .from("bookings")
+      .select("id, customer_id, service, address, date, time, amount, status, problem_description, created_at")
+      .eq("worker_id", workerUserId)
+      .order("created_at", { ascending: false });
+    const rows = (data ?? []) as BookingRow[];
+    const customerIds = Array.from(new Set(rows.map((r) => r.customer_id).filter(Boolean) as string[]));
+    if (customerIds.length) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, full_name")
+        .in("id", customerIds);
+      const map = new Map((profs ?? []).map((p: any) => [p.id, p.full_name]));
+      rows.forEach((r) => {
+        r.customer_name = (r.customer_id && map.get(r.customer_id)) || "Customer";
+      });
+    }
+    setBookings(rows);
+    setLoading(false);
+  }, [workerUserId]);
+
+  useEffect(() => {
+    loadWorker();
+    loadBookings();
+  }, [loadWorker, loadBookings]);
+
+  // Realtime: bookings for this worker
+  useEffect(() => {
+    if (!workerUserId) return;
+    const channel = supabase
+      .channel(`member-bookings-${workerUserId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "bookings", filter: `worker_id=eq.${workerUserId}` },
+        () => loadBookings(),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [workerUserId, loadBookings]);
+
+  const totalBookings = bookings.length;
+  const earnings = useMemo(
+    () => bookings.filter((b) => b.status === "completed").reduce((s, b) => s + Number(b.amount ?? 0), 0),
+    [bookings],
+  );
+  const pending = bookings.filter((b) => b.status === "pending");
+
   return (
     <>
       <header className="bg-primary text-primary-foreground px-5 pt-6 pb-14 rounded-b-3xl relative overflow-hidden">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs opacity-80 uppercase tracking-wider font-medium">Welcome back,</p>
-            <h1 className="font-serif text-2xl mt-1.5">{currentMember.name}</h1>
-            <p className="text-xs opacity-80 mt-1.5">{currentMember.category} · {currentMember.area.split(",")[0]}</p>
+            <h1 className="font-serif text-2xl mt-1.5">{worker?.name ?? "—"}</h1>
+            <p className="text-xs opacity-80 mt-1.5">
+              {(worker?.trade ?? "—")}
+              {worker?.area ? ` · ${worker.area.split(",")[0]}` : ""}
+            </p>
             <div className="mt-2">
-              <AvailabilityPill />
+              <AvailabilityPill
+                workerUserId={workerUserId}
+                rowId={worker?.rowId ?? null}
+                initial={worker?.isAvailable ?? null}
+              />
             </div>
           </div>
           <button className="size-10 rounded-full bg-background/10 backdrop-blur-md flex items-center justify-center relative mt-1">
             <Bell className="size-4" />
-            <span className="absolute top-2.5 right-2.5 size-2 bg-warning rounded-full ring-2 ring-primary" />
+            {pending.length > 0 && (
+              <span className="absolute top-2.5 right-2.5 size-2 bg-warning rounded-full ring-2 ring-primary" />
+            )}
           </button>
         </div>
       </header>
 
-
-      {/* Stats overlay */}
+      {/* Stats */}
       <div className="px-5">
         <div className="bg-card border border-border rounded-3xl p-4 grid grid-cols-2 gap-3 shadow-md">
           <Metric
             label="Total Bookings"
-            value={String(currentMember.monthlyBookings)}
-            sub="this month"
+            value={loading ? "…" : String(totalBookings)}
+            sub="all time"
             icon={<Calendar className="size-4" />}
             tint="bg-primary/10 text-primary"
           />
           <Metric
             label="Earnings"
-            value={`₹${currentMember.monthlyEarnings.toLocaleString("en-IN")}`}
-            sub="this month"
+            value={loading ? "…" : `₹${earnings.toLocaleString("en-IN")}`}
+            sub="completed jobs"
             icon={<IndianRupee className="size-4" />}
             tint="bg-success/15 text-success"
           />
         </div>
       </div>
 
-      {/* Plan Card */}
-      <section className="px-5 mt-5">
-        <Link
-          to="/member/membership"
-          className="block bg-gradient-to-br from-accent to-accent/70 text-accent-foreground rounded-3xl p-5 shadow-lg shadow-accent/20"
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="inline-flex items-center gap-1 bg-accent-foreground/15 backdrop-blur-md px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide">
-                <Crown className="size-3" />
-                {currentMember.plan}
-              </div>
-              <p className="font-serif text-2xl mt-2">Plan Active</p>
-              <p className="text-xs opacity-80 mt-0.5">
-                {currentMember.daysRemaining} days remaining
-              </p>
-            </div>
-            <ChevronRight className="size-5" />
-          </div>
-          <div className="mt-4 h-1.5 bg-accent-foreground/15 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-accent-foreground rounded-full"
-              style={{ width: `${(currentMember.daysRemaining / 30) * 100}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-[10px] mt-3 font-semibold uppercase tracking-wide">
-            <span>Renew anytime</span>
-            <span>Upgrade →</span>
-          </div>
-        </Link>
-      </section>
-
       {/* Pending Requests */}
       <section className="px-5 mt-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-bold text-lg font-sans">Customer Requests</h2>
-          <span className="text-[10px] font-bold bg-warning/15 text-warning px-2 py-0.5 rounded-full">
-            {currentMember.pendingRequests} NEW
-          </span>
+          {pending.length > 0 && (
+            <span className="text-[10px] font-bold bg-warning/15 text-warning px-2 py-0.5 rounded-full">
+              {pending.length} NEW
+            </span>
+          )}
         </div>
-        <div className="space-y-3">
-          {bookings.filter((b) => b.status === "pending" || b.status === "accepted").slice(0, 3).map((b) => (
-            <RequestCard key={b.id} bookingId={b.id} />
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-xs text-muted-foreground">Loading…</p>
+        ) : pending.length === 0 ? (
+          <div className="bg-card border border-dashed border-border rounded-2xl p-6 text-center">
+            <p className="text-sm font-semibold">No pending requests</p>
+            <p className="text-xs text-muted-foreground mt-1">New customer requests will appear here.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {pending.slice(0, 5).map((b) => (
+              <RequestCard key={b.id} booking={b} onChanged={loadBookings} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Tip */}
@@ -114,9 +204,9 @@ function MemberHome() {
             <TrendingUp className="size-4" />
           </div>
           <div>
-            <p className="font-bold text-sm font-sans">You're trending in your area!</p>
+            <p className="font-bold text-sm font-sans">Reply faster, rank higher</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              +18% bookings vs last week. Reply faster to boost ranking.
+              Accept requests quickly to boost your visibility in your area.
             </p>
           </div>
         </div>
@@ -148,29 +238,21 @@ function Metric({
   );
 }
 
-function AvailabilityPill() {
-  const [available, setAvailable] = useState<boolean | null>(null);
-  const [rowId, setRowId] = useState<string | null>(null);
+function AvailabilityPill({
+  workerUserId,
+  rowId,
+  initial,
+}: {
+  workerUserId: string | null;
+  rowId: string | null;
+  initial: boolean | null;
+}) {
+  const [available, setAvailable] = useState<boolean | null>(initial);
   const [saving, setSaving] = useState(false);
 
-  const workerUserId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
-
   useEffect(() => {
-    if (!workerUserId) { setAvailable(true); return; }
-    (async () => {
-      const { data } = await supabase
-        .from("worker_profiles")
-        .select("id, is_available")
-        .eq("user_id", workerUserId)
-        .maybeSingle();
-      if (data) {
-        setRowId(data.id);
-        setAvailable(data.is_available);
-      } else {
-        setAvailable(true);
-      }
-    })();
-  }, [workerUserId]);
+    setAvailable(initial);
+  }, [initial]);
 
   async function toggle() {
     if (available === null || saving) return;
@@ -179,10 +261,7 @@ function AvailabilityPill() {
     setAvailable(next);
 
     if (rowId) {
-      const { error } = await supabase
-        .from("worker_profiles")
-        .update({ is_available: next })
-        .eq("id", rowId);
+      const { error } = await supabase.from("worker_profiles").update({ is_available: next }).eq("id", rowId);
       if (error) {
         setAvailable(!next);
         toast.error("Couldn't update availability");
@@ -199,7 +278,7 @@ function AvailabilityPill() {
         .in("status", ["accepted", "in_progress"])
         .select("id");
       if (cancelled && cancelled.length > 0) {
-        toast.warning(`${cancelled.length} active booking(s) were cancelled and customers were notified.`);
+        toast.warning(`${cancelled.length} active booking(s) were cancelled.`);
       }
     }
 
@@ -212,7 +291,7 @@ function AvailabilityPill() {
     <button
       onClick={toggle}
       disabled={available === null || saving}
-      className="flex items-center gap-2 mt-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex items-center gap-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
       aria-label="Toggle availability"
     >
       <span className="relative inline-flex items-center shrink-0">
@@ -234,40 +313,64 @@ function AvailabilityPill() {
   );
 }
 
-function RequestCard({ bookingId }: { bookingId: string }) {
-  const b = bookings.find((x) => x.id === bookingId)!;
-  const [state, setState] = useState<"open" | "accepted" | "rejected">("open");
+function RequestCard({ booking, onChanged }: { booking: BookingRow; onChanged: () => void }) {
+  const [busy, setBusy] = useState<"accept" | "reject" | null>(null);
+  const [localStatus, setLocalStatus] = useState<string>(booking.status);
+
+  async function update(status: "accepted" | "cancelled") {
+    setBusy(status === "accepted" ? "accept" : "reject");
+    const { error } = await supabase.from("bookings").update({ status }).eq("id", booking.id);
+    setBusy(null);
+    if (error) {
+      toast.error("Couldn't update booking");
+      return;
+    }
+    setLocalStatus(status);
+    onChanged();
+  }
 
   return (
     <div className="bg-card border border-border rounded-2xl p-4">
       <div className="flex items-start justify-between">
-        <div>
-          <p className="font-bold text-sm font-sans">{b.customerName}</p>
-          <p className="text-[11px] text-muted-foreground">{b.customerAddress}</p>
+        <div className="min-w-0">
+          <p className="font-bold text-sm font-sans truncate">{booking.customer_name ?? "Customer"}</p>
+          <p className="text-[11px] text-muted-foreground truncate">{booking.address ?? "—"}</p>
         </div>
-        <span className="text-xs font-bold text-primary">₹{b.amount}</span>
+        {booking.amount != null && (
+          <span className="text-xs font-bold text-primary shrink-0">₹{Number(booking.amount).toLocaleString("en-IN")}</span>
+        )}
       </div>
-      <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{b.description}</p>
-      <p className="text-[10px] text-muted-foreground mt-1">{b.date} · {b.time}</p>
+      {(booking.problem_description || booking.service) && (
+        <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+          {booking.problem_description || booking.service}
+        </p>
+      )}
+      {(booking.date || booking.time) && (
+        <p className="text-[10px] text-muted-foreground mt-1">
+          {booking.date ?? ""}{booking.date && booking.time ? " · " : ""}{booking.time ?? ""}
+        </p>
+      )}
 
-      {state === "open" ? (
+      {localStatus === "pending" ? (
         <div className="flex gap-2 mt-3">
           <button
-            onClick={() => setState("rejected")}
-            className="flex-1 py-2 text-xs font-bold rounded-lg bg-secondary"
+            onClick={() => update("cancelled")}
+            disabled={busy !== null}
+            className="flex-1 py-2 text-xs font-bold rounded-lg bg-secondary disabled:opacity-50"
           >
-            Reject
+            {busy === "reject" ? "…" : "Reject"}
           </button>
           <button
-            onClick={() => setState("accepted")}
-            className="flex-1 py-2 text-xs font-bold rounded-lg bg-success text-success-foreground"
+            onClick={() => update("accepted")}
+            disabled={busy !== null}
+            className="flex-1 py-2 text-xs font-bold rounded-lg bg-success text-success-foreground disabled:opacity-50"
           >
-            Accept
+            {busy === "accept" ? "…" : "Accept"}
           </button>
         </div>
-      ) : state === "accepted" ? (
+      ) : localStatus === "accepted" ? (
         <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-success font-bold">
-          <CircleCheck className="size-4" /> Accepted — visit on {b.date}
+          <CircleCheck className="size-4" /> Accepted
         </div>
       ) : (
         <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-destructive font-bold">
