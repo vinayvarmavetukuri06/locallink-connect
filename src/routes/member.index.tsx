@@ -210,19 +210,24 @@ function AvailabilityPill() {
     <button
       onClick={toggle}
       disabled={available === null || saving}
-      className="relative inline-flex items-center shrink-0 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
+      className="flex items-center gap-2 mt-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
       aria-label="Toggle availability"
     >
-      <span
-        className={`block h-[26px] w-[46px] rounded-full transition-colors duration-200 ${
-          isOn ? "bg-success" : "bg-muted"
-        }`}
-      />
-      <span
-        className={`absolute top-0.5 left-0.5 block h-[22px] w-[22px] rounded-full bg-background shadow-md transition-transform duration-200 ${
-          isOn ? "translate-x-5" : "translate-x-0"
-        }`}
-      />
+      <span className="relative inline-flex items-center shrink-0">
+        <span
+          className={`block h-[22px] w-[38px] rounded-full transition-colors duration-200 ${
+            isOn ? "bg-success" : "bg-destructive"
+          }`}
+        />
+        <span
+          className={`absolute top-0.5 left-0.5 block h-[18px] w-[18px] rounded-full bg-background shadow transition-transform duration-200 ${
+            isOn ? "translate-x-4" : "translate-x-0"
+          }`}
+        />
+      </span>
+      <span className={`text-xs font-semibold ${isOn ? "text-success" : "text-destructive"}`}>
+        {isOn ? "Available" : "Unavailable"}
+      </span>
     </button>
   );
 }
