@@ -13,6 +13,17 @@ export function WorkerAvatar({ worker, size = "md" }: { worker: Worker; size?: "
   );
 }
 
+export function AvailabilityBadge({ available }: { available: boolean }) {
+  return (
+    <span className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold">
+      <span className={`size-1.5 rounded-full ${available ? "bg-success" : "bg-muted-foreground"}`} />
+      <span className={available ? "text-success" : "text-muted-foreground"}>
+        {available ? "Available" : "Busy"}
+      </span>
+    </span>
+  );
+}
+
 export function WorkerListCard({ worker }: { worker: Worker }) {
   return (
     <Link
