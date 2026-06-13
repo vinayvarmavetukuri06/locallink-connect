@@ -40,7 +40,7 @@ function MemberHome() {
 
 
       {/* Stats overlay */}
-      <div className="px-5 -mt-12">
+      <div className="px-5">
         <div className="bg-card border border-border rounded-3xl p-4 grid grid-cols-2 gap-3 shadow-md">
           <Metric
             label="Total Bookings"
