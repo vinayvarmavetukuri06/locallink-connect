@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { categorySlugFromService } from "@/lib/mock-data";
 
 type Booking = {
   id: string;
