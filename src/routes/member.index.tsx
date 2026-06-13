@@ -200,7 +200,7 @@ function MemberHome() {
         ) : (
           <div className="space-y-3">
             {pending.slice(0, 5).map((b) => (
-              <RequestCard key={b.id} booking={b} onChanged={loadBookings} />
+              <RequestCard key={b.id} booking={b} onChanged={() => loadBookings(workerRowId)} />
             ))}
           </div>
         )}
