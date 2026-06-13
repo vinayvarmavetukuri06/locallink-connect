@@ -32,7 +32,7 @@ function Splash() {
           Get Started
         </Link>
         <Link
-          to="/auth"
+          to="/auth/login"
           className="w-full bg-background/10 backdrop-blur-md text-background text-center py-4 rounded-2xl font-bold text-base ring-1 ring-background/20 active:scale-[0.98] transition-transform"
         >
           I have an account · Login

@@ -32,6 +32,7 @@ export function WorkerListCard({ worker }: { worker: Worker }) {
             <p className="text-[11px] text-muted-foreground truncate">
               {worker.trade} • {worker.distanceKm}km
             </p>
+            <AvailabilityBadge available={worker.available !== false} />
           </div>
           <div className="text-right shrink-0">
             <p className="text-xs font-bold text-primary">₹{worker.startingPrice}</p>

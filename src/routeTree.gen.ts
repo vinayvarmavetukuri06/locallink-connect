@@ -26,6 +26,7 @@ import { Route as MemberChatRouteImport } from './routes/member.chat'
 import { Route as MemberBookingsRouteImport } from './routes/member.bookings'
 import { Route as AuthUserRouteImport } from './routes/auth.user'
 import { Route as AuthMemberRouteImport } from './routes/auth.member'
+import { Route as AuthLoginRouteImport } from './routes/auth.login'
 import { Route as UserWorkerIdRouteImport } from './routes/user.worker.$id'
 import { Route as UserCategorySlugRouteImport } from './routes/user.category.$slug'
 
@@ -114,6 +115,11 @@ const AuthMemberRoute = AuthMemberRouteImport.update({
   path: '/auth/member',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UserWorkerIdRoute = UserWorkerIdRouteImport.update({
   id: '/worker/$id',
   path: '/worker/$id',
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/member': typeof MemberRouteWithChildren
   '/user': typeof UserRouteWithChildren
+  '/auth/login': typeof AuthLoginRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth/login': typeof AuthLoginRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
@@ -170,6 +178,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/member': typeof MemberRouteWithChildren
   '/user': typeof UserRouteWithChildren
+  '/auth/login': typeof AuthLoginRoute
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/member'
     | '/user'
+    | '/auth/login'
     | '/auth/member'
     | '/auth/user'
     | '/member/bookings'
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth/login'
     | '/auth/member'
     | '/auth/user'
     | '/member/bookings'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/member'
     | '/user'
+    | '/auth/login'
     | '/auth/member'
     | '/auth/user'
     | '/member/bookings'
@@ -254,6 +266,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   MemberRoute: typeof MemberRouteWithChildren
   UserRoute: typeof UserRouteWithChildren
+  AuthLoginRoute: typeof AuthLoginRoute
   AuthMemberRoute: typeof AuthMemberRoute
   AuthUserRoute: typeof AuthUserRoute
   AuthIndexRoute: typeof AuthIndexRoute
@@ -380,6 +393,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthMemberRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/user/worker/$id': {
       id: '/user/worker/$id'
       path: '/worker/$id'
@@ -451,6 +471,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   MemberRoute: MemberRouteWithChildren,
   UserRoute: UserRouteWithChildren,
+  AuthLoginRoute: AuthLoginRoute,
   AuthMemberRoute: AuthMemberRoute,
   AuthUserRoute: AuthUserRoute,
   AuthIndexRoute: AuthIndexRoute,
@@ -458,3 +479,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
