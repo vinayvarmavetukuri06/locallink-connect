@@ -35,6 +35,20 @@ function UserBookings() {
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("all");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dismissed, setDismissed] = useState<Set<string>>(() => {
+    if (typeof window === "undefined") return new Set();
+    try { return new Set(JSON.parse(localStorage.getItem("lc:dismissed-cancellations") ?? "[]")); }
+    catch { return new Set(); }
+  });
+
+  function dismiss(id: string) {
+    const next = new Set(dismissed);
+    next.add(id);
+    setDismissed(next);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("lc:dismissed-cancellations", JSON.stringify(Array.from(next)));
+    }
+  }
 
   async function load() {
     const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
