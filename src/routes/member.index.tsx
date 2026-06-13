@@ -32,14 +32,15 @@ function MemberHome() {
             <h1 className="font-serif text-2xl mt-0.5">{currentMember.name}</h1>
             <p className="text-xs opacity-80 mt-0.5">{currentMember.category} · {currentMember.area.split(",")[0]}</p>
           </div>
-          <button className="size-10 rounded-full bg-background/10 backdrop-blur-md flex items-center justify-center relative">
-            <Bell className="size-4" />
-            <span className="absolute top-2.5 right-2.5 size-2 bg-warning rounded-full ring-2 ring-primary" />
-          </button>
+          <div className="flex items-center gap-2">
+            <AvailabilityPill />
+            <button className="size-10 rounded-full bg-background/10 backdrop-blur-md flex items-center justify-center relative">
+              <Bell className="size-4" />
+              <span className="absolute top-2.5 right-2.5 size-2 bg-warning rounded-full ring-2 ring-primary" />
+            </button>
+          </div>
         </div>
       </header>
-
-      <AvailabilityToggle />
 
 
       {/* Stats overlay */}
