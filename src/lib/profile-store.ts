@@ -65,15 +65,19 @@ export function setMemberProfile(m: MemberProfile) {
   emit();
 }
 
-export async function saveUserProfile(u: UserProfile) {
+export async function saveUserProfile(u: UserProfile, passwordHash?: string) {
   setUserProfile(u);
   try {
+    const row: Record<string, unknown> = {
+      full_name: u.name,
+      mobile: u.mobile,
+      location: u.location,
+      role: "customer",
+    };
+    if (passwordHash) row.password_hash = passwordHash;
     const { data, error } = await supabase
       .from("profiles")
-      .upsert(
-        { full_name: u.name, mobile: u.mobile, location: u.location, role: "customer" },
-        { onConflict: "mobile" }
-      )
+      .upsert(row, { onConflict: "mobile" })
       .select("id")
       .maybeSingle();
     if (error) throw error;
@@ -87,15 +91,20 @@ export async function saveUserProfile(u: UserProfile) {
   }
 }
 
-export async function saveMemberProfile(m: MemberProfile) {
+
+export async function saveMemberProfile(m: MemberProfile, passwordHash?: string) {
   setMemberProfile(m);
   try {
+    const row: Record<string, unknown> = {
+      full_name: m.name,
+      mobile: m.mobile,
+      location: m.area,
+      role: "worker",
+    };
+    if (passwordHash) row.password_hash = passwordHash;
     const { data: profile, error: pErr } = await supabase
       .from("profiles")
-      .upsert(
-        { full_name: m.name, mobile: m.mobile, location: m.area, role: "worker" },
-        { onConflict: "mobile" }
-      )
+      .upsert(row, { onConflict: "mobile" })
       .select("id")
       .maybeSingle();
     if (pErr) throw pErr;
@@ -125,6 +134,7 @@ export async function saveMemberProfile(m: MemberProfile) {
     return null;
   }
 }
+
 
 function subscribe(l: () => void) {
   listeners.add(l);
