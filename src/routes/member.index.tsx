@@ -147,6 +147,93 @@ function Metric({
   );
 }
 
+function AvailabilityToggle() {
+  const [available, setAvailable] = useState<boolean | null>(null);
+  const [rowId, setRowId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const workerUserId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
+
+  useEffect(() => {
+    if (!workerUserId) { setAvailable(true); return; }
+    (async () => {
+      const { data } = await supabase
+        .from("worker_profiles")
+        .select("id, is_available")
+        .eq("user_id", workerUserId)
+        .maybeSingle();
+      if (data) {
+        setRowId(data.id);
+        setAvailable(data.is_available);
+      } else {
+        setAvailable(true);
+      }
+    })();
+  }, [workerUserId]);
+
+  async function toggle() {
+    if (available === null || saving) return;
+    const next = !available;
+    setSaving(true);
+    setAvailable(next);
+
+    if (rowId) {
+      const { error } = await supabase
+        .from("worker_profiles")
+        .update({ is_available: next })
+        .eq("id", rowId);
+      if (error) {
+        setAvailable(!next);
+        toast.error("Couldn't update availability");
+        setSaving(false);
+        return;
+      }
+    }
+
+    // When going unavailable, cancel any accepted / in_progress bookings for this worker
+    if (!next && workerUserId) {
+      const { data: cancelled } = await supabase
+        .from("bookings")
+        .update({ status: "cancelled" })
+        .eq("worker_id", workerUserId)
+        .in("status", ["accepted", "in_progress"])
+        .select("id");
+      if (cancelled && cancelled.length > 0) {
+        toast.warning(`${cancelled.length} active booking(s) were cancelled and customers were notified.`);
+      }
+    }
+
+    toast.success(next ? "You're now Available" : "You're now Unavailable");
+    setSaving(false);
+  }
+
+  const isOn = available ?? true;
+  return (
+    <div className="px-5 -mt-12 mb-4">
+      <div className="bg-card border border-border rounded-3xl p-4 flex items-center justify-between shadow-md">
+        <div className="flex items-center gap-3">
+          <span className={`size-3 rounded-full ${isOn ? "bg-success" : "bg-destructive"} ring-4 ${isOn ? "ring-success/20" : "ring-destructive/20"}`} />
+          <div>
+            <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">Status</p>
+            <p className={`font-bold text-sm font-sans ${isOn ? "text-success" : "text-destructive"}`}>
+              {available === null ? "Loading…" : isOn ? "Available for jobs" : "Unavailable"}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={toggle}
+          disabled={available === null || saving}
+          className={`relative w-14 h-8 rounded-full transition-colors disabled:opacity-60 ${isOn ? "bg-success" : "bg-destructive"}`}
+          aria-label="Toggle availability"
+        >
+          {saving && <Loader2 className="absolute inset-0 m-auto size-3 animate-spin text-white" />}
+          <span className={`absolute top-1 size-6 bg-white rounded-full shadow transition-transform ${isOn ? "translate-x-7" : "translate-x-1"}`} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function RequestCard({ bookingId }: { bookingId: string }) {
   const b = bookings.find((x) => x.id === bookingId)!;
   const [state, setState] = useState<"open" | "accepted" | "rejected">("open");
