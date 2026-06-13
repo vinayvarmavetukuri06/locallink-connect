@@ -13,6 +13,17 @@ export function WorkerAvatar({ worker, size = "md" }: { worker: Worker; size?: "
   );
 }
 
+export function AvailabilityBadge({ available }: { available: boolean }) {
+  return (
+    <span className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold">
+      <span className={`size-1.5 rounded-full ${available ? "bg-success" : "bg-muted-foreground"}`} />
+      <span className={available ? "text-success" : "text-muted-foreground"}>
+        {available ? "Available" : "Busy"}
+      </span>
+    </span>
+  );
+}
+
 export function WorkerListCard({ worker }: { worker: Worker }) {
   return (
     <Link
@@ -32,6 +43,7 @@ export function WorkerListCard({ worker }: { worker: Worker }) {
             <p className="text-[11px] text-muted-foreground truncate">
               {worker.trade} • {worker.distanceKm}km
             </p>
+            <AvailabilityBadge available={worker.available !== false} />
           </div>
           <div className="text-right shrink-0">
             <p className="text-xs font-bold text-primary">₹{worker.startingPrice}</p>
@@ -73,6 +85,7 @@ export function FeaturedWorkerCard({ worker }: { worker: Worker }) {
         </div>
         <h3 className="font-bold text-base leading-tight font-sans truncate">{worker.name}</h3>
         <p className="text-xs opacity-80 mt-0.5 truncate">{worker.trade}</p>
+        <AvailabilityBadge available={worker.available !== false} />
       </div>
     </Link>
   );

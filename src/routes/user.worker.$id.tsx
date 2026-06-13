@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { workerById, categoryBySlug, reviews } from "@/lib/mock-data";
-import { WorkerAvatar } from "@/components/worker-card";
+import { WorkerAvatar, AvailabilityBadge } from "@/components/worker-card";
 import { ArrowLeft, BadgeCheck, Crown, Star, MapPin, MessageCircle, Phone, Calendar, Clock, MapPinned, FileText, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -104,6 +104,7 @@ function WorkerProfile() {
               <div className="flex items-center gap-1 text-muted-foreground">
                 <MapPin className="size-3.5" /> {w.distanceKm}km
               </div>
+              <AvailabilityBadge available={w.available !== false} />
             </div>
           </div>
         </div>
