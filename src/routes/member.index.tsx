@@ -151,10 +151,12 @@ function Metric({
   );
 }
 
-function AvailabilityToggle() {
+function AvailabilityPill() {
   const [available, setAvailable] = useState<boolean | null>(null);
   const [rowId, setRowId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState<boolean | null>(null);
 
   const workerUserId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
 
@@ -175,27 +177,27 @@ function AvailabilityToggle() {
     })();
   }, [workerUserId]);
 
-  async function toggle() {
-    if (available === null || saving) return;
-    const next = !available;
+  const isOn = available ?? true;
+
+  async function confirm() {
+    if (pending === null || saving) return;
     setSaving(true);
-    setAvailable(next);
+    setAvailable(pending);
 
     if (rowId) {
       const { error } = await supabase
         .from("worker_profiles")
-        .update({ is_available: next })
+        .update({ is_available: pending })
         .eq("id", rowId);
       if (error) {
-        setAvailable(!next);
+        setAvailable(!pending);
         toast.error("Couldn't update availability");
         setSaving(false);
         return;
       }
     }
 
-    // When going unavailable, cancel any accepted / in_progress bookings for this worker
-    if (!next && workerUserId) {
+    if (!pending && workerUserId) {
       const { data: cancelled } = await supabase
         .from("bookings")
         .update({ status: "cancelled" })
@@ -207,34 +209,92 @@ function AvailabilityToggle() {
       }
     }
 
-    toast.success(next ? "You're now Available" : "You're now Unavailable");
+    toast.success(pending ? "You're now Available" : "You're now Unavailable");
     setSaving(false);
+    setOpen(false);
   }
 
-  const isOn = available ?? true;
   return (
-    <div className="px-5 -mt-12 mb-4">
-      <div className="bg-card border border-border rounded-3xl p-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-3">
-          <span className={`size-3 rounded-full ${isOn ? "bg-success" : "bg-destructive"} ring-4 ${isOn ? "ring-success/20" : "ring-destructive/20"}`} />
-          <div>
-            <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">Status</p>
-            <p className={`font-bold text-sm font-sans ${isOn ? "text-success" : "text-destructive"}`}>
-              {available === null ? "Loading…" : isOn ? "Available for jobs" : "Unavailable"}
-            </p>
+    <>
+      <button
+        onClick={() => {
+          setPending(isOn);
+          setOpen(true);
+        }}
+        disabled={available === null}
+        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide transition-opacity disabled:opacity-60 ${
+          isOn ? "bg-success/20 text-success" : "bg-destructive/20 text-destructive"
+        }`}
+      >
+        <span className={`size-2 rounded-full ${isOn ? "bg-success" : "bg-destructive"}`} />
+        {isOn ? "Available" : "Unavailable"}
+      </button>
+
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent side="bottom" className="rounded-t-3xl pb-8">
+          <SheetHeader className="text-left">
+            <SheetTitle className="font-serif text-xl">Update Availability</SheetTitle>
+            <SheetDescription className="text-xs">
+              Choose your current working status. Going unavailable will cancel your active bookings.
+            </SheetDescription>
+          </SheetHeader>
+
+          <div className="mt-5 space-y-3">
+            <label
+              className={`flex items-center gap-3 p-4 rounded-2xl border cursor-pointer transition-colors ${
+                pending === true ? "border-success bg-success/10" : "border-border bg-card"
+              }`}
+            >
+              <input
+                type="radio"
+                name="availability"
+                className="sr-only"
+                checked={pending === true}
+                onChange={() => setPending(true)}
+              />
+              <span className="size-3 rounded-full bg-success shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-bold font-sans">Set as Available</p>
+                <p className="text-[11px] text-muted-foreground">You'll appear in customer searches and can accept new jobs.</p>
+              </div>
+              {pending === true && (
+                <CircleCheck className="size-5 text-success shrink-0" />
+              )}
+            </label>
+
+            <label
+              className={`flex items-center gap-3 p-4 rounded-2xl border cursor-pointer transition-colors ${
+                pending === false ? "border-destructive bg-destructive/10" : "border-border bg-card"
+              }`}
+            >
+              <input
+                type="radio"
+                name="availability"
+                className="sr-only"
+                checked={pending === false}
+                onChange={() => setPending(false)}
+              />
+              <span className="size-3 rounded-full bg-destructive shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-bold font-sans">Set as Unavailable</p>
+                <p className="text-[11px] text-muted-foreground">You'll be hidden from searches and active bookings will be cancelled.</p>
+              </div>
+              {pending === false && (
+                <CircleCheck className="size-5 text-destructive shrink-0" />
+              )}
+            </label>
+
+            <button
+              onClick={confirm}
+              disabled={saving || pending === null || pending === isOn}
+              className="w-full mt-2 h-11 rounded-xl bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {saving ? <Loader2 className="size-4 animate-spin" /> : "Confirm"}
+            </button>
           </div>
-        </div>
-        <button
-          onClick={toggle}
-          disabled={available === null || saving}
-          className={`relative w-14 h-8 rounded-full transition-colors disabled:opacity-60 ${isOn ? "bg-success" : "bg-destructive"}`}
-          aria-label="Toggle availability"
-        >
-          {saving && <Loader2 className="absolute inset-0 m-auto size-3 animate-spin text-white" />}
-          <span className={`absolute top-1 size-6 bg-white rounded-full shadow transition-transform ${isOn ? "translate-x-7" : "translate-x-1"}`} />
-        </button>
-      </div>
-    </div>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
 
