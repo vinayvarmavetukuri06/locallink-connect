@@ -155,9 +155,9 @@ function UserHome() {
       {!query.trim() && (
         <section className="mb-6">
           <div className="px-5 flex justify-between items-center mb-3">
-            <h2 className="font-bold text-lg font-sans">Local Heroes</h2>
+            <h2 className="font-bold text-lg font-sans">{t("userHome.localHeroes")}</h2>
             <span className="text-[10px] bg-accent/15 text-accent-foreground px-2 py-0.5 rounded font-bold uppercase tracking-tight">
-              Verified Experts
+              {t("userHome.verifiedExperts")}
             </span>
           </div>
           {loading ? (
