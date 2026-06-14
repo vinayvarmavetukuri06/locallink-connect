@@ -23,6 +23,7 @@ export const Route = createFileRoute("/user/")({
 
 function UserHome() {
   const currentUser = useUserProfile();
+  const { t } = useI18n();
   const { workers, loading, error } = useApprovedWorkers();
   const [query, setQuery] = useState("");
 
