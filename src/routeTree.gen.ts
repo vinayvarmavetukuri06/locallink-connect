@@ -26,6 +26,7 @@ import { Route as UserHistoryRouteImport } from './routes/user.history'
 import { Route as UserHelpRouteImport } from './routes/user.help'
 import { Route as UserChatRouteImport } from './routes/user.chat'
 import { Route as UserBookingsRouteImport } from './routes/user.bookings'
+import { Route as MemberSettingsRouteImport } from './routes/member.settings'
 import { Route as MemberProfileRouteImport } from './routes/member.profile'
 import { Route as MemberNotificationsRouteImport } from './routes/member.notifications'
 import { Route as MemberChatRouteImport } from './routes/member.chat'
@@ -121,6 +122,11 @@ const UserBookingsRoute = UserBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => UserRoute,
 } as any)
+const MemberSettingsRoute = MemberSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => MemberRoute,
+} as any)
 const MemberProfileRoute = MemberProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/member/chat': typeof MemberChatRoute
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
+  '/member/settings': typeof MemberSettingsRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/help': typeof UserHelpRoute
@@ -204,6 +211,7 @@ export interface FileRoutesByTo {
   '/member/chat': typeof MemberChatRoute
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
+  '/member/settings': typeof MemberSettingsRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/help': typeof UserHelpRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/member/chat': typeof MemberChatRoute
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
+  '/member/settings': typeof MemberSettingsRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/help': typeof UserHelpRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/member/chat'
     | '/member/notifications'
     | '/member/profile'
+    | '/member/settings'
     | '/user/bookings'
     | '/user/chat'
     | '/user/help'
@@ -288,6 +298,7 @@ export interface FileRouteTypes {
     | '/member/chat'
     | '/member/notifications'
     | '/member/profile'
+    | '/member/settings'
     | '/user/bookings'
     | '/user/chat'
     | '/user/help'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/member/chat'
     | '/member/notifications'
     | '/member/profile'
+    | '/member/settings'
     | '/user/bookings'
     | '/user/chat'
     | '/user/help'
@@ -465,6 +477,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserBookingsRouteImport
       parentRoute: typeof UserRoute
     }
+    '/member/settings': {
+      id: '/member/settings'
+      path: '/settings'
+      fullPath: '/member/settings'
+      preLoaderRoute: typeof MemberSettingsRouteImport
+      parentRoute: typeof MemberRoute
+    }
     '/member/profile': {
       id: '/member/profile'
       path: '/profile'
@@ -546,6 +565,7 @@ interface MemberRouteChildren {
   MemberChatRoute: typeof MemberChatRoute
   MemberNotificationsRoute: typeof MemberNotificationsRoute
   MemberProfileRoute: typeof MemberProfileRoute
+  MemberSettingsRoute: typeof MemberSettingsRoute
   MemberIndexRoute: typeof MemberIndexRoute
 }
 
@@ -554,6 +574,7 @@ const MemberRouteChildren: MemberRouteChildren = {
   MemberChatRoute: MemberChatRoute,
   MemberNotificationsRoute: MemberNotificationsRoute,
   MemberProfileRoute: MemberProfileRoute,
+  MemberSettingsRoute: MemberSettingsRoute,
   MemberIndexRoute: MemberIndexRoute,
 }
 
