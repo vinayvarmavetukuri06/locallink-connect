@@ -43,6 +43,7 @@ type BookingRow = {
 };
 
 function MemberHome() {
+  const { t } = useI18n();
   const workerUserId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
   const [worker, setWorker] = useState<WorkerInfo | null>(null);
   const [workerRowId, setWorkerRowId] = useState<string | null>(null);
