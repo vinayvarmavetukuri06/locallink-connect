@@ -32,7 +32,7 @@ function MemberNotificationsPage() {
   const [items, setItems] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const userId =
-    typeof window !== "undefined" ? localStorage.getItem("lc:member-profile-id") : null;
+    typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
 
   async function load() {
     if (!userId) { setLoading(false); return; }

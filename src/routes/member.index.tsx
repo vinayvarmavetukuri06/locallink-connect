@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  Bell,
   IndianRupee,
   Calendar,
   TrendingUp,
   CircleCheck,
   CircleAlert,
 } from "lucide-react";
+import { NotificationBell } from "@/components/notification-bell";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryBySlug } from "@/lib/mock-data";
@@ -151,12 +151,8 @@ function MemberHome() {
               />
             </div>
           </div>
-          <button className="size-10 rounded-full bg-background/10 backdrop-blur-md flex items-center justify-center relative mt-1">
-            <Bell className="size-4" />
-            {pending.length > 0 && (
-              <span className="absolute top-2.5 right-2.5 size-2 bg-warning rounded-full ring-2 ring-primary" />
-            )}
-          </button>
+          <NotificationBell userId={workerUserId} to="/member/notifications" variant="dark" />
+
         </div>
       </header>
 
