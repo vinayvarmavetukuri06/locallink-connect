@@ -1,10 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, Search, Mic, Bell, Star, Loader2 } from "lucide-react";
-import { useMemo, useState } from "react";
-import { categories, bookings, workerById } from "@/lib/mock-data";
+import { useEffect, useMemo, useState } from "react";
+import { categories, categorySlugFromService } from "@/lib/mock-data";
 import { useUserProfile } from "@/lib/profile-store";
 import { FeaturedWorkerCard, WorkerListCard, NoWorkersCard } from "@/components/worker-card";
 import { useApprovedWorkers } from "@/lib/workers-api";
+import { supabase } from "@/integrations/supabase/client";
+
+type RecentBooking = {
+  id: string;
+  service: string | null;
+  amount: number | null;
+  created_at: string;
+};
 
 export const Route = createFileRoute("/user/")({
   component: UserHome,
@@ -30,8 +38,37 @@ function UserHome() {
   const featured = filtered.slice(0, 6);
   const nearby = filtered.slice(0, 8);
 
-  const lastBooking = bookings.find((b) => b.status === "completed");
-  const lastWorker = lastBooking ? workerById(lastBooking.workerId) : undefined;
+  const [lastBooking, setLastBooking] = useState<RecentBooking | null>(null);
+  const customerId =
+    typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
+
+  useEffect(() => {
+    if (!customerId) return;
+    let cancelled = false;
+    async function load() {
+      const { data } = await supabase
+        .from("bookings")
+        .select("id, service, amount, created_at")
+        .eq("customer_id", customerId!)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (!cancelled) setLastBooking((data as RecentBooking) ?? null);
+    }
+    load();
+    const ch = supabase
+      .channel("home-recent-booking")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "bookings", filter: `customer_id=eq.${customerId}` },
+        () => load(),
+      )
+      .subscribe();
+    return () => { cancelled = true; supabase.removeChannel(ch); };
+  }, [customerId]);
+
+  const lastCategorySlug = lastBooking ? categorySlugFromService(lastBooking.service) : undefined;
+  const lastCategory = lastCategorySlug ? categories.find((c) => c.slug === lastCategorySlug) : undefined;
 
   return (
     <>
@@ -160,28 +197,32 @@ function UserHome() {
       )}
 
       {/* Recent Booking */}
-      {!query.trim() && lastBooking && lastWorker && (
+      {!query.trim() && lastBooking && (
         <section className="px-5 mb-8">
           <h2 className="font-bold text-lg font-sans mb-4">Recent Booking</h2>
           <div className="bg-foreground text-background rounded-2xl p-4 flex items-center justify-between">
             <div className="flex items-center gap-3 min-w-0">
               <div className="size-10 rounded-full bg-background/10 flex items-center justify-center text-lg shrink-0">
-                {categories.find((c) => c.slug === lastWorker.category)?.emoji}
+                {lastCategory?.emoji ?? "🛠️"}
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-medium opacity-60">Last Service: 2 days ago</p>
+                <p className="text-xs font-medium opacity-60">
+                  {new Date(lastBooking.created_at).toLocaleDateString()}
+                </p>
                 <h4 className="text-sm font-bold truncate font-sans">
-                  {lastWorker.trade}
+                  {lastBooking.service ?? "Service"}
                 </h4>
                 <div className="flex items-center gap-1 text-[10px] opacity-80">
-                  <Star className="size-2.5 fill-current text-accent" />
-                  {lastWorker.rating} · ₹{lastBooking.amount}
+                  <Star className="size-2.5 fill-current text-accent" /> ₹{lastBooking.amount ?? 0}
                 </div>
               </div>
             </div>
-            <button className="text-xs font-bold bg-background/15 px-3 py-2 rounded-lg shrink-0">
-              Re-book
-            </button>
+            <Link
+              to="/user/bookings"
+              className="text-xs font-bold bg-background/15 px-3 py-2 rounded-lg shrink-0"
+            >
+              View
+            </Link>
           </div>
         </section>
       )}

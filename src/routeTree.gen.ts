@@ -17,7 +17,12 @@ import { Route as UserIndexRouteImport } from './routes/user.index'
 import { Route as MemberIndexRouteImport } from './routes/member.index'
 import { Route as AuthIndexRouteImport } from './routes/auth.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as UserSettingsRouteImport } from './routes/user.settings'
+import { Route as UserSavedRouteImport } from './routes/user.saved'
+import { Route as UserReviewsRouteImport } from './routes/user.reviews'
 import { Route as UserProfileRouteImport } from './routes/user.profile'
+import { Route as UserHistoryRouteImport } from './routes/user.history'
+import { Route as UserHelpRouteImport } from './routes/user.help'
 import { Route as UserChatRouteImport } from './routes/user.chat'
 import { Route as UserBookingsRouteImport } from './routes/user.bookings'
 import { Route as MemberProfileRouteImport } from './routes/member.profile'
@@ -70,9 +75,34 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const UserSettingsRoute = UserSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => UserRoute,
+} as any)
+const UserSavedRoute = UserSavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => UserRoute,
+} as any)
+const UserReviewsRoute = UserReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => UserRoute,
+} as any)
 const UserProfileRoute = UserProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => UserRoute,
+} as any)
+const UserHistoryRoute = UserHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => UserRoute,
+} as any)
+const UserHelpRoute = UserHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
   getParentRoute: () => UserRoute,
 } as any)
 const UserChatRoute = UserChatRouteImport.update({
@@ -145,7 +175,12 @@ export interface FileRoutesByFullPath {
   '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
+  '/user/help': typeof UserHelpRoute
+  '/user/history': typeof UserHistoryRoute
   '/user/profile': typeof UserProfileRoute
+  '/user/reviews': typeof UserReviewsRoute
+  '/user/saved': typeof UserSavedRoute
+  '/user/settings': typeof UserSettingsRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/member/': typeof MemberIndexRoute
@@ -164,7 +199,12 @@ export interface FileRoutesByTo {
   '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
+  '/user/help': typeof UserHelpRoute
+  '/user/history': typeof UserHistoryRoute
   '/user/profile': typeof UserProfileRoute
+  '/user/reviews': typeof UserReviewsRoute
+  '/user/saved': typeof UserSavedRoute
+  '/user/settings': typeof UserSettingsRoute
   '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
   '/member': typeof MemberIndexRoute
@@ -187,7 +227,12 @@ export interface FileRoutesById {
   '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
+  '/user/help': typeof UserHelpRoute
+  '/user/history': typeof UserHistoryRoute
   '/user/profile': typeof UserProfileRoute
+  '/user/reviews': typeof UserReviewsRoute
+  '/user/saved': typeof UserSavedRoute
+  '/user/settings': typeof UserSettingsRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/member/': typeof MemberIndexRoute
@@ -211,7 +256,12 @@ export interface FileRouteTypes {
     | '/member/profile'
     | '/user/bookings'
     | '/user/chat'
+    | '/user/help'
+    | '/user/history'
     | '/user/profile'
+    | '/user/reviews'
+    | '/user/saved'
+    | '/user/settings'
     | '/admin/'
     | '/auth/'
     | '/member/'
@@ -230,7 +280,12 @@ export interface FileRouteTypes {
     | '/member/profile'
     | '/user/bookings'
     | '/user/chat'
+    | '/user/help'
+    | '/user/history'
     | '/user/profile'
+    | '/user/reviews'
+    | '/user/saved'
+    | '/user/settings'
     | '/admin'
     | '/auth'
     | '/member'
@@ -252,7 +307,12 @@ export interface FileRouteTypes {
     | '/member/profile'
     | '/user/bookings'
     | '/user/chat'
+    | '/user/help'
+    | '/user/history'
     | '/user/profile'
+    | '/user/reviews'
+    | '/user/saved'
+    | '/user/settings'
     | '/admin/'
     | '/auth/'
     | '/member/'
@@ -330,11 +390,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/user/settings': {
+      id: '/user/settings'
+      path: '/settings'
+      fullPath: '/user/settings'
+      preLoaderRoute: typeof UserSettingsRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/user/saved': {
+      id: '/user/saved'
+      path: '/saved'
+      fullPath: '/user/saved'
+      preLoaderRoute: typeof UserSavedRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/user/reviews': {
+      id: '/user/reviews'
+      path: '/reviews'
+      fullPath: '/user/reviews'
+      preLoaderRoute: typeof UserReviewsRouteImport
+      parentRoute: typeof UserRoute
+    }
     '/user/profile': {
       id: '/user/profile'
       path: '/profile'
       fullPath: '/user/profile'
       preLoaderRoute: typeof UserProfileRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/user/history': {
+      id: '/user/history'
+      path: '/history'
+      fullPath: '/user/history'
+      preLoaderRoute: typeof UserHistoryRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/user/help': {
+      id: '/user/help'
+      path: '/help'
+      fullPath: '/user/help'
+      preLoaderRoute: typeof UserHelpRouteImport
       parentRoute: typeof UserRoute
     }
     '/user/chat': {
@@ -449,7 +544,12 @@ const MemberRouteWithChildren =
 interface UserRouteChildren {
   UserBookingsRoute: typeof UserBookingsRoute
   UserChatRoute: typeof UserChatRoute
+  UserHelpRoute: typeof UserHelpRoute
+  UserHistoryRoute: typeof UserHistoryRoute
   UserProfileRoute: typeof UserProfileRoute
+  UserReviewsRoute: typeof UserReviewsRoute
+  UserSavedRoute: typeof UserSavedRoute
+  UserSettingsRoute: typeof UserSettingsRoute
   UserIndexRoute: typeof UserIndexRoute
   UserCategorySlugRoute: typeof UserCategorySlugRoute
   UserWorkerIdRoute: typeof UserWorkerIdRoute
@@ -458,7 +558,12 @@ interface UserRouteChildren {
 const UserRouteChildren: UserRouteChildren = {
   UserBookingsRoute: UserBookingsRoute,
   UserChatRoute: UserChatRoute,
+  UserHelpRoute: UserHelpRoute,
+  UserHistoryRoute: UserHistoryRoute,
   UserProfileRoute: UserProfileRoute,
+  UserReviewsRoute: UserReviewsRoute,
+  UserSavedRoute: UserSavedRoute,
+  UserSettingsRoute: UserSettingsRoute,
   UserIndexRoute: UserIndexRoute,
   UserCategorySlugRoute: UserCategorySlugRoute,
   UserWorkerIdRoute: UserWorkerIdRoute,
