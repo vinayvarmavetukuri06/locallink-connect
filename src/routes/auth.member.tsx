@@ -217,11 +217,16 @@ function MemberAuth() {
             <Field
               icon={<User className="size-4" />}
               label="Full Name"
-              placeholder="Your name"
+              placeholder={lang === "hi" ? "आपका नाम" : lang === "te" ? "మీ పేరు" : "Your name"}
               autoFocus
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+              lang={lang}
+              inputMode="text"
+              autoComplete="name"
+              hint={lang === "hi" ? t("auth.nameHintHi") : lang === "te" ? t("auth.nameHintTe") : undefined}
             />
+
 
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
