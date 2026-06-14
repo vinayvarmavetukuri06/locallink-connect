@@ -135,12 +135,12 @@ function UserHome() {
       {query.trim() && (
         <section className="px-5 mb-6">
           <h2 className="font-bold text-lg font-sans mb-4">
-            Results for “{query.trim()}”
+            {t("userHome.results")} “{query.trim()}”
           </h2>
           {loading ? (
             <LoadingRow />
           ) : filtered.length === 0 ? (
-            <NoWorkersCard message="No workers match your search yet — try a different service or area." />
+            <NoWorkersCard message={t("userHome.noMatch")} />
           ) : (
             <div className="space-y-3">
               {filtered.map((w) => (
