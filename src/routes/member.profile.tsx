@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { ChevronRight, Star, Camera, MapPin, IndianRupee, Briefcase, Clock, Settings, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryBySlug } from "@/lib/mock-data";
 import { initialsFromName, tintFromId } from "@/lib/workers-api";
+import { clearSession } from "@/lib/session";
 
 export const Route = createFileRoute("/member/profile")({
   component: MemberProfile,
@@ -31,10 +33,16 @@ type Review = {
 };
 
 function MemberProfile() {
+  const navigate = useNavigate();
   const workerUserId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
   const [profile, setProfile] = useState<Profile | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+
+  function handleLogout() {
+    clearSession();
+    navigate({ to: "/" });
+  }
 
   useEffect(() => {
     if (!workerUserId) {
@@ -207,12 +215,12 @@ function MemberProfile() {
           <span className="flex-1 text-sm font-semibold text-left">Settings</span>
           <ChevronRight className="size-4 text-muted-foreground" />
         </button>
-        <Link
-          to="/"
+        <button
+          onClick={handleLogout}
           className="w-full bg-destructive/10 text-destructive flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm"
         >
           <LogOut className="size-4" /> Logout
-        </Link>
+        </button>
       </section>
     </>
   );

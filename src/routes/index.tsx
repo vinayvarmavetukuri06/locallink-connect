@@ -1,11 +1,26 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { MapPin, Sparkles } from "lucide-react";
+import { getSession } from "@/lib/session";
 
 export const Route = createFileRoute("/")({
   component: Splash,
 });
 
 function Splash() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const session = getSession();
+    if (session) {
+      if (session.role === "worker") {
+        navigate({ to: "/member" });
+      } else {
+        navigate({ to: "/user" });
+      }
+    }
+  }, [navigate]);
+
   return (
     <div className="mobile-shell flex flex-col items-center justify-between py-12 px-6 bg-gradient-to-br from-primary/95 via-primary to-primary/80 text-primary-foreground">
       <div className="flex-1 flex flex-col items-center justify-center text-center gap-6">

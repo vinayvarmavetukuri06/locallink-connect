@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2, Eye, EyeOff, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { setUserProfile, setMemberProfile } from "@/lib/profile-store";
 import { hashPassword, DEMO_OTP } from "@/lib/password";
+import { saveSession } from "@/lib/session";
 
 export const Route = createFileRoute("/auth/login")({
   component: Login,
@@ -64,6 +65,13 @@ function Login() {
     if (typeof window !== "undefined") {
       localStorage.setItem("lc:user-id", profile.id);
     }
+
+    saveSession({
+      role: profile.role === "worker" ? "worker" : "customer",
+      userId: profile.id,
+      name: profile.full_name ?? "",
+      mobile: profile.mobile ?? fullMobile,
+    });
 
     if (profile.role === "worker") {
       setMemberProfile({
