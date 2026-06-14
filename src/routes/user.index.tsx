@@ -220,7 +220,7 @@ function UserHome() {
               to="/user/bookings"
               className="text-xs font-bold bg-background/15 px-3 py-2 rounded-lg shrink-0"
             >
-              View
+              {t("userHome.view")}
             </Link>
           </div>
         </section>
