@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import { ChevronRight, Star, Camera, MapPin, IndianRupee, Briefcase, Clock, Settings, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { categoryBySlug } from "@/lib/mock-data";
 import { initialsFromName, tintFromId } from "@/lib/workers-api";
 import { clearSession } from "@/lib/session";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/member/profile")({
   component: MemberProfile,
@@ -33,6 +34,7 @@ type Review = {
 };
 
 function MemberProfile() {
+  const { t, tService } = useI18n();
   const navigate = useNavigate();
   const workerUserId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -93,16 +95,16 @@ function MemberProfile() {
           .from("profiles")
           .select("id, full_name")
           .in("id", customerIds);
-        (custProfs ?? []).forEach((p: any) => nameMap.set(p.id, p.full_name ?? "Customer"));
+        (custProfs ?? []).forEach((p: any) => nameMap.set(p.id, p.full_name ?? ""));
       }
 
-      const name = prof?.full_name ?? "Worker";
+      const name = prof?.full_name ?? "";
       const slug = wp?.service_category ?? "";
       const next: Profile = {
         name,
         area: prof?.location ?? "—",
         categorySlug: slug,
-        categoryName: categoryBySlug(slug)?.name ?? slug ?? "—",
+        categoryName: tService(slug, categoryBySlug(slug)?.name) || "—",
         hourlyRate: wp?.hourly_rate != null ? Number(wp.hourly_rate) : null,
         years: wp?.years_of_experience ?? null,
         rating: avgRating,
@@ -114,7 +116,7 @@ function MemberProfile() {
         id: r.id,
         rating: r.rating ?? 0,
         comment: r.comment,
-        customer_name: (r.customer_id && nameMap.get(r.customer_id)) || "Customer",
+        customer_name: (r.customer_id && nameMap.get(r.customer_id)) || t("memberHome.customer"),
         created_at: r.created_at,
       }));
       if (!cancelled) {
@@ -126,13 +128,13 @@ function MemberProfile() {
     return () => {
       cancelled = true;
     };
-  }, [workerUserId]);
+  }, [workerUserId, t, tService]);
 
   return (
     <>
       <header className="bg-success text-success-foreground px-5 pt-8 pb-12 rounded-b-3xl">
-        <h1 className="font-serif text-2xl">My Profile</h1>
-        <p className="text-xs opacity-80">Manage your worker listing</p>
+        <h1 className="font-serif text-2xl">{t("memberProfile.title")}</h1>
+        <p className="text-xs opacity-80">{t("memberProfile.subtitle")}</p>
       </header>
 
       <div className="px-5 -mt-8">
@@ -149,41 +151,41 @@ function MemberProfile() {
               </button>
             </div>
             <div className="min-w-0">
-              <h2 className="font-bold font-sans truncate">{profile?.name ?? (loading ? "Loading…" : "—")}</h2>
+              <h2 className="font-bold font-sans truncate">{profile?.name ?? (loading ? t("memberProfile.loading") : "—")}</h2>
               <p className="text-xs text-muted-foreground truncate">{profile?.categoryName ?? "—"}</p>
               <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold bg-success/15 text-success px-2 py-0.5 rounded-full">
-                ✓ Verified
+                ✓ {t("memberProfile.verified")}
               </span>
             </div>
           </div>
 
           <div className="grid grid-cols-3 mt-5 pt-5 border-t border-border text-center">
-            <Stat label="Rating" value={profile && profile.rating > 0 ? profile.rating.toFixed(1) : "—"} />
-            <Stat label="Jobs" value={profile ? String(profile.jobsCount) : "—"} mid />
-            <Stat label="Years" value={profile?.years != null ? String(profile.years) : "—"} />
+            <Stat label={t("memberProfile.rating")} value={profile && profile.rating > 0 ? profile.rating.toFixed(1) : "—"} />
+            <Stat label={t("memberProfile.jobs")} value={profile ? String(profile.jobsCount) : "—"} mid />
+            <Stat label={t("memberProfile.years")} value={profile?.years != null ? String(profile.years) : "—"} />
           </div>
         </div>
       </div>
 
       <section className="px-5 mt-6 space-y-2">
-        <Row icon={<Briefcase className="size-4" />} label="Service Category" value={profile?.categoryName ?? "—"} />
+        <Row icon={<Briefcase className="size-4" />} label={t("memberProfile.category")} value={profile?.categoryName ?? "—"} />
         <Row
           icon={<IndianRupee className="size-4" />}
-          label="Starting Price"
+          label={t("memberProfile.startingPrice")}
           value={profile?.hourlyRate != null ? `₹${profile.hourlyRate}/hr` : "—"}
         />
-        <Row icon={<MapPin className="size-4" />} label="Service Area" value={profile?.area ?? "—"} />
-        <Row icon={<Clock className="size-4" />} label="Availability" value="Mon–Sat, 9 AM – 8 PM" />
+        <Row icon={<MapPin className="size-4" />} label={t("memberProfile.serviceArea")} value={profile?.area ?? "—"} />
+        <Row icon={<Clock className="size-4" />} label={t("memberProfile.availability")} value={t("memberProfile.availabilityVal")} />
       </section>
 
       <section className="px-5 mt-6">
-        <h3 className="font-bold text-sm font-sans mb-3">Recent Reviews</h3>
+        <h3 className="font-bold text-sm font-sans mb-3">{t("memberProfile.recentReviews")}</h3>
         {loading ? (
-          <p className="text-xs text-muted-foreground">Loading…</p>
+          <p className="text-xs text-muted-foreground">{t("memberProfile.loading")}</p>
         ) : reviews.length === 0 ? (
           <div className="bg-card border border-dashed border-border rounded-2xl p-6 text-center">
-            <p className="text-sm font-semibold">No reviews yet</p>
-            <p className="text-xs text-muted-foreground mt-1">Customer reviews will appear here.</p>
+            <p className="text-sm font-semibold">{t("memberProfile.noReviews")}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t("memberProfile.noReviewsSub")}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -212,14 +214,14 @@ function MemberProfile() {
           <span className="size-9 rounded-xl bg-secondary flex items-center justify-center">
             <Settings className="size-4" />
           </span>
-          <span className="flex-1 text-sm font-semibold text-left">Settings</span>
+          <span className="flex-1 text-sm font-semibold text-left">{t("memberProfile.settings")}</span>
           <ChevronRight className="size-4 text-muted-foreground" />
         </button>
         <button
           onClick={handleLogout}
           className="w-full bg-destructive/10 text-destructive flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm"
         >
-          <LogOut className="size-4" /> Logout
+          <LogOut className="size-4" /> {t("common.logout")}
         </button>
       </section>
     </>

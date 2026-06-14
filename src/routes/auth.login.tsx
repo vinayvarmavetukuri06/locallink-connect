@@ -6,6 +6,7 @@ import { setUserProfile, setMemberProfile } from "@/lib/profile-store";
 import { hashPassword, DEMO_OTP } from "@/lib/password";
 import { saveSession } from "@/lib/session";
 import { LanguageButton } from "@/components/language-selector";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth/login")({
   component: Login,
@@ -15,6 +16,7 @@ type Step = "mobile" | "forgot-otp" | "forgot-reset";
 
 function Login() {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [step, setStep] = useState<Step>("mobile");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
@@ -30,11 +32,11 @@ function Login() {
   async function handleLogin() {
     setErr(null);
     if (mobile.length !== 10) {
-      setErr("Enter a valid 10-digit mobile number.");
+      setErr(t("login.invalidMobile"));
       return;
     }
     if (password.length < 6) {
-      setErr("Enter your password.");
+      setErr(t("login.enterPassword"));
       return;
     }
     setLoading(true);
@@ -52,13 +54,13 @@ function Login() {
     }
     if (!profile) {
       setLoading(false);
-      setErr("Phone number not registered");
+      setErr(t("login.notRegistered"));
       return;
     }
     const hash = await hashPassword(password);
     if (!profile.password_hash || profile.password_hash !== hash) {
       setLoading(false);
-      setErr("Incorrect password");
+      setErr(t("login.wrongPassword"));
       return;
     }
     setLoading(false);
@@ -99,7 +101,7 @@ function Login() {
     setErr(null);
     setInfo(null);
     if (mobile.length !== 10) {
-      setErr("Enter a valid 10-digit mobile number.");
+      setErr(t("login.invalidMobile"));
       return;
     }
     setLoading(true);
@@ -111,16 +113,16 @@ function Login() {
       .maybeSingle();
     setLoading(false);
     if (error) return setErr(error.message);
-    if (!profile) return setErr("Phone number not registered");
+    if (!profile) return setErr(t("login.notRegistered"));
     setOtp(["", "", "", ""]);
-    setInfo(`Demo OTP is ${DEMO_OTP}`);
+    setInfo(`${t("login.demoOtp")} ${DEMO_OTP}`);
     setStep("forgot-otp");
   }
 
   function handleVerifyForgotOtp() {
     setErr(null);
     if (otp.join("") !== DEMO_OTP) {
-      setErr("Incorrect OTP. Use 1234 for demo.");
+      setErr(t("login.incorrectOtp"));
       return;
     }
     setStep("forgot-reset");
@@ -128,8 +130,8 @@ function Login() {
 
   async function handleResetPassword() {
     setErr(null);
-    if (newPw.length < 6) return setErr("Password must be at least 6 characters.");
-    if (newPw !== newPw2) return setErr("Passwords do not match.");
+    if (newPw.length < 6) return setErr(t("login.pwMin"));
+    if (newPw !== newPw2) return setErr(t("login.pwMismatch"));
     setLoading(true);
     const fullMobile = `+91 ${mobile}`;
     const password_hash = await hashPassword(newPw);
@@ -141,7 +143,7 @@ function Login() {
     if (error) return setErr(error.message);
     setStep("mobile");
     setPassword("");
-    setInfo("Password updated. Please log in.");
+    setInfo(t("login.pwUpdated"));
   }
 
   return (
@@ -158,7 +160,7 @@ function Login() {
           }}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground"
         >
-          <ArrowLeft className="size-4" /> Back
+          <ArrowLeft className="size-4" /> {t("common.back")}
         </button>
         <LanguageButton />
       </div>
@@ -170,12 +172,12 @@ function Login() {
             handleLogin();
           }}
         >
-          <h1 className="font-serif text-3xl font-bold">Welcome back</h1>
-          <p className="text-sm text-muted-foreground mt-1">Login with your mobile and password.</p>
+          <h1 className="font-serif text-3xl font-bold">{t("login.welcomeBack")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("login.subtitle")}</p>
 
           <div className="mt-8">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Mobile Number
+              {t("login.mobileLabel")}
             </label>
             <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-4">
               <span className="font-semibold text-sm">🇮🇳 +91</span>
@@ -194,7 +196,7 @@ function Login() {
 
           <div className="mt-4">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Password
+              {t("login.passwordLabel")}
             </label>
             <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-4">
               <Lock className="size-4 text-muted-foreground" />
@@ -202,7 +204,7 @@ function Login() {
                 type={showPw ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Your password"
+                placeholder={t("login.passwordPlaceholder")}
                 className="flex-1 bg-transparent outline-none text-base font-medium"
               />
               <button type="button" onClick={() => setShowPw((v) => !v)} className="text-muted-foreground">
@@ -215,7 +217,7 @@ function Login() {
                 onClick={handleForgotStart}
                 className="text-xs font-bold text-primary"
               >
-                Forgot password?
+                {t("login.forgot")}
               </button>
             </div>
           </div>
@@ -229,12 +231,12 @@ function Login() {
             className="mt-6 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-60"
           >
             {loading && <Loader2 className="size-4 animate-spin" />}
-            Login
+            {t("login.submit")}
           </button>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
-            New to LocalConnect?{" "}
-            <Link to="/auth" className="text-primary font-bold">Create an account</Link>
+            {t("login.noAccount")}{" "}
+            <Link to="/auth" className="text-primary font-bold">{t("login.createAccount")}</Link>
           </p>
         </form>
       )}
@@ -246,8 +248,8 @@ function Login() {
             handleVerifyForgotOtp();
           }}
         >
-          <h1 className="font-serif text-3xl font-bold">Reset password</h1>
-          <p className="text-sm text-muted-foreground mt-1">OTP sent to +91 {mobile}</p>
+          <h1 className="font-serif text-3xl font-bold">{t("login.resetTitle")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("login.otpSentTo")} +91 {mobile}</p>
           {info && <p className="mt-1 text-[11px] text-muted-foreground">{info}</p>}
 
           <div className="mt-8 flex gap-3 justify-center">
@@ -280,7 +282,7 @@ function Login() {
             type="submit"
             className="mt-8 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold active:scale-[0.99]"
           >
-            Verify OTP
+            {t("login.verifyOtp")}
           </button>
         </form>
       )}
@@ -292,8 +294,8 @@ function Login() {
             handleResetPassword();
           }}
         >
-          <h1 className="font-serif text-3xl font-bold">New password</h1>
-          <p className="text-sm text-muted-foreground mt-1">Set a new password for your account.</p>
+          <h1 className="font-serif text-3xl font-bold">{t("login.newPassword")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("login.setNewPwSub")}</p>
 
           <PasswordPair
             password={newPw}
@@ -312,7 +314,7 @@ function Login() {
             className="mt-8 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-60"
           >
             {loading && <Loader2 className="size-4 animate-spin" />}
-            Update password
+            {t("login.updatePassword")}
           </button>
         </form>
       )}
@@ -335,11 +337,12 @@ export function PasswordPair({
   show: boolean;
   setShow: (v: boolean) => void;
 }) {
+  const { t } = useI18n();
   return (
     <div className="mt-6 space-y-4">
       <div>
         <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          Password
+          {t("login.passwordLabel")}
         </label>
         <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-4">
           <Lock className="size-4 text-muted-foreground" />
@@ -347,7 +350,7 @@ export function PasswordPair({
             type={show ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="At least 6 characters"
+            placeholder={t("login.atLeast6")}
             autoFocus
             className="flex-1 bg-transparent outline-none text-base font-medium"
           />
@@ -358,7 +361,7 @@ export function PasswordPair({
       </div>
       <div>
         <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          Confirm Password
+          {t("login.confirmPassword")}
         </label>
         <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-4">
           <Lock className="size-4 text-muted-foreground" />
@@ -366,7 +369,7 @@ export function PasswordPair({
             type={show ? "text" : "password"}
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
-            placeholder="Re-enter password"
+            placeholder={t("login.reenter")}
             className="flex-1 bg-transparent outline-none text-base font-medium"
           />
         </div>

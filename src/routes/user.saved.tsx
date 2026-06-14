@@ -4,12 +4,14 @@ import { ArrowLeft, Heart, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchWorkerById, type RealWorker } from "@/lib/workers-api";
 import { WorkerListCard } from "@/components/worker-card";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/user/saved")({
   component: SavedWorkers,
 });
 
 function SavedWorkers() {
+  const { t } = useI18n();
   const [workers, setWorkers] = useState<RealWorker[]>([]);
   const [loading, setLoading] = useState(true);
   const customerId =
@@ -51,7 +53,7 @@ function SavedWorkers() {
     <>
       <header className="bg-card px-5 pt-6 pb-3 border-b border-border sticky top-0 z-30 flex items-center gap-3">
         <Link to="/user/profile"><ArrowLeft className="size-5" /></Link>
-        <h1 className="font-serif text-2xl">Saved Workers</h1>
+        <h1 className="font-serif text-2xl">{t("saved.title")}</h1>
       </header>
       <section className="px-5 py-5 space-y-3">
         {loading ? (
@@ -59,10 +61,10 @@ function SavedWorkers() {
         ) : workers.length === 0 ? (
           <div className="bg-card border border-dashed border-border rounded-3xl p-8 text-center">
             <Heart className="size-7 text-muted-foreground mx-auto mb-2" />
-            <p className="font-bold text-sm font-sans">No saved workers yet</p>
-            <p className="text-xs text-muted-foreground mt-1 mb-4">Tap the heart on a worker to save them.</p>
+            <p className="font-bold text-sm font-sans">{t("saved.empty")}</p>
+            <p className="text-xs text-muted-foreground mt-1 mb-4">{t("saved.emptySub")}</p>
             <Link to="/user" className="inline-flex bg-primary text-primary-foreground text-sm font-bold px-5 py-3 rounded-2xl">
-              Browse Workers
+              {t("saved.browse")}
             </Link>
           </div>
         ) : (

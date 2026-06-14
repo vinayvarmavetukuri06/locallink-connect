@@ -1,59 +1,49 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { currentMember } from "@/lib/mock-data";
 import { Check, Crown, Sparkles } from "lucide-react";
-
-const plans = [
-  {
-    name: "Basic",
-    price: 200,
-    features: [
-      "Listed in the app",
-      "Unlimited bookings",
-      "Customer reviews",
-      "Basic profile",
-    ],
-    cta: "Choose Basic",
-    highlight: false,
-  },
-  {
-    name: "Premium",
-    price: 499,
-    features: [
-      "Featured listing",
-      "Priority ranking in search",
-      "Premium badge on profile",
-      "More visibility = more bookings",
-      "Priority customer support",
-    ],
-    cta: "Upgrade to Premium",
-    highlight: true,
-  },
-];
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/member/membership")({
   component: Membership,
 });
 
 function Membership() {
+  const { t } = useI18n();
+  const plans = [
+    {
+      name: t("membership.basic"),
+      price: 200,
+      features: [t("membership.f1"), t("membership.f2"), t("membership.f3"), t("membership.f4")],
+      cta: t("membership.chooseBasic"),
+      highlight: false,
+    },
+    {
+      name: t("membership.premium"),
+      price: 499,
+      features: [t("membership.fp1"), t("membership.fp2"), t("membership.fp3"), t("membership.fp4"), t("membership.fp5")],
+      cta: t("membership.upgradePremium"),
+      highlight: true,
+    },
+  ];
   return (
     <>
       <header className="bg-card px-5 pt-6 pb-3 border-b border-border sticky top-0 z-30">
-        <h1 className="font-serif text-2xl">Membership</h1>
-        <p className="text-xs text-muted-foreground">Choose a plan that grows your business</p>
+        <h1 className="font-serif text-2xl">{t("membership.title")}</h1>
+        <p className="text-xs text-muted-foreground">{t("membership.subtitle")}</p>
       </header>
 
       <div className="px-5 pt-5">
         <div className="bg-foreground text-background rounded-3xl p-5">
           <div className="flex items-center gap-2 text-xs font-bold">
             <Crown className="size-4 text-accent" />
-            CURRENT PLAN
+            {t("membership.currentPlan")}
           </div>
-          <p className="font-serif text-3xl mt-2">{currentMember.plan} — Active</p>
+          <p className="font-serif text-3xl mt-2">{currentMember.plan} — {t("membership.active")}</p>
           <p className="text-xs opacity-70 mt-1">
-            {currentMember.daysRemaining} days left · Renews automatically via Razorpay
+            {currentMember.daysRemaining} {t("membership.daysLeft")}
           </p>
           <button className="mt-4 bg-background/15 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-bold">
-            Renew Now
+            {t("membership.renewNow")}
           </button>
         </div>
       </div>
@@ -74,12 +64,12 @@ function Membership() {
                   <h3 className="font-serif text-2xl">{p.name}</h3>
                   {p.highlight && (
                     <span className="text-[10px] font-bold bg-accent text-accent-foreground px-2 py-0.5 rounded-full uppercase">
-                      Popular
+                      {t("membership.popular")}
                     </span>
                   )}
                 </div>
                 <p className={`text-xs mt-0.5 ${p.highlight ? "opacity-80" : "text-muted-foreground"}`}>
-                  per month, billed monthly
+                  {t("membership.perMonth")}
                 </p>
               </div>
               <p className="font-bold text-2xl font-sans">
@@ -110,7 +100,7 @@ function Membership() {
 
       <p className="text-center text-xs text-muted-foreground px-10 pb-6 flex items-center justify-center gap-1">
         <Sparkles className="size-3" />
-        Secure payments powered by Razorpay
+        {t("membership.secure")}
       </p>
     </>
   );

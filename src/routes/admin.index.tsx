@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Users, Briefcase, Calendar, ShieldCheck, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminHome,
@@ -42,6 +43,7 @@ type Profile = {
 };
 
 function AdminHome() {
+  const { t, tService, tStatus } = useI18n();
   const [pending, setPending] = useState<WorkerProfile[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
@@ -85,7 +87,7 @@ function AdminHome() {
       toast.error(error.message);
       return;
     }
-    toast.success(`Worker ${status}`);
+    toast.success(`${t("admin.workerUpdated")} ${tStatus(status)}`);
     setPending((prev) => prev.filter((w) => w.id !== id));
     setCounts((c) => ({
       ...c,
@@ -98,37 +100,37 @@ function AdminHome() {
     <>
       <header className="px-5 pt-4 pb-6">
         <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
-          <ShieldCheck className="size-4" /> ADMIN PANEL
+          <ShieldCheck className="size-4" /> {t("admin.panel")}
         </div>
-        <h1 className="font-serif text-3xl mt-1">LocalConnect Console</h1>
+        <h1 className="font-serif text-3xl mt-1">{t("admin.console")}</h1>
       </header>
 
       <section className="px-5 grid grid-cols-2 gap-3">
-        <Stat label="Total Users" value={counts.users} icon={<Users className="size-4" />} />
-        <Stat label="Total Workers" value={counts.workers} icon={<UserCheck className="size-4" />} />
-        <Stat label="Pending Approvals" value={counts.pending} icon={<Briefcase className="size-4" />} />
-        <Stat label="Total Bookings" value={counts.bookings} icon={<Calendar className="size-4" />} />
+        <Stat label={t("admin.totalUsers")} value={counts.users} icon={<Users className="size-4" />} />
+        <Stat label={t("admin.totalWorkers")} value={counts.workers} icon={<UserCheck className="size-4" />} />
+        <Stat label={t("admin.pendingApprovals")} value={counts.pending} icon={<Briefcase className="size-4" />} />
+        <Stat label={t("admin.totalBookings")} value={counts.bookings} icon={<Calendar className="size-4" />} />
       </section>
 
       <section className="px-5 mt-6">
-        <h2 className="font-bold text-lg font-sans mb-3">Pending Worker Applications</h2>
+        <h2 className="font-bold text-lg font-sans mb-3">{t("admin.pendingApps")}</h2>
         <div className="space-y-2">
           {pending.length === 0 && (
-            <p className="text-xs text-muted-foreground py-3">No pending applications.</p>
+            <p className="text-xs text-muted-foreground py-3">{t("admin.noPendingApps")}</p>
           )}
           {pending.map((w) => {
             const p = w.user_id ? profiles[w.user_id] : undefined;
             return (
               <div key={w.id} className="bg-card border border-border rounded-2xl p-4">
-                <p className="font-bold text-sm font-sans">{p?.full_name ?? "Unnamed worker"}</p>
+                <p className="font-bold text-sm font-sans">{p?.full_name ?? t("admin.unnamed")}</p>
                 <div className="mt-1 space-y-0.5">
                   {p?.mobile && <p className="text-[11px] text-muted-foreground">📱 {p.mobile}</p>}
                   <p className="text-[11px] text-muted-foreground">
-                    🛠 {w.service_category ?? "—"}
+                    🛠 {tService(w.service_category, w.service_category) || "—"}
                   </p>
                   {p?.location && <p className="text-[11px] text-muted-foreground">📍 {p.location}</p>}
                   <p className="text-[11px] text-muted-foreground">
-                    🎓 {w.years_of_experience ?? 0} yrs experience
+                    🎓 {w.years_of_experience ?? 0} {t("admin.yrsExp")}
                   </p>
                 </div>
                 {w.bio && <p className="text-xs mt-2 line-clamp-2">{w.bio}</p>}
@@ -138,14 +140,14 @@ function AdminHome() {
                     onClick={() => updateWorker(w.id, "rejected")}
                     className="flex-1 py-2 text-xs font-bold rounded-lg bg-destructive/10 text-destructive disabled:opacity-50"
                   >
-                    Reject
+                    {t("admin.reject")}
                   </button>
                   <button
                     disabled={busy === w.id}
                     onClick={() => updateWorker(w.id, "approved")}
                     className="flex-1 py-2 text-xs font-bold rounded-lg bg-success text-success-foreground disabled:opacity-50"
                   >
-                    Approve
+                    {t("admin.approve")}
                   </button>
                 </div>
               </div>
@@ -155,10 +157,10 @@ function AdminHome() {
       </section>
 
       <section className="px-5 mt-6">
-        <h2 className="font-bold text-lg font-sans mb-3">All Bookings</h2>
+        <h2 className="font-bold text-lg font-sans mb-3">{t("admin.allBookings")}</h2>
         <div className="space-y-2">
           {bookings.length === 0 && (
-            <p className="text-xs text-muted-foreground py-3">No bookings yet.</p>
+            <p className="text-xs text-muted-foreground py-3">{t("admin.noBookings")}</p>
           )}
           {bookings.map((b) => {
             const customer = b.customer_id ? profiles[b.customer_id] : undefined;
@@ -169,14 +171,14 @@ function AdminHome() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="font-bold text-sm font-sans truncate">
-                      {customer?.full_name ?? "Customer"} → {worker?.full_name ?? "Worker"}
+                      {customer?.full_name ?? t("memberHome.customer")} → {worker?.full_name ?? t("worker.workerLbl")}
                     </p>
                     <p className="text-[11px] text-muted-foreground">
-                      {b.service ?? "Service"} · {b.date ?? "—"} · {b.time ?? "—"}
+                      {b.service ?? t("worker.service")} · {b.date ?? "—"} · {b.time ?? "—"}
                     </p>
                   </div>
                   <span className="text-[10px] font-bold uppercase tracking-wide bg-secondary px-2 py-0.5 rounded-full whitespace-nowrap">
-                    {b.status}
+                    {tStatus(b.status)}
                   </span>
                 </div>
                 <div className="flex justify-between mt-2 text-[11px]">
