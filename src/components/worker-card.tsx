@@ -29,35 +29,38 @@ export function AvailabilityBadge({ available }: { available: boolean }) {
 
 export function WorkerListCard({ worker }: { worker: RealWorker }) {
   return (
-    <Link
-      to="/user/worker/$id"
-      params={{ id: worker.id }}
-      className="block bg-card p-4 rounded-2xl border border-border flex gap-4 hover:border-primary/30 transition-colors"
-    >
-      <WorkerAvatar worker={worker} size="lg" />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <h3 className="font-bold text-sm leading-tight truncate font-sans">{worker.name}</h3>
-            <p className="text-[11px] text-muted-foreground truncate">
-              {worker.trade}
-              {worker.area ? ` • ${worker.area}` : ""}
-            </p>
-            <AvailabilityBadge available={worker.available} />
-          </div>
-          <div className="text-right shrink-0">
-            <p className="text-xs font-bold text-primary">₹{worker.startingPrice}/hr</p>
-            <div className="flex items-center gap-0.5 text-[10px] font-bold text-accent justify-end">
-              <Star className="size-3 fill-current" />
-              <span>{worker.rating.toFixed(1)}</span>
+    <div className="relative">
+      <Link
+        to="/user/worker/$id"
+        params={{ id: worker.id }}
+        className="block bg-card p-4 rounded-2xl border border-border flex gap-4 hover:border-primary/30 transition-colors"
+      >
+        <WorkerAvatar worker={worker} size="lg" />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0 pr-8">
+              <h3 className="font-bold text-sm leading-tight truncate font-sans">{worker.name}</h3>
+              <p className="text-[11px] text-muted-foreground truncate">
+                {worker.trade}
+                {worker.area ? ` • ${worker.area}` : ""}
+              </p>
+              <AvailabilityBadge available={worker.available} />
+            </div>
+            <div className="text-right shrink-0">
+              <p className="text-xs font-bold text-primary">₹{worker.startingPrice}/hr</p>
+              <div className="flex items-center gap-0.5 text-[10px] font-bold text-accent justify-end">
+                <Star className="size-3 fill-current" />
+                <span>{worker.rating.toFixed(1)}</span>
+              </div>
             </div>
           </div>
+          <button className="mt-3 w-full bg-foreground text-background text-xs font-bold py-2 rounded-lg active:scale-95 transition-transform">
+            Book Now
+          </button>
         </div>
-        <button className="mt-3 w-full bg-foreground text-background text-xs font-bold py-2 rounded-lg active:scale-95 transition-transform">
-          Book Now
-        </button>
-      </div>
-    </Link>
+      </Link>
+      <SaveWorkerButton workerId={worker.id} className="absolute top-3 right-3" size="sm" />
+    </div>
   );
 }
 
