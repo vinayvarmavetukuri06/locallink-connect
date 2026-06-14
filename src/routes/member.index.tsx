@@ -140,7 +140,7 @@ function MemberHome() {
       <header className="bg-primary text-primary-foreground px-5 pt-6 pb-14 rounded-b-3xl relative overflow-hidden">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs opacity-80 uppercase tracking-wider font-medium">Welcome back,</p>
+            <p className="text-xs opacity-80 uppercase tracking-wider font-medium">{t("memberHome.welcome")}</p>
             <h1 className="font-serif text-2xl mt-1.5">{worker?.name ?? "—"}</h1>
             <p className="text-xs opacity-80 mt-1.5">
               {(worker?.trade ?? "—")}
@@ -154,8 +154,10 @@ function MemberHome() {
               />
             </div>
           </div>
-          <NotificationBell userId={workerUserId} to="/member/notifications" variant="dark" />
-
+          <div className="flex items-center gap-2">
+            <LanguageButton variant="dark" />
+            <NotificationBell userId={workerUserId} to="/member/notifications" variant="dark" />
+          </div>
         </div>
       </header>
 
@@ -163,16 +165,16 @@ function MemberHome() {
       <div className="px-5">
         <div className="bg-card border border-border rounded-3xl p-4 grid grid-cols-2 gap-3 shadow-md">
           <Metric
-            label="Total Bookings"
+            label={t("memberHome.totalBookings")}
             value={loading ? "…" : String(totalBookings)}
-            sub="all time"
+            sub={t("memberHome.allTime")}
             icon={<Calendar className="size-4" />}
             tint="bg-primary/10 text-primary"
           />
           <Metric
-            label="Earnings"
+            label={t("memberHome.earnings")}
             value={loading ? "…" : `₹${earnings.toLocaleString("en-IN")}`}
-            sub="completed jobs"
+            sub={t("memberHome.completedJobs")}
             icon={<IndianRupee className="size-4" />}
             tint="bg-success/15 text-success"
           />
@@ -182,19 +184,19 @@ function MemberHome() {
       {/* Pending Requests */}
       <section className="px-5 mt-6">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-bold text-lg font-sans">Customer Requests</h2>
+          <h2 className="font-bold text-lg font-sans">{t("memberHome.customerRequests")}</h2>
           {pending.length > 0 && (
             <span className="text-[10px] font-bold bg-warning/15 text-warning px-2 py-0.5 rounded-full">
-              {pending.length} NEW
+              {pending.length} {t("memberHome.new")}
             </span>
           )}
         </div>
         {loading ? (
-          <p className="text-xs text-muted-foreground">Loading…</p>
+          <p className="text-xs text-muted-foreground">{t("memberHome.loading")}</p>
         ) : pending.length === 0 ? (
           <div className="bg-card border border-dashed border-border rounded-2xl p-6 text-center">
-            <p className="text-sm font-semibold">No pending requests</p>
-            <p className="text-xs text-muted-foreground mt-1">New customer requests will appear here.</p>
+            <p className="text-sm font-semibold">{t("memberHome.noPending")}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t("memberHome.noPendingSub")}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -212,9 +214,9 @@ function MemberHome() {
             <TrendingUp className="size-4" />
           </div>
           <div>
-            <p className="font-bold text-sm font-sans">Reply faster, rank higher</p>
+            <p className="font-bold text-sm font-sans">{t("memberHome.replyFaster")}</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Accept requests quickly to boost your visibility in your area.
+              {t("memberHome.replyFasterDesc")}
             </p>
           </div>
         </div>
