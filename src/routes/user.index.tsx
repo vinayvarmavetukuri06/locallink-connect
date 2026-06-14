@@ -198,7 +198,7 @@ function UserHome() {
       {/* Recent Booking */}
       {!query.trim() && lastBooking && (
         <section className="px-5 mb-8">
-          <h2 className="font-bold text-lg font-sans mb-4">Recent Booking</h2>
+          <h2 className="font-bold text-lg font-sans mb-4">{t("userHome.recentBooking")}</h2>
           <div className="bg-foreground text-background rounded-2xl p-4 flex items-center justify-between">
             <div className="flex items-center gap-3 min-w-0">
               <div className="size-10 rounded-full bg-background/10 flex items-center justify-center text-lg shrink-0">
