@@ -6,6 +6,7 @@ import { ArrowLeft, Star, MapPin, MessageCircle, Phone, Calendar, Clock, MapPinn
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserProfile } from "@/lib/profile-store";
+import { SaveWorkerButton } from "@/components/save-worker-button";
 
 export const Route = createFileRoute("/user/worker/$id")({
   component: WorkerProfile,
@@ -92,10 +93,11 @@ function WorkerProfile() {
 
   return (
     <>
-      <header className="bg-card px-5 pt-6 pb-4 sticky top-0 z-30 border-b border-border">
+      <header className="bg-card px-5 pt-6 pb-4 sticky top-0 z-30 border-b border-border flex items-center justify-between">
         <Link to="/user" className="inline-flex items-center gap-2 text-sm text-muted-foreground">
           <ArrowLeft className="size-4" /> Back
         </Link>
+        <SaveWorkerButton workerId={w.id} />
       </header>
 
       <section className="px-5 py-6">

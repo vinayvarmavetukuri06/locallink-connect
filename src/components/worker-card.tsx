@@ -1,6 +1,7 @@
 import type { RealWorker } from "@/lib/workers-api";
 import { Link } from "@tanstack/react-router";
 import { Star, UserRound } from "lucide-react";
+import { SaveWorkerButton } from "@/components/save-worker-button";
 
 type AvatarSubject = { tint: string; initials: string };
 
@@ -28,62 +29,68 @@ export function AvailabilityBadge({ available }: { available: boolean }) {
 
 export function WorkerListCard({ worker }: { worker: RealWorker }) {
   return (
-    <Link
-      to="/user/worker/$id"
-      params={{ id: worker.id }}
-      className="block bg-card p-4 rounded-2xl border border-border flex gap-4 hover:border-primary/30 transition-colors"
-    >
-      <WorkerAvatar worker={worker} size="lg" />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <h3 className="font-bold text-sm leading-tight truncate font-sans">{worker.name}</h3>
-            <p className="text-[11px] text-muted-foreground truncate">
-              {worker.trade}
-              {worker.area ? ` • ${worker.area}` : ""}
-            </p>
-            <AvailabilityBadge available={worker.available} />
-          </div>
-          <div className="text-right shrink-0">
-            <p className="text-xs font-bold text-primary">₹{worker.startingPrice}/hr</p>
-            <div className="flex items-center gap-0.5 text-[10px] font-bold text-accent justify-end">
-              <Star className="size-3 fill-current" />
-              <span>{worker.rating.toFixed(1)}</span>
+    <div className="relative">
+      <Link
+        to="/user/worker/$id"
+        params={{ id: worker.id }}
+        className="block bg-card p-4 rounded-2xl border border-border flex gap-4 hover:border-primary/30 transition-colors"
+      >
+        <WorkerAvatar worker={worker} size="lg" />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0 pr-8">
+              <h3 className="font-bold text-sm leading-tight truncate font-sans">{worker.name}</h3>
+              <p className="text-[11px] text-muted-foreground truncate">
+                {worker.trade}
+                {worker.area ? ` • ${worker.area}` : ""}
+              </p>
+              <AvailabilityBadge available={worker.available} />
+            </div>
+            <div className="text-right shrink-0">
+              <p className="text-xs font-bold text-primary">₹{worker.startingPrice}/hr</p>
+              <div className="flex items-center gap-0.5 text-[10px] font-bold text-accent justify-end">
+                <Star className="size-3 fill-current" />
+                <span>{worker.rating.toFixed(1)}</span>
+              </div>
             </div>
           </div>
+          <button className="mt-3 w-full bg-foreground text-background text-xs font-bold py-2 rounded-lg active:scale-95 transition-transform">
+            Book Now
+          </button>
         </div>
-        <button className="mt-3 w-full bg-foreground text-background text-xs font-bold py-2 rounded-lg active:scale-95 transition-transform">
-          Book Now
-        </button>
-      </div>
-    </Link>
+      </Link>
+      <SaveWorkerButton workerId={worker.id} className="absolute top-3 right-3" size="sm" />
+    </div>
   );
 }
 
 export function FeaturedWorkerCard({ worker }: { worker: RealWorker }) {
   return (
-    <Link
-      to="/user/worker/$id"
-      params={{ id: worker.id }}
-      className="flex-shrink-0 w-64 rounded-3xl p-5 flex flex-col justify-between aspect-[4/3] bg-card text-card-foreground border border-border"
-    >
-      <div className="flex justify-between items-start">
-        <WorkerAvatar worker={worker} size="sm" />
-        <div className="text-right text-[10px] font-medium opacity-80">
-          <p>STARTS FROM</p>
-          <p className="text-lg font-bold text-foreground">₹{worker.startingPrice}/hr</p>
+    <div className="relative flex-shrink-0 w-64">
+      <Link
+        to="/user/worker/$id"
+        params={{ id: worker.id }}
+        className="rounded-3xl p-5 flex flex-col justify-between aspect-[4/3] bg-card text-card-foreground border border-border"
+      >
+        <div className="flex justify-between items-start">
+          <WorkerAvatar worker={worker} size="sm" />
+          <div className="text-right text-[10px] font-medium opacity-80 pr-10">
+            <p>STARTS FROM</p>
+            <p className="text-lg font-bold text-foreground">₹{worker.startingPrice}/hr</p>
+          </div>
         </div>
-      </div>
-      <div className="min-w-0">
-        <div className="flex items-center gap-1 mb-1">
-          <Star className="size-3 text-accent fill-current shrink-0" />
-          <span className="text-[10px] font-bold">{worker.rating.toFixed(1)}</span>
+        <div className="min-w-0">
+          <div className="flex items-center gap-1 mb-1">
+            <Star className="size-3 text-accent fill-current shrink-0" />
+            <span className="text-[10px] font-bold">{worker.rating.toFixed(1)}</span>
+          </div>
+          <h3 className="font-bold text-base leading-tight font-sans truncate">{worker.name}</h3>
+          <p className="text-xs opacity-80 mt-0.5 truncate">{worker.trade}</p>
+          <AvailabilityBadge available={worker.available} />
         </div>
-        <h3 className="font-bold text-base leading-tight font-sans truncate">{worker.name}</h3>
-        <p className="text-xs opacity-80 mt-0.5 truncate">{worker.trade}</p>
-        <AvailabilityBadge available={worker.available} />
-      </div>
-    </Link>
+      </Link>
+      <SaveWorkerButton workerId={worker.id} className="absolute top-4 right-4" size="sm" />
+    </div>
   );
 }
 
