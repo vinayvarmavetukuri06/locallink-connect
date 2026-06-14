@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MapPin, Search, Mic, Bell, Star, Loader2 } from "lucide-react";
+import { MapPin, Search, Star, Loader2 } from "lucide-react";
+import { NotificationBell } from "@/components/notification-bell";
 import { useEffect, useMemo, useState } from "react";
 import { categories, categorySlugFromService } from "@/lib/mock-data";
 import { useUserProfile } from "@/lib/profile-store";
@@ -88,10 +89,8 @@ function UserHome() {
                 {currentUser.location.split(",")[0]}
               </span>
             </button>
-            <button className="size-9 rounded-full bg-secondary border border-border flex items-center justify-center relative">
-              <Bell className="size-4" />
-              <span className="absolute top-2 right-2 size-2 bg-warning rounded-full ring-2 ring-card" />
-            </button>
+            <NotificationBell userId={customerId} to="/user/notifications" />
+
           </div>
         </div>
 
@@ -101,11 +100,8 @@ function UserHome() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name, service or area..."
-            className="w-full bg-secondary border-none rounded-2xl py-3.5 pl-11 pr-12 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+            className="w-full bg-secondary border-none rounded-2xl py-3.5 pl-11 pr-4 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
           />
-          <button className="absolute right-2 size-9 bg-primary text-primary-foreground rounded-xl flex items-center justify-center">
-            <Mic className="size-4" />
-          </button>
         </div>
       </header>
 
