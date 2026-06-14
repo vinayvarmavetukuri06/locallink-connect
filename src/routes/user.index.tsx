@@ -177,7 +177,7 @@ function UserHome() {
       {/* Nearby Workers */}
       {!query.trim() && (
         <section className="px-5 mb-8">
-          <h2 className="font-bold text-lg font-sans mb-4">Nearby Workers</h2>
+          <h2 className="font-bold text-lg font-sans mb-4">{t("userHome.nearby")}</h2>
           {loading ? (
             <LoadingRow />
           ) : nearby.length === 0 ? (
