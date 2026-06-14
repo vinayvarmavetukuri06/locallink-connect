@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, Calendar, MessageCircle, User, LayoutDashboard, BadgeIndianRupee, Users, Tag } from "lucide-react";
+// Note: BadgeIndianRupee retained for admin nav only.
 import type { ReactNode } from "react";
 import { useI18n } from "@/lib/i18n";
 

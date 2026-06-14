@@ -28,7 +28,6 @@ import { Route as UserChatRouteImport } from './routes/user.chat'
 import { Route as UserBookingsRouteImport } from './routes/user.bookings'
 import { Route as MemberProfileRouteImport } from './routes/member.profile'
 import { Route as MemberNotificationsRouteImport } from './routes/member.notifications'
-import { Route as MemberMembershipRouteImport } from './routes/member.membership'
 import { Route as MemberChatRouteImport } from './routes/member.chat'
 import { Route as MemberBookingsRouteImport } from './routes/member.bookings'
 import { Route as AuthUserRouteImport } from './routes/auth.user'
@@ -132,11 +131,6 @@ const MemberNotificationsRoute = MemberNotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => MemberRoute,
 } as any)
-const MemberMembershipRoute = MemberMembershipRouteImport.update({
-  id: '/membership',
-  path: '/membership',
-  getParentRoute: () => MemberRoute,
-} as any)
 const MemberChatRoute = MemberChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -183,7 +177,6 @@ export interface FileRoutesByFullPath {
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
   '/member/chat': typeof MemberChatRoute
-  '/member/membership': typeof MemberMembershipRoute
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
@@ -209,7 +202,6 @@ export interface FileRoutesByTo {
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
   '/member/chat': typeof MemberChatRoute
-  '/member/membership': typeof MemberMembershipRoute
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
@@ -239,7 +231,6 @@ export interface FileRoutesById {
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
   '/member/chat': typeof MemberChatRoute
-  '/member/membership': typeof MemberMembershipRoute
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
@@ -270,7 +261,6 @@ export interface FileRouteTypes {
     | '/auth/user'
     | '/member/bookings'
     | '/member/chat'
-    | '/member/membership'
     | '/member/notifications'
     | '/member/profile'
     | '/user/bookings'
@@ -296,7 +286,6 @@ export interface FileRouteTypes {
     | '/auth/user'
     | '/member/bookings'
     | '/member/chat'
-    | '/member/membership'
     | '/member/notifications'
     | '/member/profile'
     | '/user/bookings'
@@ -325,7 +314,6 @@ export interface FileRouteTypes {
     | '/auth/user'
     | '/member/bookings'
     | '/member/chat'
-    | '/member/membership'
     | '/member/notifications'
     | '/member/profile'
     | '/user/bookings'
@@ -491,13 +479,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MemberNotificationsRouteImport
       parentRoute: typeof MemberRoute
     }
-    '/member/membership': {
-      id: '/member/membership'
-      path: '/membership'
-      fullPath: '/member/membership'
-      preLoaderRoute: typeof MemberMembershipRouteImport
-      parentRoute: typeof MemberRoute
-    }
     '/member/chat': {
       id: '/member/chat'
       path: '/chat'
@@ -563,7 +544,6 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 interface MemberRouteChildren {
   MemberBookingsRoute: typeof MemberBookingsRoute
   MemberChatRoute: typeof MemberChatRoute
-  MemberMembershipRoute: typeof MemberMembershipRoute
   MemberNotificationsRoute: typeof MemberNotificationsRoute
   MemberProfileRoute: typeof MemberProfileRoute
   MemberIndexRoute: typeof MemberIndexRoute
@@ -572,7 +552,6 @@ interface MemberRouteChildren {
 const MemberRouteChildren: MemberRouteChildren = {
   MemberBookingsRoute: MemberBookingsRoute,
   MemberChatRoute: MemberChatRoute,
-  MemberMembershipRoute: MemberMembershipRoute,
   MemberNotificationsRoute: MemberNotificationsRoute,
   MemberProfileRoute: MemberProfileRoute,
   MemberIndexRoute: MemberIndexRoute,
