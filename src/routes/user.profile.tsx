@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2, ChevronRight, Heart, Star, Clock, LogOut, MapPin, Phone, Settings } from "lucide-react";
 import { clearSession, getSession } from "@/lib/session";
@@ -39,10 +39,11 @@ function UserProfile() {
     }
     const id = customerId ?? session!.userId;
 
-    const [{ data: profileData }, { count: bookingsCnt }, { count: reviewsCnt }] = await Promise.all([
+    const [{ data: profileData }, { count: bookingsCnt }, { count: reviewsCnt }, { count: savedCnt }] = await Promise.all([
       supabase.from("profiles").select("full_name, mobile, location").eq("id", id).maybeSingle(),
       supabase.from("bookings").select("*", { count: "exact", head: true }).eq("customer_id", id),
       supabase.from("reviews").select("*", { count: "exact", head: true }).eq("customer_id", id),
+      (supabase as any).from("saved_workers").select("*", { count: "exact", head: true }).eq("customer_id", id),
     ]);
 
     if (profileData) {
@@ -61,16 +62,7 @@ function UserProfile() {
 
     setBookingsCount(bookingsCnt ?? 0);
     setReviewsCount(reviewsCnt ?? 0);
-
-    // Saved workers from localStorage (no dedicated table yet)
-    if (typeof window !== "undefined") {
-      try {
-        const saved = JSON.parse(localStorage.getItem("lc:saved-workers") ?? "[]");
-        setSavedCount(Array.isArray(saved) ? saved.length : 0);
-      } catch {
-        setSavedCount(0);
-      }
-    }
+    setSavedCount(savedCnt ?? 0);
 
     setLoading(false);
   }
@@ -92,6 +84,12 @@ function UserProfile() {
         .on("postgres_changes", { event: "*", schema: "public", table: "reviews", filter: `customer_id=eq.${customerId}` }, () => loadProfile())
         .subscribe();
       channels.push(reviewsChannel);
+
+      const savedChannel = supabase
+        .channel("profile-saved")
+        .on("postgres_changes", { event: "*", schema: "public", table: "saved_workers", filter: `customer_id=eq.${customerId}` }, () => loadProfile())
+        .subscribe();
+      channels.push(savedChannel);
     }
 
     return () => {
@@ -146,11 +144,11 @@ function UserProfile() {
       </div>
 
       <section className="px-5 mt-6 space-y-2">
-        <Row icon={<Heart className="size-4" />} label="Saved Workers" badge={loading ? undefined : String(savedCount)} />
-        <Row icon={<Star className="size-4" />} label="My Reviews" badge={loading ? undefined : String(reviewsCount)} />
-        <Row icon={<Clock className="size-4" />} label="Booking History" />
-        <Row icon={<Phone className="size-4" />} label="Help & Support" />
-        <Row icon={<Settings className="size-4" />} label="Settings" />
+        <Row to="/user/saved" icon={<Heart className="size-4" />} label="Saved Workers" badge={loading ? undefined : String(savedCount)} />
+        <Row to="/user/reviews" icon={<Star className="size-4" />} label="My Reviews" badge={loading ? undefined : String(reviewsCount)} />
+        <Row to="/user/history" icon={<Clock className="size-4" />} label="Booking History" />
+        <Row to="/user/help" icon={<Phone className="size-4" />} label="Help & Support" />
+        <Row to="/user/settings" icon={<Settings className="size-4" />} label="Settings" />
       </section>
 
       <section className="px-5 mt-6 pb-6">
@@ -165,9 +163,12 @@ function UserProfile() {
   );
 }
 
-function Row({ icon, label, badge }: { icon: React.ReactNode; label: string; badge?: string }) {
+function Row({ icon, label, badge, to }: { icon: React.ReactNode; label: string; badge?: string; to: string }) {
   return (
-    <button className="w-full bg-card border border-border rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:bg-secondary transition-colors">
+    <Link
+      to={to}
+      className="w-full bg-card border border-border rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:bg-secondary transition-colors"
+    >
       <span className="size-9 rounded-xl bg-secondary flex items-center justify-center text-muted-foreground">
         {icon}
       </span>
@@ -178,6 +179,6 @@ function Row({ icon, label, badge }: { icon: React.ReactNode; label: string; bad
         </span>
       )}
       <ChevronRight className="size-4 text-muted-foreground" />
-    </button>
+    </Link>
   );
 }
