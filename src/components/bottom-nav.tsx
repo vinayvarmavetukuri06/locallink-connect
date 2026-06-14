@@ -1,34 +1,36 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, Calendar, MessageCircle, User, LayoutDashboard, BadgeIndianRupee, Users, Tag } from "lucide-react";
 import type { ReactNode } from "react";
+import { useI18n } from "@/lib/i18n";
 
-type NavItem = { to: string; label: string; icon: ReactNode };
+type NavItem = { to: string; labelKey: string; fallback: string; icon: ReactNode };
 
 const userNav: NavItem[] = [
-  { to: "/user", label: "Home", icon: <Home className="size-5" /> },
-  { to: "/user/bookings", label: "Bookings", icon: <Calendar className="size-5" /> },
-  { to: "/user/chat", label: "Chat", icon: <MessageCircle className="size-5" /> },
-  { to: "/user/profile", label: "Profile", icon: <User className="size-5" /> },
+  { to: "/user", labelKey: "nav.home", fallback: "Home", icon: <Home className="size-5" /> },
+  { to: "/user/bookings", labelKey: "nav.bookings", fallback: "Bookings", icon: <Calendar className="size-5" /> },
+  { to: "/user/chat", labelKey: "nav.chat", fallback: "Chat", icon: <MessageCircle className="size-5" /> },
+  { to: "/user/profile", labelKey: "nav.profile", fallback: "Profile", icon: <User className="size-5" /> },
 ];
 
 const memberNav: NavItem[] = [
-  { to: "/member", label: "Home", icon: <LayoutDashboard className="size-5" /> },
-  { to: "/member/bookings", label: "Bookings", icon: <Calendar className="size-5" /> },
-  { to: "/member/chat", label: "Chat", icon: <MessageCircle className="size-5" /> },
-  { to: "/member/membership", label: "Plan", icon: <BadgeIndianRupee className="size-5" /> },
-  { to: "/member/profile", label: "Profile", icon: <User className="size-5" /> },
+  { to: "/member", labelKey: "nav.home", fallback: "Home", icon: <LayoutDashboard className="size-5" /> },
+  { to: "/member/bookings", labelKey: "nav.bookings", fallback: "Bookings", icon: <Calendar className="size-5" /> },
+  { to: "/member/chat", labelKey: "nav.chat", fallback: "Chat", icon: <MessageCircle className="size-5" /> },
+  { to: "/member/membership", labelKey: "nav.plan", fallback: "Plan", icon: <BadgeIndianRupee className="size-5" /> },
+  { to: "/member/profile", labelKey: "nav.profile", fallback: "Profile", icon: <User className="size-5" /> },
 ];
 
 const adminNav: NavItem[] = [
-  { to: "/admin", label: "Home", icon: <LayoutDashboard className="size-5" /> },
-  { to: "/admin/workers", label: "Workers", icon: <Users className="size-5" /> },
-  { to: "/admin/categories", label: "Cats", icon: <Tag className="size-5" /> },
-  { to: "/admin/bookings", label: "Bookings", icon: <Calendar className="size-5" /> },
-  { to: "/admin/subscriptions", label: "Plans", icon: <BadgeIndianRupee className="size-5" /> },
+  { to: "/admin", labelKey: "nav.home", fallback: "Home", icon: <LayoutDashboard className="size-5" /> },
+  { to: "/admin/workers", labelKey: "nav.workers", fallback: "Workers", icon: <Users className="size-5" /> },
+  { to: "/admin/categories", labelKey: "nav.cats", fallback: "Cats", icon: <Tag className="size-5" /> },
+  { to: "/admin/bookings", labelKey: "nav.bookings", fallback: "Bookings", icon: <Calendar className="size-5" /> },
+  { to: "/admin/subscriptions", labelKey: "nav.plan", fallback: "Plans", icon: <BadgeIndianRupee className="size-5" /> },
 ];
 
 export function BottomNav({ variant }: { variant: "user" | "member" | "admin" }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { t } = useI18n();
   const items = variant === "user" ? userNav : variant === "member" ? memberNav : adminNav;
 
   return (
@@ -38,6 +40,7 @@ export function BottomNav({ variant }: { variant: "user" | "member" | "admin" })
           item.to === `/${variant}`
             ? pathname === item.to
             : pathname === item.to || pathname.startsWith(item.to + "/");
+        const label = t(item.labelKey) === item.labelKey ? item.fallback : t(item.labelKey);
         return (
           <Link
             key={item.to}
@@ -47,7 +50,7 @@ export function BottomNav({ variant }: { variant: "user" | "member" | "admin" })
             }`}
           >
             <div className={active ? "scale-110 transition-transform" : ""}>{item.icon}</div>
-            <span className="text-[10px] font-bold">{item.label}</span>
+            <span className="text-[10px] font-bold">{label}</span>
           </Link>
         );
       })}

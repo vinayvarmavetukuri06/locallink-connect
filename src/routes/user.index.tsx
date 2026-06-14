@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, Search, Star, Loader2 } from "lucide-react";
 import { NotificationBell } from "@/components/notification-bell";
+import { LanguageButton } from "@/components/language-selector";
+import { useI18n } from "@/lib/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { categories, categorySlugFromService } from "@/lib/mock-data";
 import { useUserProfile } from "@/lib/profile-store";
@@ -21,6 +23,7 @@ export const Route = createFileRoute("/user/")({
 
 function UserHome() {
   const currentUser = useUserProfile();
+  const { t } = useI18n();
   const { workers, loading, error } = useApprovedWorkers();
   const [query, setQuery] = useState("");
 
@@ -78,7 +81,7 @@ function UserHome() {
         <div className="flex justify-between items-start mb-4">
           <div className="min-w-0">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-0.5">
-              Namaste,
+              {t("userHome.namaste")}
             </p>
             <h1 className="font-serif text-2xl truncate">{currentUser.name}</h1>
           </div>
@@ -89,8 +92,8 @@ function UserHome() {
                 {currentUser.location.split(",")[0]}
               </span>
             </button>
+            <LanguageButton />
             <NotificationBell userId={customerId} to="/user/notifications" />
-
           </div>
         </div>
 
@@ -99,7 +102,7 @@ function UserHome() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by name, service or area..."
+            placeholder={t("userHome.searchPlaceholder")}
             className="w-full bg-secondary border-none rounded-2xl py-3.5 pl-11 pr-4 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
           />
         </div>
@@ -108,8 +111,8 @@ function UserHome() {
       {/* Categories */}
       <section className="px-5 py-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="font-bold text-lg font-sans">Our Services</h2>
-          <button className="text-primary text-xs font-bold">View All</button>
+          <h2 className="font-bold text-lg font-sans">{t("userHome.services")}</h2>
+          <button className="text-primary text-xs font-bold">{t("userHome.viewAll")}</button>
         </div>
         <div className="grid grid-cols-4 gap-y-5 gap-x-2">
           {categories.map((c) => (
@@ -132,12 +135,12 @@ function UserHome() {
       {query.trim() && (
         <section className="px-5 mb-6">
           <h2 className="font-bold text-lg font-sans mb-4">
-            Results for “{query.trim()}”
+            {t("userHome.results")} “{query.trim()}”
           </h2>
           {loading ? (
             <LoadingRow />
           ) : filtered.length === 0 ? (
-            <NoWorkersCard message="No workers match your search yet — try a different service or area." />
+            <NoWorkersCard message={t("userHome.noMatch")} />
           ) : (
             <div className="space-y-3">
               {filtered.map((w) => (
@@ -152,9 +155,9 @@ function UserHome() {
       {!query.trim() && (
         <section className="mb-6">
           <div className="px-5 flex justify-between items-center mb-3">
-            <h2 className="font-bold text-lg font-sans">Local Heroes</h2>
+            <h2 className="font-bold text-lg font-sans">{t("userHome.localHeroes")}</h2>
             <span className="text-[10px] bg-accent/15 text-accent-foreground px-2 py-0.5 rounded font-bold uppercase tracking-tight">
-              Verified Experts
+              {t("userHome.verifiedExperts")}
             </span>
           </div>
           {loading ? (
@@ -174,7 +177,7 @@ function UserHome() {
       {/* Nearby Workers */}
       {!query.trim() && (
         <section className="px-5 mb-8">
-          <h2 className="font-bold text-lg font-sans mb-4">Nearby Workers</h2>
+          <h2 className="font-bold text-lg font-sans mb-4">{t("userHome.nearby")}</h2>
           {loading ? (
             <LoadingRow />
           ) : nearby.length === 0 ? (
@@ -195,7 +198,7 @@ function UserHome() {
       {/* Recent Booking */}
       {!query.trim() && lastBooking && (
         <section className="px-5 mb-8">
-          <h2 className="font-bold text-lg font-sans mb-4">Recent Booking</h2>
+          <h2 className="font-bold text-lg font-sans mb-4">{t("userHome.recentBooking")}</h2>
           <div className="bg-foreground text-background rounded-2xl p-4 flex items-center justify-between">
             <div className="flex items-center gap-3 min-w-0">
               <div className="size-10 rounded-full bg-background/10 flex items-center justify-center text-lg shrink-0">
@@ -217,7 +220,7 @@ function UserHome() {
               to="/user/bookings"
               className="text-xs font-bold bg-background/15 px-3 py-2 rounded-lg shrink-0"
             >
-              View
+              {t("userHome.view")}
             </Link>
           </div>
         </section>
