@@ -33,10 +33,16 @@ type Review = {
 };
 
 function MemberProfile() {
+  const navigate = useNavigate();
   const workerUserId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
   const [profile, setProfile] = useState<Profile | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+
+  function handleLogout() {
+    clearSession();
+    navigate({ to: "/" });
+  }
 
   useEffect(() => {
     if (!workerUserId) {
