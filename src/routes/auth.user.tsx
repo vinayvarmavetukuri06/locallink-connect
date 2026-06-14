@@ -16,6 +16,7 @@ type Step = "mobile" | "otp" | "password" | "details";
 
 function UserAuth() {
   const navigate = useNavigate();
+  const { lang, t } = useI18n();
   const [step, setStep] = useState<Step>("mobile");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
