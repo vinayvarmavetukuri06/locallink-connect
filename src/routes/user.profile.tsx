@@ -1,20 +1,111 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { currentUser, bookings } from "@/lib/mock-data";
-import { ChevronRight, Heart, Star, Clock, LogOut, MapPin, Phone, Settings } from "lucide-react";
-import { clearSession } from "@/lib/session";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Loader2, ChevronRight, Heart, Star, Clock, LogOut, MapPin, Phone, Settings } from "lucide-react";
+import { clearSession, getSession } from "@/lib/session";
 import { useNavigate } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/user/profile")({
   component: UserProfile,
 });
 
+type ProfileData = {
+  name: string;
+  mobile: string;
+  location: string;
+};
+
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
 function UserProfile() {
   const navigate = useNavigate();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [bookingsCount, setBookingsCount] = useState(0);
+  const [reviewsCount, setReviewsCount] = useState(0);
+  const [savedCount, setSavedCount] = useState(0);
+
+  const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
+
+  async function loadProfile() {
+    const session = getSession();
+    if (!session?.userId && !customerId) {
+      setLoading(false);
+      return;
+    }
+    const id = customerId ?? session!.userId;
+
+    const [{ data: profileData }, { count: bookingsCnt }, { count: reviewsCnt }] = await Promise.all([
+      supabase.from("profiles").select("full_name, mobile, location").eq("id", id).maybeSingle(),
+      supabase.from("bookings").select("*", { count: "exact", head: true }).eq("customer_id", id),
+      supabase.from("reviews").select("*", { count: "exact", head: true }).eq("customer_id", id),
+    ]);
+
+    if (profileData) {
+      setProfile({
+        name: profileData.full_name ?? session?.name ?? "Customer",
+        mobile: profileData.mobile ?? session?.mobile ?? "—",
+        location: profileData.location ?? "—",
+      });
+    } else if (session) {
+      setProfile({
+        name: session.name,
+        mobile: session.mobile,
+        location: "—",
+      });
+    }
+
+    setBookingsCount(bookingsCnt ?? 0);
+    setReviewsCount(reviewsCnt ?? 0);
+
+    // Saved workers from localStorage (no dedicated table yet)
+    if (typeof window !== "undefined") {
+      try {
+        const saved = JSON.parse(localStorage.getItem("lc:saved-workers") ?? "[]");
+        setSavedCount(Array.isArray(saved) ? saved.length : 0);
+      } catch {
+        setSavedCount(0);
+      }
+    }
+
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    loadProfile();
+
+    const channels: ReturnType<typeof supabase.channel>[] = [];
+
+    if (customerId) {
+      const bookingsChannel = supabase
+        .channel("profile-bookings")
+        .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `customer_id=eq.${customerId}` }, () => loadProfile())
+        .subscribe();
+      channels.push(bookingsChannel);
+
+      const reviewsChannel = supabase
+        .channel("profile-reviews")
+        .on("postgres_changes", { event: "*", schema: "public", table: "reviews", filter: `customer_id=eq.${customerId}` }, () => loadProfile())
+        .subscribe();
+      channels.push(reviewsChannel);
+    }
+
+    return () => {
+      channels.forEach((ch) => supabase.removeChannel(ch));
+    };
+  }, [customerId]);
 
   function handleLogout() {
     clearSession();
     navigate({ to: "/" });
   }
+
+  const displayName = profile?.name ?? "—";
+  const initials = profile?.name ? getInitials(profile.name) : "—";
 
   return (
     <>
@@ -26,28 +117,28 @@ function UserProfile() {
         <div className="bg-card border border-border rounded-3xl p-5 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="size-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center text-xl font-bold">
-              RS
+              {loading ? <Loader2 className="size-5 animate-spin" /> : initials}
             </div>
             <div>
-              <h2 className="font-bold font-sans">{currentUser.name}</h2>
-              <p className="text-xs text-muted-foreground">{currentUser.mobile}</p>
+              <h2 className="font-bold font-sans">{displayName}</h2>
+              <p className="text-xs text-muted-foreground">{profile?.mobile ?? "—"}</p>
               <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                <MapPin className="size-3" /> {currentUser.location}
+                <MapPin className="size-3" /> {profile?.location ?? "—"}
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-3 mt-5 pt-5 border-t border-border text-center">
             <div>
-              <p className="text-lg font-bold font-sans">{bookings.length}</p>
+              <p className="text-lg font-bold font-sans">{loading ? "—" : bookingsCount}</p>
               <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Bookings</p>
             </div>
             <div className="border-x border-border">
-              <p className="text-lg font-bold font-sans">4</p>
+              <p className="text-lg font-bold font-sans">{loading ? "—" : reviewsCount}</p>
               <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Reviews</p>
             </div>
             <div>
-              <p className="text-lg font-bold font-sans">3</p>
+              <p className="text-lg font-bold font-sans">{loading ? "—" : savedCount}</p>
               <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Saved</p>
             </div>
           </div>
@@ -55,8 +146,8 @@ function UserProfile() {
       </div>
 
       <section className="px-5 mt-6 space-y-2">
-        <Row icon={<Heart className="size-4" />} label="Saved Workers" badge="3" />
-        <Row icon={<Star className="size-4" />} label="My Reviews" badge="4" />
+        <Row icon={<Heart className="size-4" />} label="Saved Workers" badge={loading ? undefined : String(savedCount)} />
+        <Row icon={<Star className="size-4" />} label="My Reviews" badge={loading ? undefined : String(reviewsCount)} />
         <Row icon={<Clock className="size-4" />} label="Booking History" />
         <Row icon={<Phone className="size-4" />} label="Help & Support" />
         <Row icon={<Settings className="size-4" />} label="Settings" />
