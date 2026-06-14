@@ -92,10 +92,11 @@ function WorkerProfile() {
 
   return (
     <>
-      <header className="bg-card px-5 pt-6 pb-4 sticky top-0 z-30 border-b border-border">
+      <header className="bg-card px-5 pt-6 pb-4 sticky top-0 z-30 border-b border-border flex items-center justify-between">
         <Link to="/user" className="inline-flex items-center gap-2 text-sm text-muted-foreground">
           <ArrowLeft className="size-4" /> Back
         </Link>
+        <SaveWorkerButton workerId={w.id} />
       </header>
 
       <section className="px-5 py-6">
