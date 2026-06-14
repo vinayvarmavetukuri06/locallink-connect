@@ -215,12 +215,12 @@ function MemberProfile() {
           <span className="flex-1 text-sm font-semibold text-left">Settings</span>
           <ChevronRight className="size-4 text-muted-foreground" />
         </button>
-        <Link
-          to="/"
+        <button
+          onClick={handleLogout}
           className="w-full bg-destructive/10 text-destructive flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm"
         >
           <LogOut className="size-4" /> Logout
-        </Link>
+        </button>
       </section>
     </>
   );
