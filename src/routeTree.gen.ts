@@ -21,11 +21,13 @@ import { Route as UserSettingsRouteImport } from './routes/user.settings'
 import { Route as UserSavedRouteImport } from './routes/user.saved'
 import { Route as UserReviewsRouteImport } from './routes/user.reviews'
 import { Route as UserProfileRouteImport } from './routes/user.profile'
+import { Route as UserNotificationsRouteImport } from './routes/user.notifications'
 import { Route as UserHistoryRouteImport } from './routes/user.history'
 import { Route as UserHelpRouteImport } from './routes/user.help'
 import { Route as UserChatRouteImport } from './routes/user.chat'
 import { Route as UserBookingsRouteImport } from './routes/user.bookings'
 import { Route as MemberProfileRouteImport } from './routes/member.profile'
+import { Route as MemberNotificationsRouteImport } from './routes/member.notifications'
 import { Route as MemberMembershipRouteImport } from './routes/member.membership'
 import { Route as MemberChatRouteImport } from './routes/member.chat'
 import { Route as MemberBookingsRouteImport } from './routes/member.bookings'
@@ -95,6 +97,11 @@ const UserProfileRoute = UserProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => UserRoute,
 } as any)
+const UserNotificationsRoute = UserNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => UserRoute,
+} as any)
 const UserHistoryRoute = UserHistoryRouteImport.update({
   id: '/history',
   path: '/history',
@@ -118,6 +125,11 @@ const UserBookingsRoute = UserBookingsRouteImport.update({
 const MemberProfileRoute = MemberProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => MemberRoute,
+} as any)
+const MemberNotificationsRoute = MemberNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => MemberRoute,
 } as any)
 const MemberMembershipRoute = MemberMembershipRouteImport.update({
@@ -172,11 +184,13 @@ export interface FileRoutesByFullPath {
   '/member/bookings': typeof MemberBookingsRoute
   '/member/chat': typeof MemberChatRoute
   '/member/membership': typeof MemberMembershipRoute
+  '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/help': typeof UserHelpRoute
   '/user/history': typeof UserHistoryRoute
+  '/user/notifications': typeof UserNotificationsRoute
   '/user/profile': typeof UserProfileRoute
   '/user/reviews': typeof UserReviewsRoute
   '/user/saved': typeof UserSavedRoute
@@ -196,11 +210,13 @@ export interface FileRoutesByTo {
   '/member/bookings': typeof MemberBookingsRoute
   '/member/chat': typeof MemberChatRoute
   '/member/membership': typeof MemberMembershipRoute
+  '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/help': typeof UserHelpRoute
   '/user/history': typeof UserHistoryRoute
+  '/user/notifications': typeof UserNotificationsRoute
   '/user/profile': typeof UserProfileRoute
   '/user/reviews': typeof UserReviewsRoute
   '/user/saved': typeof UserSavedRoute
@@ -224,11 +240,13 @@ export interface FileRoutesById {
   '/member/bookings': typeof MemberBookingsRoute
   '/member/chat': typeof MemberChatRoute
   '/member/membership': typeof MemberMembershipRoute
+  '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/user/bookings': typeof UserBookingsRoute
   '/user/chat': typeof UserChatRoute
   '/user/help': typeof UserHelpRoute
   '/user/history': typeof UserHistoryRoute
+  '/user/notifications': typeof UserNotificationsRoute
   '/user/profile': typeof UserProfileRoute
   '/user/reviews': typeof UserReviewsRoute
   '/user/saved': typeof UserSavedRoute
@@ -253,11 +271,13 @@ export interface FileRouteTypes {
     | '/member/bookings'
     | '/member/chat'
     | '/member/membership'
+    | '/member/notifications'
     | '/member/profile'
     | '/user/bookings'
     | '/user/chat'
     | '/user/help'
     | '/user/history'
+    | '/user/notifications'
     | '/user/profile'
     | '/user/reviews'
     | '/user/saved'
@@ -277,11 +297,13 @@ export interface FileRouteTypes {
     | '/member/bookings'
     | '/member/chat'
     | '/member/membership'
+    | '/member/notifications'
     | '/member/profile'
     | '/user/bookings'
     | '/user/chat'
     | '/user/help'
     | '/user/history'
+    | '/user/notifications'
     | '/user/profile'
     | '/user/reviews'
     | '/user/saved'
@@ -304,11 +326,13 @@ export interface FileRouteTypes {
     | '/member/bookings'
     | '/member/chat'
     | '/member/membership'
+    | '/member/notifications'
     | '/member/profile'
     | '/user/bookings'
     | '/user/chat'
     | '/user/help'
     | '/user/history'
+    | '/user/notifications'
     | '/user/profile'
     | '/user/reviews'
     | '/user/saved'
@@ -418,6 +442,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserProfileRouteImport
       parentRoute: typeof UserRoute
     }
+    '/user/notifications': {
+      id: '/user/notifications'
+      path: '/notifications'
+      fullPath: '/user/notifications'
+      preLoaderRoute: typeof UserNotificationsRouteImport
+      parentRoute: typeof UserRoute
+    }
     '/user/history': {
       id: '/user/history'
       path: '/history'
@@ -451,6 +482,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/member/profile'
       preLoaderRoute: typeof MemberProfileRouteImport
+      parentRoute: typeof MemberRoute
+    }
+    '/member/notifications': {
+      id: '/member/notifications'
+      path: '/notifications'
+      fullPath: '/member/notifications'
+      preLoaderRoute: typeof MemberNotificationsRouteImport
       parentRoute: typeof MemberRoute
     }
     '/member/membership': {
@@ -526,6 +564,7 @@ interface MemberRouteChildren {
   MemberBookingsRoute: typeof MemberBookingsRoute
   MemberChatRoute: typeof MemberChatRoute
   MemberMembershipRoute: typeof MemberMembershipRoute
+  MemberNotificationsRoute: typeof MemberNotificationsRoute
   MemberProfileRoute: typeof MemberProfileRoute
   MemberIndexRoute: typeof MemberIndexRoute
 }
@@ -534,6 +573,7 @@ const MemberRouteChildren: MemberRouteChildren = {
   MemberBookingsRoute: MemberBookingsRoute,
   MemberChatRoute: MemberChatRoute,
   MemberMembershipRoute: MemberMembershipRoute,
+  MemberNotificationsRoute: MemberNotificationsRoute,
   MemberProfileRoute: MemberProfileRoute,
   MemberIndexRoute: MemberIndexRoute,
 }
@@ -546,6 +586,7 @@ interface UserRouteChildren {
   UserChatRoute: typeof UserChatRoute
   UserHelpRoute: typeof UserHelpRoute
   UserHistoryRoute: typeof UserHistoryRoute
+  UserNotificationsRoute: typeof UserNotificationsRoute
   UserProfileRoute: typeof UserProfileRoute
   UserReviewsRoute: typeof UserReviewsRoute
   UserSavedRoute: typeof UserSavedRoute
@@ -560,6 +601,7 @@ const UserRouteChildren: UserRouteChildren = {
   UserChatRoute: UserChatRoute,
   UserHelpRoute: UserHelpRoute,
   UserHistoryRoute: UserHistoryRoute,
+  UserNotificationsRoute: UserNotificationsRoute,
   UserProfileRoute: UserProfileRoute,
   UserReviewsRoute: UserReviewsRoute,
   UserSavedRoute: UserSavedRoute,
