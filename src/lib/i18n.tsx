@@ -224,7 +224,9 @@ const te: Dict = {
   "nav.profile": "ప్రొఫైల్",
   "nav.plan": "ప్లాన్",
 
-  "userHome.namaste": "నమస్తే,",
+  "userHome.namaste": "నమస్కారం,",
+  "auth.nameHintHi": "మీరు మీ పేరును హిందీ (देवनागरी) లిపిలో టైప్ చేయవచ్చు",
+  "auth.nameHintTe": "మీరు మీ పేరును తెలుగు లిపిలో (తెలుగు) టైప్ చేయవచ్చు",
   "userHome.searchPlaceholder": "పేరు, సేవ లేదా ప్రాంతం ద్వారా శోధించండి...",
   "userHome.services": "మా సేవలు",
   "userHome.viewAll": "అన్నీ చూడండి",
