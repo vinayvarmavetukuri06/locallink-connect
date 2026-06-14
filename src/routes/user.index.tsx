@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, Search, Star, Loader2 } from "lucide-react";
 import { NotificationBell } from "@/components/notification-bell";
+import { LanguageButton } from "@/components/language-selector";
+import { useI18n } from "@/lib/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { categories, categorySlugFromService } from "@/lib/mock-data";
 import { useUserProfile } from "@/lib/profile-store";
