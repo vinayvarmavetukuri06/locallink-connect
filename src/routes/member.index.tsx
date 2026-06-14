@@ -7,6 +7,8 @@ import {
   CircleAlert,
 } from "lucide-react";
 import { NotificationBell } from "@/components/notification-bell";
+import { LanguageButton } from "@/components/language-selector";
+import { useI18n } from "@/lib/i18n";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryBySlug } from "@/lib/mock-data";
