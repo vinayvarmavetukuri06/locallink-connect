@@ -63,6 +63,8 @@ const en: Dict = {
 
   // user home
   "userHome.namaste": "Namaste,",
+  "auth.nameHintHi": "You can type your name in Hindi script (हिंदी)",
+  "auth.nameHintTe": "You can type your name in Telugu script (తెలుగు)",
   "userHome.searchPlaceholder": "Search by name, service or area...",
   "userHome.services": "Our Services",
   "userHome.viewAll": "View All",
