@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, Calendar, MessageCircle, User, LayoutDashboard, BadgeIndianRupee, Users, Tag } from "lucide-react";
+// Note: BadgeIndianRupee retained for admin nav only.
 import type { ReactNode } from "react";
 import { useI18n } from "@/lib/i18n";
 
@@ -16,7 +17,6 @@ const memberNav: NavItem[] = [
   { to: "/member", labelKey: "nav.home", fallback: "Home", icon: <LayoutDashboard className="size-5" /> },
   { to: "/member/bookings", labelKey: "nav.bookings", fallback: "Bookings", icon: <Calendar className="size-5" /> },
   { to: "/member/chat", labelKey: "nav.chat", fallback: "Chat", icon: <MessageCircle className="size-5" /> },
-  { to: "/member/membership", labelKey: "nav.plan", fallback: "Plan", icon: <BadgeIndianRupee className="size-5" /> },
   { to: "/member/profile", labelKey: "nav.profile", fallback: "Profile", icon: <User className="size-5" /> },
 ];
 
