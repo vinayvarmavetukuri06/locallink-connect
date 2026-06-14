@@ -145,6 +145,8 @@ const hi: Dict = {
   "nav.plan": "प्लान",
 
   "userHome.namaste": "नमस्ते,",
+  "auth.nameHintHi": "आप अपना नाम हिंदी (देवनागरी) में लिख सकते हैं",
+  "auth.nameHintTe": "आप अपना नाम तेलुगु लिपि (తెలుగు) में लिख सकते हैं",
   "userHome.searchPlaceholder": "नाम, सेवा या क्षेत्र से खोजें...",
   "userHome.services": "हमारी सेवाएँ",
   "userHome.viewAll": "सभी देखें",
