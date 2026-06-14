@@ -49,7 +49,7 @@ function UserHome() {
       const { data } = await supabase
         .from("bookings")
         .select("id, service, amount, created_at")
-        .eq("customer_id", customerId)
+        .eq("customer_id", customerId!)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
