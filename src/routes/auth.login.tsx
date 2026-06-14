@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { setUserProfile, setMemberProfile } from "@/lib/profile-store";
 import { hashPassword, DEMO_OTP } from "@/lib/password";
 import { saveSession } from "@/lib/session";
+import { LanguageButton } from "@/components/language-selector";
 
 export const Route = createFileRoute("/auth/login")({
   component: Login,
