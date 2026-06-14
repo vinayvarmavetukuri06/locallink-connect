@@ -139,6 +139,27 @@ export type Database = {
           },
         ]
       }
+      saved_workers: {
+        Row: {
+          created_at: string
+          customer_id: string
+          id: string
+          worker_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          id?: string
+          worker_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          id?: string
+          worker_id?: string
+        }
+        Relationships: []
+      }
       worker_profiles: {
         Row: {
           bio: string | null
