@@ -146,19 +146,22 @@ function Login() {
 
   return (
     <div className="mobile-shell px-5 py-6">
-      <button
-        type="button"
-        onClick={() => {
-          setErr(null);
-          setInfo(null);
-          if (step === "mobile") history.back();
-          else if (step === "forgot-otp") setStep("mobile");
-          else setStep("forgot-otp");
-        }}
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-6"
-      >
-        <ArrowLeft className="size-4" /> Back
-      </button>
+      <div className="flex items-center justify-between mb-6">
+        <button
+          type="button"
+          onClick={() => {
+            setErr(null);
+            setInfo(null);
+            if (step === "mobile") history.back();
+            else if (step === "forgot-otp") setStep("mobile");
+            else setStep("forgot-otp");
+          }}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground"
+        >
+          <ArrowLeft className="size-4" /> Back
+        </button>
+        <LanguageButton />
+      </div>
 
       {step === "mobile" && (
         <form
