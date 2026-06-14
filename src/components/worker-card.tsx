@@ -1,6 +1,7 @@
 import type { RealWorker } from "@/lib/workers-api";
 import { Link } from "@tanstack/react-router";
 import { Star, UserRound } from "lucide-react";
+import { SaveWorkerButton } from "@/components/save-worker-button";
 
 type AvatarSubject = { tint: string; initials: string };
 
