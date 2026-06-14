@@ -81,7 +81,7 @@ function UserHome() {
         <div className="flex justify-between items-start mb-4">
           <div className="min-w-0">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-0.5">
-              Namaste,
+              {t("userHome.namaste")}
             </p>
             <h1 className="font-serif text-2xl truncate">{currentUser.name}</h1>
           </div>
@@ -92,8 +92,8 @@ function UserHome() {
                 {currentUser.location.split(",")[0]}
               </span>
             </button>
+            <LanguageButton />
             <NotificationBell userId={customerId} to="/user/notifications" />
-
           </div>
         </div>
 
@@ -102,7 +102,7 @@ function UserHome() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by name, service or area..."
+            placeholder={t("userHome.searchPlaceholder")}
             className="w-full bg-secondary border-none rounded-2xl py-3.5 pl-11 pr-4 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
           />
         </div>
@@ -111,8 +111,8 @@ function UserHome() {
       {/* Categories */}
       <section className="px-5 py-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="font-bold text-lg font-sans">Our Services</h2>
-          <button className="text-primary text-xs font-bold">View All</button>
+          <h2 className="font-bold text-lg font-sans">{t("userHome.services")}</h2>
+          <button className="text-primary text-xs font-bold">{t("userHome.viewAll")}</button>
         </div>
         <div className="grid grid-cols-4 gap-y-5 gap-x-2">
           {categories.map((c) => (
