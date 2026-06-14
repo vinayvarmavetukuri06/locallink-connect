@@ -66,28 +66,31 @@ export function WorkerListCard({ worker }: { worker: RealWorker }) {
 
 export function FeaturedWorkerCard({ worker }: { worker: RealWorker }) {
   return (
-    <Link
-      to="/user/worker/$id"
-      params={{ id: worker.id }}
-      className="flex-shrink-0 w-64 rounded-3xl p-5 flex flex-col justify-between aspect-[4/3] bg-card text-card-foreground border border-border"
-    >
-      <div className="flex justify-between items-start">
-        <WorkerAvatar worker={worker} size="sm" />
-        <div className="text-right text-[10px] font-medium opacity-80">
-          <p>STARTS FROM</p>
-          <p className="text-lg font-bold text-foreground">₹{worker.startingPrice}/hr</p>
+    <div className="relative flex-shrink-0 w-64">
+      <Link
+        to="/user/worker/$id"
+        params={{ id: worker.id }}
+        className="rounded-3xl p-5 flex flex-col justify-between aspect-[4/3] bg-card text-card-foreground border border-border"
+      >
+        <div className="flex justify-between items-start">
+          <WorkerAvatar worker={worker} size="sm" />
+          <div className="text-right text-[10px] font-medium opacity-80 pr-10">
+            <p>STARTS FROM</p>
+            <p className="text-lg font-bold text-foreground">₹{worker.startingPrice}/hr</p>
+          </div>
         </div>
-      </div>
-      <div className="min-w-0">
-        <div className="flex items-center gap-1 mb-1">
-          <Star className="size-3 text-accent fill-current shrink-0" />
-          <span className="text-[10px] font-bold">{worker.rating.toFixed(1)}</span>
+        <div className="min-w-0">
+          <div className="flex items-center gap-1 mb-1">
+            <Star className="size-3 text-accent fill-current shrink-0" />
+            <span className="text-[10px] font-bold">{worker.rating.toFixed(1)}</span>
+          </div>
+          <h3 className="font-bold text-base leading-tight font-sans truncate">{worker.name}</h3>
+          <p className="text-xs opacity-80 mt-0.5 truncate">{worker.trade}</p>
+          <AvailabilityBadge available={worker.available} />
         </div>
-        <h3 className="font-bold text-base leading-tight font-sans truncate">{worker.name}</h3>
-        <p className="text-xs opacity-80 mt-0.5 truncate">{worker.trade}</p>
-        <AvailabilityBadge available={worker.available} />
-      </div>
-    </Link>
+      </Link>
+      <SaveWorkerButton workerId={worker.id} className="absolute top-4 right-4" size="sm" />
+    </div>
   );
 }
 
