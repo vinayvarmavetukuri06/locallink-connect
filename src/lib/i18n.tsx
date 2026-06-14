@@ -63,6 +63,8 @@ const en: Dict = {
 
   // user home
   "userHome.namaste": "Namaste,",
+  "auth.nameHintHi": "You can type your name in Hindi script (हिंदी)",
+  "auth.nameHintTe": "You can type your name in Telugu script (తెలుగు)",
   "userHome.searchPlaceholder": "Search by name, service or area...",
   "userHome.services": "Our Services",
   "userHome.viewAll": "View All",
@@ -143,6 +145,8 @@ const hi: Dict = {
   "nav.plan": "प्लान",
 
   "userHome.namaste": "नमस्ते,",
+  "auth.nameHintHi": "आप अपना नाम हिंदी (देवनागरी) में लिख सकते हैं",
+  "auth.nameHintTe": "आप अपना नाम तेलुगु लिपि (తెలుగు) में लिख सकते हैं",
   "userHome.searchPlaceholder": "नाम, सेवा या क्षेत्र से खोजें...",
   "userHome.services": "हमारी सेवाएँ",
   "userHome.viewAll": "सभी देखें",
@@ -220,7 +224,9 @@ const te: Dict = {
   "nav.profile": "ప్రొఫైల్",
   "nav.plan": "ప్లాన్",
 
-  "userHome.namaste": "నమస్తే,",
+  "userHome.namaste": "నమస్కారం,",
+  "auth.nameHintHi": "మీరు మీ పేరును హిందీ (देवनागरी) లిపిలో టైప్ చేయవచ్చు",
+  "auth.nameHintTe": "మీరు మీ పేరును తెలుగు లిపిలో (తెలుగు) టైప్ చేయవచ్చు",
   "userHome.searchPlaceholder": "పేరు, సేవ లేదా ప్రాంతం ద్వారా శోధించండి...",
   "userHome.services": "మా సేవలు",
   "userHome.viewAll": "అన్నీ చూడండి",

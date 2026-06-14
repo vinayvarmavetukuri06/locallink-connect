@@ -5,6 +5,7 @@ import { saveUserProfile } from "@/lib/profile-store";
 import { hashPassword, DEMO_OTP } from "@/lib/password";
 import { supabase } from "@/integrations/supabase/client";
 import { saveSession } from "@/lib/session";
+import { useI18n } from "@/lib/i18n";
 import { PasswordPair } from "./auth.login";
 
 export const Route = createFileRoute("/auth/user")({
@@ -15,6 +16,7 @@ type Step = "mobile" | "otp" | "password" | "details";
 
 function UserAuth() {
   const navigate = useNavigate();
+  const { lang, t } = useI18n();
   const [step, setStep] = useState<Step>("mobile");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -213,11 +215,16 @@ function UserAuth() {
             <Field
               icon={<User className="size-4" />}
               label="Full Name"
-              placeholder="Rahul Sharma"
+              placeholder={lang === "hi" ? "राहुल शर्मा" : lang === "te" ? "రాహుల్ శర్మ" : "Rahul Sharma"}
               autoFocus
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+              lang={lang}
+              inputMode="text"
+              autoComplete="name"
+              hint={lang === "hi" ? t("auth.nameHintHi") : lang === "te" ? t("auth.nameHintTe") : undefined}
             />
+
 
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -268,8 +275,9 @@ function UserAuth() {
 function Field({
   icon,
   label,
+  hint,
   ...inputProps
-}: { icon: React.ReactNode; label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+}: { icon: React.ReactNode; label: string; hint?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div>
       <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -282,6 +290,7 @@ function Field({
           className="flex-1 bg-transparent outline-none text-sm font-medium disabled:opacity-60"
         />
       </div>
+      {hint && <p className="mt-1.5 text-[11px] text-muted-foreground">{hint}</p>}
     </div>
   );
 }
