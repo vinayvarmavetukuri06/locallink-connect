@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Phone, MapPin, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 
 type Booking = {
   id: string;
@@ -19,21 +20,22 @@ type Booking = {
 
 type Profile = { id: string; full_name: string | null; mobile: string | null };
 
-const TABS = [
-  { key: "pending", label: "New" },
-  { key: "accepted", label: "Upcoming" },
-  { key: "in_progress", label: "Active" },
-  { key: "completed", label: "Done" },
-  { key: "cancelled", label: "Cancelled" },
-  { key: "declined", label: "Declined" },
-] as const;
-
 export const Route = createFileRoute("/member/bookings")({
   component: MemberBookings,
 });
 
 function MemberBookings() {
-  const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("pending");
+  const { t } = useI18n();
+  const TABS = [
+    { key: "pending", label: t("memberBookings.tabNew") },
+    { key: "accepted", label: t("memberBookings.tabUpcoming") },
+    { key: "in_progress", label: t("memberBookings.tabActive") },
+    { key: "completed", label: t("memberBookings.tabDone") },
+    { key: "cancelled", label: t("memberBookings.tabCancelled") },
+    { key: "declined", label: t("memberBookings.tabDeclined") },
+  ] as const;
+
+  const [tab, setTab] = useState<string>("pending");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [customers, setCustomers] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
@@ -87,22 +89,22 @@ function MemberBookings() {
   return (
     <>
       <header className="bg-card px-5 pt-6 pb-3 border-b border-border sticky top-0 z-30">
-        <h1 className="font-serif text-2xl">Booking Manager</h1>
-        <p className="text-xs text-muted-foreground">Manage your customer jobs</p>
+        <h1 className="font-serif text-2xl">{t("memberBookings.title")}</h1>
+        <p className="text-xs text-muted-foreground">{t("memberBookings.subtitle")}</p>
       </header>
 
       <div className="px-5 pt-4 flex gap-2 overflow-x-auto no-scrollbar">
-        {TABS.map((t) => {
-          const count = bookings.filter((b) => b.status === t.key).length;
+        {TABS.map((tt) => {
+          const count = bookings.filter((b) => b.status === tt.key).length;
           return (
             <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
+              key={tt.key}
+              onClick={() => setTab(tt.key)}
               className={`text-xs font-bold px-4 py-2 rounded-full whitespace-nowrap ${
-                tab === t.key ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"
+                tab === tt.key ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"
               }`}
             >
-              {t.label} {count > 0 && <span className="ml-1 opacity-70">({count})</span>}
+              {tt.label} {count > 0 && <span className="ml-1 opacity-70">({count})</span>}
             </button>
           );
         })}
@@ -113,11 +115,11 @@ function MemberBookings() {
           <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
         )}
         {!loading && filtered.length === 0 && (
-          <div className="text-center py-10 text-sm text-muted-foreground">No bookings in this tab.</div>
+          <div className="text-center py-10 text-sm text-muted-foreground">{t("memberBookings.empty")}</div>
         )}
         {filtered.map((b) => {
           const cust = b.customer_id ? customers[b.customer_id] : null;
-          const name = cust?.full_name ?? "Customer";
+          const name = cust?.full_name ?? t("memberHome.customer");
           const mobile = cust?.mobile ?? "—";
           return (
             <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
@@ -148,14 +150,14 @@ function MemberBookings() {
                     onClick={() => updateStatus(b.id, "declined")}
                     className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-destructive text-destructive-foreground disabled:opacity-60"
                   >
-                    Decline
+                    {t("memberBookings.decline")}
                   </button>
                   <button
                     disabled={updatingId === b.id}
                     onClick={() => updateStatus(b.id, "accepted")}
                     className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground disabled:opacity-60"
                   >
-                    Accept
+                    {t("memberBookings.accept")}
                   </button>
                 </div>
               )}
@@ -165,13 +167,13 @@ function MemberBookings() {
                     onClick={() => updateStatus(b.id, "cancelled")}
                     className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-destructive text-destructive-foreground"
                   >
-                    Cancel
+                    {t("common.cancel")}
                   </button>
                   <button
                     onClick={() => updateStatus(b.id, "in_progress")}
                     className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-primary text-primary-foreground"
                   >
-                    Mark In Progress
+                    {t("memberBookings.markInProgress")}
                   </button>
                 </div>
               )}
@@ -181,13 +183,13 @@ function MemberBookings() {
                     onClick={() => updateStatus(b.id, "cancelled")}
                     className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-destructive text-destructive-foreground"
                   >
-                    Cancel
+                    {t("common.cancel")}
                   </button>
                   <button
                     onClick={() => updateStatus(b.id, "completed")}
                     className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground"
                   >
-                    Mark Completed
+                    {t("memberBookings.markCompleted")}
                   </button>
                 </div>
               )}

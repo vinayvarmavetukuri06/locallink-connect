@@ -43,7 +43,7 @@ type BookingRow = {
 };
 
 function MemberHome() {
-  const { t } = useI18n();
+  const { t, tService } = useI18n();
   const workerUserId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
   const [worker, setWorker] = useState<WorkerInfo | null>(null);
   const [workerRowId, setWorkerRowId] = useState<string | null>(null);
@@ -68,13 +68,13 @@ function MemberHome() {
     setWorker({
       userId: workerUserId,
       rowId: wp?.id ?? null,
-      name: profile?.full_name ?? "Worker",
+      name: profile?.full_name ?? "",
       category: slug,
-      trade: categoryBySlug(slug)?.name ?? slug ?? "Service Pro",
+      trade: tService(slug, categoryBySlug(slug)?.name ?? t("memberHome.servicePro")),
       area: profile?.location ?? "",
       isAvailable: wp?.is_available ?? true,
     });
-  }, [workerUserId]);
+  }, [workerUserId, t, tService]);
 
   const loadBookings = useCallback(async (rowId: string | null) => {
     if (!rowId) {
@@ -96,12 +96,12 @@ function MemberHome() {
         .in("id", customerIds);
       const map = new Map((profs ?? []).map((p: any) => [p.id, p.full_name]));
       rows.forEach((r) => {
-        r.customer_name = (r.customer_id && map.get(r.customer_id)) || "Customer";
+        r.customer_name = (r.customer_id && map.get(r.customer_id)) || t("memberHome.customer");
       });
     }
     setBookings(rows);
     setLoading(false);
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadWorker();
@@ -111,7 +111,6 @@ function MemberHome() {
     loadBookings(workerRowId);
   }, [workerRowId, loadBookings]);
 
-  // Realtime: bookings for this worker
   useEffect(() => {
     if (!workerRowId) return;
     const channel = supabase
@@ -126,7 +125,6 @@ function MemberHome() {
       supabase.removeChannel(channel);
     };
   }, [workerRowId, loadBookings]);
-
 
   const totalBookings = bookings.length;
   const earnings = useMemo(
@@ -161,7 +159,6 @@ function MemberHome() {
         </div>
       </header>
 
-      {/* Stats */}
       <div className="px-5">
         <div className="bg-card border border-border rounded-3xl p-4 grid grid-cols-2 gap-3 shadow-md">
           <Metric
@@ -181,7 +178,6 @@ function MemberHome() {
         </div>
       </div>
 
-      {/* Pending Requests */}
       <section className="px-5 mt-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-bold text-lg font-sans">{t("memberHome.customerRequests")}</h2>
@@ -207,7 +203,6 @@ function MemberHome() {
         )}
       </section>
 
-      {/* Tip */}
       <section className="px-5 mt-6 mb-4">
         <div className="bg-secondary rounded-2xl p-4 flex items-start gap-3">
           <div className="size-9 rounded-xl bg-success/15 text-success flex items-center justify-center shrink-0">
@@ -249,7 +244,6 @@ function Metric({
 }
 
 function AvailabilityPill({
-  workerUserId,
   rowId,
   initial,
 }: {
@@ -257,6 +251,7 @@ function AvailabilityPill({
   rowId: string | null;
   initial: boolean | null;
 }) {
+  const { t } = useI18n();
   const [available, setAvailable] = useState<boolean | null>(initial);
   const [saving, setSaving] = useState(false);
 
@@ -274,7 +269,7 @@ function AvailabilityPill({
       const { error } = await supabase.from("worker_profiles").update({ is_available: next }).eq("id", rowId);
       if (error) {
         setAvailable(!next);
-        toast.error("Couldn't update availability");
+        toast.error(t("memberHome.couldNotUpdate"));
         setSaving(false);
         return;
       }
@@ -288,11 +283,11 @@ function AvailabilityPill({
         .in("status", ["accepted", "in_progress"])
         .select("id");
       if (cancelled && cancelled.length > 0) {
-        toast.warning(`${cancelled.length} active booking(s) were cancelled.`);
+        toast.warning(`${cancelled.length} ${t("memberHome.cancelledN")}`);
       }
     }
 
-    toast.success(next ? "You're now Available" : "You're now Unavailable");
+    toast.success(next ? t("memberHome.nowAvailable") : t("memberHome.nowUnavailable"));
     setSaving(false);
   }
 
@@ -302,7 +297,7 @@ function AvailabilityPill({
       onClick={toggle}
       disabled={available === null || saving}
       className="flex items-center gap-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-      aria-label="Toggle availability"
+      aria-label={t("memberProfile.availability")}
     >
       <span className="relative inline-flex items-center shrink-0">
         <span
@@ -317,13 +312,14 @@ function AvailabilityPill({
         />
       </span>
       <span className={`text-xs font-semibold ${isOn ? "text-success" : "text-destructive"}`}>
-        {isOn ? "Available" : "Unavailable"}
+        {isOn ? t("memberHome.available") : t("memberHome.unavailable")}
       </span>
     </button>
   );
 }
 
 function RequestCard({ booking, onChanged }: { booking: BookingRow; onChanged: () => void }) {
+  const { t } = useI18n();
   const [busy, setBusy] = useState<"accept" | "reject" | null>(null);
   const [localStatus, setLocalStatus] = useState<string>(booking.status);
 
@@ -332,7 +328,7 @@ function RequestCard({ booking, onChanged }: { booking: BookingRow; onChanged: (
     const { error } = await supabase.from("bookings").update({ status }).eq("id", booking.id);
     setBusy(null);
     if (error) {
-      toast.error("Couldn't update booking");
+      toast.error(t("memberHome.couldNotUpdateBooking"));
       return;
     }
     setLocalStatus(status);
@@ -343,7 +339,7 @@ function RequestCard({ booking, onChanged }: { booking: BookingRow; onChanged: (
     <div className="bg-card border border-border rounded-2xl p-4">
       <div className="flex items-start justify-between">
         <div className="min-w-0">
-          <p className="font-bold text-sm font-sans truncate">{booking.customer_name ?? "Customer"}</p>
+          <p className="font-bold text-sm font-sans truncate">{booking.customer_name ?? t("memberHome.customer")}</p>
           <p className="text-[11px] text-muted-foreground truncate">{booking.address ?? "—"}</p>
         </div>
         {booking.amount != null && (
@@ -368,23 +364,23 @@ function RequestCard({ booking, onChanged }: { booking: BookingRow; onChanged: (
             disabled={busy !== null}
             className="flex-1 py-2 text-xs font-bold rounded-lg bg-secondary disabled:opacity-50"
           >
-            {busy === "reject" ? "…" : "Reject"}
+            {busy === "reject" ? "…" : t("memberHome.reject")}
           </button>
           <button
             onClick={() => update("accepted")}
             disabled={busy !== null}
             className="flex-1 py-2 text-xs font-bold rounded-lg bg-success text-success-foreground disabled:opacity-50"
           >
-            {busy === "accept" ? "…" : "Accept"}
+            {busy === "accept" ? "…" : t("memberHome.accept")}
           </button>
         </div>
       ) : localStatus === "accepted" ? (
         <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-success font-bold">
-          <CircleCheck className="size-4" /> Accepted
+          <CircleCheck className="size-4" /> {t("memberHome.accepted")}
         </div>
       ) : (
         <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-destructive font-bold">
-          <CircleAlert className="size-4" /> Rejected
+          <CircleAlert className="size-4" /> {t("memberHome.rejected")}
         </div>
       )}
     </div>

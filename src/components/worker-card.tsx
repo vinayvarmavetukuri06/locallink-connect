@@ -2,6 +2,7 @@ import type { RealWorker } from "@/lib/workers-api";
 import { Link } from "@tanstack/react-router";
 import { Star, UserRound } from "lucide-react";
 import { SaveWorkerButton } from "@/components/save-worker-button";
+import { useI18n } from "@/lib/i18n";
 
 type AvatarSubject = { tint: string; initials: string };
 
@@ -17,17 +18,19 @@ export function WorkerAvatar({ worker, size = "md" }: { worker: AvatarSubject; s
 }
 
 export function AvailabilityBadge({ available }: { available: boolean }) {
+  const { t } = useI18n();
   return (
     <span className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold">
       <span className={`size-1.5 rounded-full ${available ? "bg-success" : "bg-muted-foreground"}`} />
       <span className={available ? "text-success" : "text-muted-foreground"}>
-        {available ? "Available" : "Busy"}
+        {available ? t("card.available") : t("card.busy")}
       </span>
     </span>
   );
 }
 
 export function WorkerListCard({ worker }: { worker: RealWorker }) {
+  const { t, tService } = useI18n();
   return (
     <div className="relative">
       <Link
@@ -41,7 +44,7 @@ export function WorkerListCard({ worker }: { worker: RealWorker }) {
             <div className="min-w-0 pr-8">
               <h3 className="font-bold text-sm leading-tight truncate font-sans">{worker.name}</h3>
               <p className="text-[11px] text-muted-foreground truncate">
-                {worker.trade}
+                {tService(worker.category, worker.trade)}
                 {worker.area ? ` • ${worker.area}` : ""}
               </p>
               <AvailabilityBadge available={worker.available} />
@@ -55,7 +58,7 @@ export function WorkerListCard({ worker }: { worker: RealWorker }) {
             </div>
           </div>
           <button className="mt-3 w-full bg-foreground text-background text-xs font-bold py-2 rounded-lg active:scale-95 transition-transform">
-            Book Now
+            {t("card.bookNow")}
           </button>
         </div>
       </Link>
@@ -65,6 +68,7 @@ export function WorkerListCard({ worker }: { worker: RealWorker }) {
 }
 
 export function FeaturedWorkerCard({ worker }: { worker: RealWorker }) {
+  const { tService } = useI18n();
   return (
     <div className="relative flex-shrink-0 w-64">
       <Link
@@ -75,7 +79,6 @@ export function FeaturedWorkerCard({ worker }: { worker: RealWorker }) {
         <div className="flex justify-between items-start">
           <WorkerAvatar worker={worker} size="sm" />
           <div className="text-right text-[10px] font-medium opacity-80 pr-10">
-            <p>STARTS FROM</p>
             <p className="text-lg font-bold text-foreground">₹{worker.startingPrice}/hr</p>
           </div>
         </div>
@@ -85,7 +88,7 @@ export function FeaturedWorkerCard({ worker }: { worker: RealWorker }) {
             <span className="text-[10px] font-bold">{worker.rating.toFixed(1)}</span>
           </div>
           <h3 className="font-bold text-base leading-tight font-sans truncate">{worker.name}</h3>
-          <p className="text-xs opacity-80 mt-0.5 truncate">{worker.trade}</p>
+          <p className="text-xs opacity-80 mt-0.5 truncate">{tService(worker.category, worker.trade)}</p>
           <AvailabilityBadge available={worker.available} />
         </div>
       </Link>
@@ -95,14 +98,15 @@ export function FeaturedWorkerCard({ worker }: { worker: RealWorker }) {
 }
 
 export function NoWorkersCard({ message }: { message?: string }) {
+  const { t } = useI18n();
   return (
     <div className="bg-card border border-dashed border-border rounded-2xl p-6 flex flex-col items-center text-center">
       <div className="size-12 rounded-2xl bg-secondary flex items-center justify-center text-muted-foreground">
         <UserRound className="size-6" />
       </div>
-      <p className="mt-3 text-sm font-semibold">No workers available</p>
+      <p className="mt-3 text-sm font-semibold">{t("card.noAvailable")}</p>
       <p className="mt-1 text-xs text-muted-foreground max-w-[28ch]">
-        {message ?? "No workers available in your area yet — check back soon!"}
+        {message ?? t("card.noAvailableSub")}
       </p>
     </div>
   );

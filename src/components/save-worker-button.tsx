@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Heart, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 
 export function SaveWorkerButton({
   workerId,
@@ -11,8 +12,9 @@ export function SaveWorkerButton({
   className?: string;
   size?: "sm" | "md";
 }) {
+  const { t } = useI18n();
   const [saved, setSaved] = useState(false);
-  const [rowId, setRowId] = useState<string | null>(null);
+  const [, setRowId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const customerId =
@@ -75,7 +77,7 @@ export function SaveWorkerButton({
     <button
       type="button"
       onClick={toggle}
-      aria-label={saved ? "Remove from saved" : "Save worker"}
+      aria-label={saved ? t("worker.removeSave") : t("worker.save")}
       aria-pressed={saved}
       className={`${dim} rounded-full bg-card/90 backdrop-blur border border-border flex items-center justify-center shrink-0 active:scale-90 transition-transform ${className}`}
     >

@@ -4,6 +4,7 @@ import { Loader2, ChevronRight, Heart, Star, Clock, LogOut, MapPin, Phone, Setti
 import { clearSession, getSession } from "@/lib/session";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/user/profile")({
   component: UserProfile,
@@ -23,6 +24,7 @@ function getInitials(name: string): string {
 
 function UserProfile() {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [bookingsCount, setBookingsCount] = useState(0);
@@ -48,7 +50,7 @@ function UserProfile() {
 
     if (profileData) {
       setProfile({
-        name: profileData.full_name ?? session?.name ?? "Customer",
+        name: profileData.full_name ?? session?.name ?? "",
         mobile: profileData.mobile ?? session?.mobile ?? "—",
         location: profileData.location ?? "—",
       });
@@ -73,28 +75,15 @@ function UserProfile() {
     const channels: ReturnType<typeof supabase.channel>[] = [];
 
     if (customerId) {
-      const bookingsChannel = supabase
-        .channel("profile-bookings")
-        .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `customer_id=eq.${customerId}` }, () => loadProfile())
-        .subscribe();
-      channels.push(bookingsChannel);
-
-      const reviewsChannel = supabase
-        .channel("profile-reviews")
-        .on("postgres_changes", { event: "*", schema: "public", table: "reviews", filter: `customer_id=eq.${customerId}` }, () => loadProfile())
-        .subscribe();
-      channels.push(reviewsChannel);
-
-      const savedChannel = supabase
-        .channel("profile-saved")
-        .on("postgres_changes", { event: "*", schema: "public", table: "saved_workers", filter: `customer_id=eq.${customerId}` }, () => loadProfile())
-        .subscribe();
-      channels.push(savedChannel);
+      channels.push(supabase.channel("profile-bookings").on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `customer_id=eq.${customerId}` }, () => loadProfile()).subscribe());
+      channels.push(supabase.channel("profile-reviews").on("postgres_changes", { event: "*", schema: "public", table: "reviews", filter: `customer_id=eq.${customerId}` }, () => loadProfile()).subscribe());
+      channels.push(supabase.channel("profile-saved").on("postgres_changes", { event: "*", schema: "public", table: "saved_workers", filter: `customer_id=eq.${customerId}` }, () => loadProfile()).subscribe());
     }
 
     return () => {
       channels.forEach((ch) => supabase.removeChannel(ch));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerId]);
 
   function handleLogout() {
@@ -102,13 +91,13 @@ function UserProfile() {
     navigate({ to: "/" });
   }
 
-  const displayName = profile?.name ?? "—";
+  const displayName = profile?.name ?? t("common.dash");
   const initials = profile?.name ? getInitials(profile.name) : "—";
 
   return (
     <>
       <header className="bg-primary text-primary-foreground px-5 pt-8 pb-20 rounded-b-3xl min-h-[160px]">
-        <h1 className="font-serif text-2xl">Profile</h1>
+        <h1 className="font-serif text-2xl">{t("profile.title")}</h1>
       </header>
 
       <div className="px-5 -mt-16">
@@ -129,26 +118,26 @@ function UserProfile() {
           <div className="grid grid-cols-3 mt-5 pt-5 border-t border-border text-center">
             <div>
               <p className="text-lg font-bold font-sans">{loading ? "—" : bookingsCount}</p>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Bookings</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("profile.bookings")}</p>
             </div>
             <div className="border-x border-border">
               <p className="text-lg font-bold font-sans">{loading ? "—" : reviewsCount}</p>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Reviews</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("profile.reviews")}</p>
             </div>
             <div>
               <p className="text-lg font-bold font-sans">{loading ? "—" : savedCount}</p>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Saved</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("profile.saved")}</p>
             </div>
           </div>
         </div>
       </div>
 
       <section className="px-5 mt-6 space-y-2">
-        <Row to="/user/saved" icon={<Heart className="size-4" />} label="Saved Workers" badge={loading ? undefined : String(savedCount)} />
-        <Row to="/user/reviews" icon={<Star className="size-4" />} label="My Reviews" badge={loading ? undefined : String(reviewsCount)} />
-        <Row to="/user/history" icon={<Clock className="size-4" />} label="Booking History" />
-        <Row to="/user/help" icon={<Phone className="size-4" />} label="Help & Support" />
-        <Row to="/user/settings" icon={<Settings className="size-4" />} label="Settings" />
+        <Row to="/user/saved" icon={<Heart className="size-4" />} label={t("profile.savedWorkers")} badge={loading ? undefined : String(savedCount)} />
+        <Row to="/user/reviews" icon={<Star className="size-4" />} label={t("profile.myReviews")} badge={loading ? undefined : String(reviewsCount)} />
+        <Row to="/user/history" icon={<Clock className="size-4" />} label={t("profile.bookingHistory")} />
+        <Row to="/user/help" icon={<Phone className="size-4" />} label={t("profile.helpSupport")} />
+        <Row to="/user/settings" icon={<Settings className="size-4" />} label={t("profile.settings")} />
       </section>
 
       <section className="px-5 mt-6 pb-6">
@@ -156,7 +145,7 @@ function UserProfile() {
           onClick={handleLogout}
           className="w-full bg-destructive/10 text-destructive flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm"
         >
-          <LogOut className="size-4" /> Logout
+          <LogOut className="size-4" /> {t("common.logout")}
         </button>
       </section>
     </>

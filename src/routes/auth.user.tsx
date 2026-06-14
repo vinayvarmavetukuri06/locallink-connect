@@ -30,7 +30,7 @@ function UserAuth() {
 
   async function handleMobileNext() {
     setErr(null);
-    if (mobile.length !== 10) return setErr("Enter a valid 10-digit mobile number.");
+    if (mobile.length !== 10) return setErr(t("login.invalidMobile"));
     setLoading(true);
     const { data: existing } = await supabase
       .from("profiles")
@@ -39,7 +39,7 @@ function UserAuth() {
       .maybeSingle();
     setLoading(false);
     if (existing) {
-      setErr("This number is already registered. Please login instead.");
+      setErr(t("signup.alreadyRegistered"));
       return;
     }
     setStep("otp");
@@ -47,27 +47,27 @@ function UserAuth() {
 
   function handleVerifyOtp() {
     setErr(null);
-    if (otp.join("") !== DEMO_OTP) return setErr("Incorrect OTP. Use 1234 for demo.");
+    if (otp.join("") !== DEMO_OTP) return setErr(t("login.incorrectOtp"));
     setStep("password");
   }
 
   function handlePasswordNext() {
     setErr(null);
-    if (password.length < 6) return setErr("Password must be at least 6 characters.");
-    if (password !== confirm) return setErr("Passwords do not match.");
+    if (password.length < 6) return setErr(t("login.pwMin"));
+    if (password !== confirm) return setErr(t("login.pwMismatch"));
     setStep("details");
   }
 
   async function handleFinish() {
     setErr(null);
-    if (!fullName.trim()) return setErr("Please enter your name.");
+    if (!fullName.trim()) return setErr(t("signup.enterName"));
     setLoading(true);
     const hash = await hashPassword(password);
     const userId = await saveUserProfile(
       {
         name: fullName.trim(),
         mobile: `+91 ${mobile}`,
-        location: location.trim() || "Your area",
+        location: location.trim() || "—",
       },
       hash,
     );
@@ -96,7 +96,7 @@ function UserAuth() {
         }}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-6"
       >
-        <ArrowLeft className="size-4" /> Back
+        <ArrowLeft className="size-4" /> {t("common.back")}
       </button>
 
       {step === "mobile" && (
@@ -105,12 +105,12 @@ function UserAuth() {
             <div className="size-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center font-bold font-serif text-lg">L</div>
             <span className="font-serif text-xl font-bold">LocalConnect</span>
           </div>
-          <h1 className="font-serif text-3xl font-bold">Sign up as User</h1>
-          <p className="text-sm text-muted-foreground mt-1">We'll send an OTP to verify.</p>
+          <h1 className="font-serif text-3xl font-bold">{t("signup.user.title")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("signup.user.subtitle")}</p>
 
           <div className="mt-8">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Mobile Number
+              {t("login.mobileLabel")}
             </label>
             <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-4">
               <span className="font-semibold text-sm">🇮🇳 +91</span>
@@ -135,16 +135,16 @@ function UserAuth() {
             className="mt-8 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold disabled:opacity-40 flex items-center justify-center gap-2 active:scale-[0.99] transition"
           >
             {loading && <Loader2 className="size-4 animate-spin" />}
-            Send OTP
+            {t("signup.sendOtp")}
           </button>
         </form>
       )}
 
       {step === "otp" && (
         <form onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }}>
-          <h1 className="font-serif text-3xl font-bold">Enter OTP</h1>
-          <p className="text-sm text-muted-foreground mt-1">Sent to +91 {mobile}</p>
-          <p className="text-[11px] text-muted-foreground mt-1">Demo OTP: {DEMO_OTP}</p>
+          <h1 className="font-serif text-3xl font-bold">{t("signup.enterOtp")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("signup.sentTo")} +91 {mobile}</p>
+          <p className="text-[11px] text-muted-foreground mt-1">{t("signup.demoOtp")} {DEMO_OTP}</p>
 
           <div className="mt-8 flex gap-3 justify-center">
             {otp.map((d, i) => (
@@ -176,15 +176,15 @@ function UserAuth() {
             type="submit"
             className="mt-8 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold active:scale-[0.99]"
           >
-            Verify & Continue
+            {t("signup.verifyContinue")}
           </button>
         </form>
       )}
 
       {step === "password" && (
         <form onSubmit={(e) => { e.preventDefault(); handlePasswordNext(); }}>
-          <h1 className="font-serif text-3xl font-bold">Create password</h1>
-          <p className="text-sm text-muted-foreground mt-1">Used for future logins.</p>
+          <h1 className="font-serif text-3xl font-bold">{t("signup.createPassword")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("signup.createPwSub")}</p>
 
           <PasswordPair
             password={password}
@@ -201,21 +201,21 @@ function UserAuth() {
             type="submit"
             className="mt-8 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold active:scale-[0.99]"
           >
-            Continue
+            {t("common.continue")}
           </button>
         </form>
       )}
 
       {step === "details" && (
         <form onSubmit={(e) => { e.preventDefault(); handleFinish(); }}>
-          <h1 className="font-serif text-3xl font-bold">Almost there</h1>
-          <p className="text-sm text-muted-foreground mt-1">Tell us a bit about you.</p>
+          <h1 className="font-serif text-3xl font-bold">{t("signup.almostThere")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("signup.tellAbout")}</p>
 
           <div className="mt-6 space-y-4">
             <Field
               icon={<User className="size-4" />}
-              label="Full Name"
-              placeholder={lang === "hi" ? "राहुल शर्मा" : lang === "te" ? "రాహుల్ శర్మ" : "Rahul Sharma"}
+              label={t("signup.fullName")}
+              placeholder={lang === "hi" ? "आपका नाम" : lang === "te" ? "మీ పేరు" : "Your name"}
               autoFocus
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
@@ -225,10 +225,9 @@ function UserAuth() {
               hint={lang === "hi" ? t("auth.nameHintHi") : lang === "te" ? t("auth.nameHintTe") : undefined}
             />
 
-
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Mobile
+                {t("signup.mobile")}
               </label>
               <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-3.5">
                 <Phone className="size-4" />
@@ -242,8 +241,8 @@ function UserAuth() {
 
             <Field
               icon={<MapPin className="size-4" />}
-              label="Location"
-              placeholder="City, area"
+              label={t("signup.location")}
+              placeholder={t("signup.locationPlaceholder")}
               value={location}
               onChange={(e) => setLocation(e.target.value)}
             />
@@ -257,13 +256,13 @@ function UserAuth() {
             className="mt-8 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold active:scale-[0.99] disabled:opacity-40 flex items-center justify-center gap-2"
           >
             {loading && <Loader2 className="size-4 animate-spin" />}
-            Continue to Dashboard
+            {t("signup.continueDashboard")}
           </button>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
-            Want to provide services?{" "}
+            {t("signup.wantProvide")}{" "}
             <Link to="/auth/member" className="text-primary font-bold">
-              Become a member
+              {t("signup.becomeMember")}
             </Link>
           </p>
         </form>

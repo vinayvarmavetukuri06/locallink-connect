@@ -17,7 +17,7 @@ type Step = "mobile" | "otp" | "password" | "details" | "pending";
 
 function MemberAuth() {
   const navigate = useNavigate();
-  const { lang, t } = useI18n();
+  const { lang, t, tService, tStatus } = useI18n();
   const [step, setStep] = useState<Step>("mobile");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -35,7 +35,7 @@ function MemberAuth() {
 
   async function handleMobileNext() {
     setErr(null);
-    if (mobile.length !== 10) return setErr("Enter a valid 10-digit mobile number.");
+    if (mobile.length !== 10) return setErr(t("login.invalidMobile"));
     setLoading(true);
     const { data: existing } = await supabase
       .from("profiles")
@@ -43,26 +43,26 @@ function MemberAuth() {
       .eq("mobile", `+91 ${mobile}`)
       .maybeSingle();
     setLoading(false);
-    if (existing) return setErr("This number is already registered. Please login instead.");
+    if (existing) return setErr(t("signup.alreadyRegistered"));
     setStep("otp");
   }
 
   function handleVerifyOtp() {
     setErr(null);
-    if (otp.join("") !== DEMO_OTP) return setErr("Incorrect OTP. Use 1234 for demo.");
+    if (otp.join("") !== DEMO_OTP) return setErr(t("login.incorrectOtp"));
     setStep("password");
   }
 
   function handlePasswordNext() {
     setErr(null);
-    if (pw.length < 6) return setErr("Password must be at least 6 characters.");
-    if (pw !== pw2) return setErr("Passwords do not match.");
+    if (pw.length < 6) return setErr(t("login.pwMin"));
+    if (pw !== pw2) return setErr(t("login.pwMismatch"));
     setStep("details");
   }
 
   async function handleSubmit() {
     setErr(null);
-    if (!fullName.trim() || !area.trim()) return setErr("Name and location are required.");
+    if (!fullName.trim() || !area.trim()) return setErr(t("signup.member.nameLocReq"));
     setLoading(true);
     const hash = await hashPassword(pw);
     const workerId = await saveMemberProfile(
@@ -102,7 +102,7 @@ function MemberAuth() {
         }}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-6"
       >
-        <ArrowLeft className="size-4" /> Back
+        <ArrowLeft className="size-4" /> {t("common.back")}
       </button>
 
       {step === "mobile" && (
@@ -112,14 +112,14 @@ function MemberAuth() {
             <span className="font-serif text-xl font-bold">LocalConnect</span>
           </div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-success/10 text-success rounded-full text-[10px] font-bold uppercase tracking-wider mb-3">
-            <Briefcase className="size-3" /> For Workers
+            <Briefcase className="size-3" /> {t("signup.member.forWorkers")}
           </div>
-          <h1 className="font-serif text-3xl font-bold">Grow Your Business</h1>
-          <p className="text-sm text-muted-foreground mt-1">Get bookings from customers near you.</p>
+          <h1 className="font-serif text-3xl font-bold">{t("signup.member.grow")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("signup.member.growSub")}</p>
 
           <div className="mt-8">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Mobile Number
+              {t("login.mobileLabel")}
             </label>
             <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-4">
               <span className="font-semibold text-sm">🇮🇳 +91</span>
@@ -143,16 +143,16 @@ function MemberAuth() {
             className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold disabled:opacity-40 flex items-center justify-center gap-2"
           >
             {loading && <Loader2 className="size-4 animate-spin" />}
-            Send OTP
+            {t("signup.sendOtp")}
           </button>
         </form>
       )}
 
       {step === "otp" && (
         <form onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }}>
-          <h1 className="font-serif text-3xl font-bold">Enter OTP</h1>
-          <p className="text-sm text-muted-foreground mt-1">Sent to +91 {mobile}</p>
-          <p className="text-[11px] text-muted-foreground mt-1">Demo OTP: {DEMO_OTP}</p>
+          <h1 className="font-serif text-3xl font-bold">{t("signup.enterOtp")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("signup.sentTo")} +91 {mobile}</p>
+          <p className="text-[11px] text-muted-foreground mt-1">{t("signup.demoOtp")} {DEMO_OTP}</p>
           <div className="mt-8 flex gap-3 justify-center">
             {otp.map((d, i) => (
               <input
@@ -181,15 +181,15 @@ function MemberAuth() {
             type="submit"
             className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold"
           >
-            Verify & Continue
+            {t("signup.verifyContinue")}
           </button>
         </form>
       )}
 
       {step === "password" && (
         <form onSubmit={(e) => { e.preventDefault(); handlePasswordNext(); }}>
-          <h1 className="font-serif text-3xl font-bold">Create password</h1>
-          <p className="text-sm text-muted-foreground mt-1">Used for future logins.</p>
+          <h1 className="font-serif text-3xl font-bold">{t("signup.createPassword")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("signup.createPwSub")}</p>
           <PasswordPair
             password={pw}
             confirm={pw2}
@@ -203,20 +203,20 @@ function MemberAuth() {
             type="submit"
             className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold"
           >
-            Continue
+            {t("common.continue")}
           </button>
         </form>
       )}
 
       {step === "details" && (
         <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
-          <h1 className="font-serif text-3xl font-bold">Worker Profile</h1>
-          <p className="text-sm text-muted-foreground mt-1">Help customers find you.</p>
+          <h1 className="font-serif text-3xl font-bold">{t("signup.member.profile")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("signup.member.profileSub")}</p>
 
           <div className="mt-6 space-y-4">
             <Field
               icon={<User className="size-4" />}
-              label="Full Name"
+              label={t("signup.fullName")}
               placeholder={lang === "hi" ? "आपका नाम" : lang === "te" ? "మీ పేరు" : "Your name"}
               autoFocus
               value={fullName}
@@ -227,10 +227,9 @@ function MemberAuth() {
               hint={lang === "hi" ? t("auth.nameHintHi") : lang === "te" ? t("auth.nameHintTe") : undefined}
             />
 
-
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Mobile
+                {t("signup.mobile")}
               </label>
               <div className="mt-2 flex items-center gap-2 bg-secondary/60 rounded-2xl px-4 py-3.5 opacity-70">
                 <Phone className="size-4 text-muted-foreground" />
@@ -244,7 +243,7 @@ function MemberAuth() {
 
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Service Category
+                {t("signup.member.category")}
               </label>
               <select
                 value={cat}
@@ -253,7 +252,7 @@ function MemberAuth() {
               >
                 {categories.map((c) => (
                   <option key={c.slug} value={c.slug}>
-                    {c.emoji} {c.name}
+                    {c.emoji} {tService(c.slug, c.name)}
                   </option>
                 ))}
               </select>
@@ -261,15 +260,15 @@ function MemberAuth() {
 
             <Field
               icon={<MapPin className="size-4" />}
-              label="Location / Service Area"
-              placeholder="City, area"
+              label={t("signup.member.serviceArea")}
+              placeholder={t("signup.locationPlaceholder")}
               value={area}
               onChange={(e) => setArea(e.target.value)}
             />
             <Field
               icon={<Clock className="size-4" />}
-              label="Years of Experience"
-              placeholder="e.g. 5"
+              label={t("signup.member.years")}
+              placeholder={t("signup.member.yearsPh")}
               inputMode="numeric"
               value={experience}
               onChange={(e) => setExperience(e.target.value)}
@@ -277,7 +276,7 @@ function MemberAuth() {
 
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Hourly Rate
+                {t("signup.member.hourly")}
               </label>
               <div className="mt-2 flex items-center gap-2 bg-secondary rounded-2xl px-4 py-3.5">
                 <IndianRupee className="size-4 text-muted-foreground" />
@@ -293,13 +292,13 @@ function MemberAuth() {
 
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Bio / About
+                {t("signup.member.bio")}
               </label>
               <div className="mt-2 flex items-start gap-2 bg-secondary rounded-2xl px-4 py-3.5">
                 <FileText className="size-4 text-muted-foreground pt-0.5" />
                 <textarea
                   rows={4}
-                  placeholder="Describe your skills and experience..."
+                  placeholder={t("signup.member.bioPh")}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   className="flex-1 bg-transparent outline-none text-sm font-medium resize-none"
@@ -309,15 +308,15 @@ function MemberAuth() {
 
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Profile Photo
+                {t("signup.member.photo")}
               </label>
               <label className="mt-2 cursor-pointer flex items-center gap-3 bg-secondary rounded-2xl px-4 py-4 border-2 border-dashed border-border hover:border-success/40 transition-colors">
                 <span className="size-10 rounded-xl bg-success/10 text-success flex items-center justify-center">
                   <Camera className="size-4" />
                 </span>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold">Upload Photo</p>
-                  <p className="text-[11px] text-muted-foreground">JPG or PNG, max 5MB</p>
+                  <p className="text-sm font-semibold">{t("signup.member.upload")}</p>
+                  <p className="text-[11px] text-muted-foreground">{t("signup.member.uploadSub")}</p>
                 </div>
                 <input type="file" accept="image/*" className="hidden" />
               </label>
@@ -332,7 +331,7 @@ function MemberAuth() {
             className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold disabled:opacity-40 flex items-center justify-center gap-2"
           >
             {loading && <Loader2 className="size-4 animate-spin" />}
-            Submit for Approval
+            {t("signup.member.submit")}
           </button>
         </form>
       )}
@@ -342,25 +341,25 @@ function MemberAuth() {
           <div className="size-24 mx-auto rounded-full bg-warning/15 text-warning flex items-center justify-center text-4xl">
             ⏳
           </div>
-          <h2 className="font-serif text-2xl font-bold mt-6">Pending Admin Approval</h2>
+          <h2 className="font-serif text-2xl font-bold mt-6">{t("signup.member.pendingTitle")}</h2>
           <p className="text-sm text-muted-foreground mt-2 max-w-[28ch] mx-auto">
-            We're reviewing your application. You'll get a notification within 24 hours.
+            {t("signup.member.pendingSub")}
           </p>
 
           <div className="mt-8 bg-secondary rounded-2xl p-4 text-left space-y-3">
-            <Row label="Status" value="Pending" pill="warning" />
-            <Row label="Submitted" value="Just now" />
-            <Row label="Category" value={categories.find((c) => c.slug === cat)?.name || ""} />
+            <Row label={t("signup.member.statusLabel")} value={tStatus("pending")} pill="warning" />
+            <Row label={t("signup.member.submitted")} value={t("signup.member.justNow")} />
+            <Row label={t("signup.member.categoryLabel")} value={tService(cat)} />
           </div>
 
           <button
             onClick={() => navigate({ to: "/member" })}
             className="mt-8 w-full bg-success text-success-foreground py-4 rounded-2xl font-bold"
           >
-            Preview Member Dashboard
+            {t("signup.member.preview")}
           </button>
           <Link to="/" className="block mt-3 text-xs text-muted-foreground">
-            Back to home
+            {t("signup.member.backHome")}
           </Link>
         </div>
       )}

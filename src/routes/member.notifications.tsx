@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Bell, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/member/notifications")({
   component: MemberNotificationsPage,
@@ -16,19 +17,8 @@ type Notification = {
   created_at: string;
 };
 
-function timeAgo(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime();
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return "Just now";
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  const d = Math.floor(h / 24);
-  if (d < 7) return `${d}d ago`;
-  return new Date(iso).toLocaleDateString();
-}
-
 function MemberNotificationsPage() {
+  const { t, timeAgo } = useI18n();
   const [items, setItems] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const userId =
@@ -65,7 +55,7 @@ function MemberNotificationsPage() {
     <>
       <header className="bg-card px-5 pt-6 pb-3 border-b border-border sticky top-0 z-30 flex items-center gap-3">
         <Link to="/member"><ArrowLeft className="size-5" /></Link>
-        <h1 className="font-serif text-2xl">Notifications</h1>
+        <h1 className="font-serif text-2xl">{t("notif.title")}</h1>
       </header>
       <section className="px-5 py-5 space-y-3">
         {loading ? (
@@ -73,8 +63,8 @@ function MemberNotificationsPage() {
         ) : items.length === 0 ? (
           <div className="bg-card border border-dashed border-border rounded-3xl p-8 text-center">
             <Bell className="size-7 text-muted-foreground mx-auto mb-2" />
-            <p className="font-bold text-sm font-sans">No notifications yet</p>
-            <p className="text-xs text-muted-foreground mt-1">You're all caught up.</p>
+            <p className="font-bold text-sm font-sans">{t("notif.empty")}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t("notif.emptySub")}</p>
           </div>
         ) : (
           items.map((n) => (

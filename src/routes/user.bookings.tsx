@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Loader2, AlertTriangle, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { categorySlugFromService } from "@/lib/mock-data";
+import { useI18n } from "@/lib/i18n";
 
 type Booking = {
   id: string;
@@ -17,22 +18,23 @@ type Booking = {
   created_at: string;
 };
 
-const TABS = [
-  { key: "all", label: "All" },
-  { key: "pending", label: "Pending" },
-  { key: "accepted", label: "Upcoming" },
-  { key: "in_progress", label: "Active" },
-  { key: "completed", label: "Completed" },
-  { key: "cancelled", label: "Cancelled" },
-  { key: "declined", label: "Declined" },
-] as const;
-
 export const Route = createFileRoute("/user/bookings")({
   component: UserBookings,
 });
 
 function UserBookings() {
-  const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("all");
+  const { t, tStatus } = useI18n();
+  const TABS = [
+    { key: "all", label: t("userBookings.tabAll") },
+    { key: "pending", label: t("userBookings.tabPending") },
+    { key: "accepted", label: t("userBookings.tabUpcoming") },
+    { key: "in_progress", label: t("userBookings.tabActive") },
+    { key: "completed", label: t("userBookings.tabCompleted") },
+    { key: "cancelled", label: t("userBookings.tabCancelled") },
+    { key: "declined", label: t("userBookings.tabDeclined") },
+  ] as const;
+
+  const [tab, setTab] = useState<string>("all");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [dismissed, setDismissed] = useState<Set<string>>(() => {
@@ -74,7 +76,7 @@ function UserBookings() {
   return (
     <>
       <header className="bg-card px-5 pt-6 pb-3 border-b border-border sticky top-0 z-30">
-        <h1 className="font-serif text-2xl">My Bookings</h1>
+        <h1 className="font-serif text-2xl">{t("userBookings.title")}</h1>
       </header>
 
       {cancelledAlerts.length > 0 && (
@@ -86,7 +88,7 @@ function UserBookings() {
                 <button
                   onClick={() => dismiss(b.id)}
                   className="absolute top-3 right-3 text-destructive/70 hover:text-destructive"
-                  aria-label="Dismiss"
+                  aria-label={t("common.dismiss")}
                 >
                   <X className="size-4" />
                 </button>
@@ -95,9 +97,9 @@ function UserBookings() {
                     <AlertTriangle className="size-4" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm font-sans text-destructive">Your worker is unavailable, please rebook</p>
+                    <p className="font-bold text-sm font-sans text-destructive">{t("userBookings.unavailable")}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {b.service} on {b.date} · {b.time}
+                      {b.service} · {b.date} · {b.time}
                     </p>
                     {slug ? (
                       <Link
@@ -105,14 +107,14 @@ function UserBookings() {
                         params={{ slug }}
                         className="mt-3 inline-flex items-center gap-1 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-2 rounded-lg"
                       >
-                        Find another worker
+                        {t("userBookings.findAnother")}
                       </Link>
                     ) : (
                       <Link
                         to="/user"
                         className="mt-3 inline-flex items-center gap-1 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-2 rounded-lg"
                       >
-                        Find another worker
+                        {t("userBookings.findAnother")}
                       </Link>
                     )}
                   </div>
@@ -123,17 +125,16 @@ function UserBookings() {
         </div>
       )}
 
-
       <div className="px-5 pt-4 flex gap-2 overflow-x-auto no-scrollbar">
-        {TABS.map((t) => (
+        {TABS.map((tt) => (
           <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
+            key={tt.key}
+            onClick={() => setTab(tt.key)}
             className={`text-xs font-bold px-4 py-2 rounded-full whitespace-nowrap ${
-              tab === t.key ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"
+              tab === tt.key ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"
             }`}
           >
-            {t.label}
+            {tt.label}
           </button>
         ))}
       </div>
@@ -143,45 +144,41 @@ function UserBookings() {
           <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
         )}
         {!loading && filtered.length === 0 && (
-          <div className="text-center py-10 text-sm text-muted-foreground">No bookings yet.</div>
+          <div className="text-center py-10 text-sm text-muted-foreground">{t("userBookings.empty")}</div>
         )}
-        {filtered.map((b) => (
-          <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
-            <div className="flex items-start justify-between mb-2">
-              <div>
-                <p className="font-bold text-sm font-sans">{b.service}</p>
-                <p className="text-[11px] text-muted-foreground">#{b.id.slice(0, 8).toUpperCase()}</p>
+        {filtered.map((b) => {
+          const map: Record<string, string> = {
+            pending: "bg-warning/15 text-warning",
+            accepted: "bg-primary/15 text-primary",
+            in_progress: "bg-accent/20 text-accent-foreground",
+            completed: "bg-success/15 text-success",
+            declined: "bg-destructive/15 text-destructive",
+            cancelled: "bg-destructive/15 text-destructive",
+          };
+          const cls = map[b.status] ?? "bg-secondary text-muted-foreground";
+          return (
+            <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <p className="font-bold text-sm font-sans">{b.service}</p>
+                  <p className="text-[11px] text-muted-foreground">#{b.id.slice(0, 8).toUpperCase()}</p>
+                </div>
+                <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide ${cls}`}>
+                  {tStatus(b.status)}
+                </span>
               </div>
-              <StatusPill status={b.status} />
-            </div>
-            <div className="text-xs text-muted-foreground border-t border-border pt-3">
-              <p className="line-clamp-2">{b.problem_description ?? "—"}</p>
-              <p className="mt-1">{b.address}</p>
-              <div className="flex justify-between mt-2">
-                <span>{b.date} · {b.time}</span>
-                <span className="font-bold text-foreground">₹{b.amount ?? 0}</span>
+              <div className="text-xs text-muted-foreground border-t border-border pt-3">
+                <p className="line-clamp-2">{b.problem_description ?? "—"}</p>
+                <p className="mt-1">{b.address}</p>
+                <div className="flex justify-between mt-2">
+                  <span>{b.date} · {b.time}</span>
+                  <span className="font-bold text-foreground">₹{b.amount ?? 0}</span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </section>
     </>
-  );
-}
-
-function StatusPill({ status }: { status: string }) {
-  const map: Record<string, { label: string; cls: string }> = {
-    pending: { label: "Pending", cls: "bg-warning/15 text-warning" },
-    accepted: { label: "Accepted", cls: "bg-primary/15 text-primary" },
-    in_progress: { label: "In Progress", cls: "bg-accent/20 text-accent-foreground" },
-    completed: { label: "Completed", cls: "bg-success/15 text-success" },
-    declined: { label: "Declined", cls: "bg-destructive/15 text-destructive" },
-    cancelled: { label: "Cancelled", cls: "bg-destructive/15 text-destructive" },
-  };
-  const m = map[status] ?? { label: status, cls: "bg-secondary text-muted-foreground" };
-  return (
-    <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide ${m.cls}`}>
-      {m.label}
-    </span>
   );
 }

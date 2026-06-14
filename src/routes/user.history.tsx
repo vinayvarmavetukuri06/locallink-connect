@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/user/history")({
   component: BookingHistory,
@@ -19,6 +20,7 @@ type Booking = {
 };
 
 function BookingHistory() {
+  const { t, tStatus } = useI18n();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const customerId =
@@ -42,23 +44,23 @@ function BookingHistory() {
     <>
       <header className="bg-card px-5 pt-6 pb-3 border-b border-border sticky top-0 z-30 flex items-center gap-3">
         <Link to="/user/profile"><ArrowLeft className="size-5" /></Link>
-        <h1 className="font-serif text-2xl">Booking History</h1>
+        <h1 className="font-serif text-2xl">{t("history.title")}</h1>
       </header>
       <section className="px-5 py-5 space-y-3">
         {loading ? (
           <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
         ) : bookings.length === 0 ? (
-          <div className="text-center py-10 text-sm text-muted-foreground">No past bookings yet.</div>
+          <div className="text-center py-10 text-sm text-muted-foreground">{t("history.empty")}</div>
         ) : (
           bookings.map((b) => (
             <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <p className="font-bold text-sm font-sans">{b.service ?? "Service"}</p>
+                  <p className="font-bold text-sm font-sans">{b.service ?? t("history.service")}</p>
                   <p className="text-[11px] text-muted-foreground">#{b.id.slice(0, 8).toUpperCase()}</p>
                 </div>
                 <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase ${b.status === "completed" ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"}`}>
-                  {b.status}
+                  {tStatus(b.status)}
                 </span>
               </div>
               <div className="text-xs text-muted-foreground border-t border-border pt-3">

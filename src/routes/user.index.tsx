@@ -23,7 +23,7 @@ export const Route = createFileRoute("/user/")({
 
 function UserHome() {
   const currentUser = useUserProfile();
-  const { t } = useI18n();
+  const { t, tService } = useI18n();
   const { workers, loading, error } = useApprovedWorkers();
   const [query, setQuery] = useState("");
 
@@ -76,7 +76,6 @@ function UserHome() {
 
   return (
     <>
-      {/* Header */}
       <header className="bg-card px-5 pt-6 pb-4 border-b border-border sticky top-0 z-30">
         <div className="flex justify-between items-start mb-4">
           <div className="min-w-0">
@@ -108,7 +107,6 @@ function UserHome() {
         </div>
       </header>
 
-      {/* Categories */}
       <section className="px-5 py-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-bold text-lg font-sans">{t("userHome.services")}</h2>
@@ -125,13 +123,12 @@ function UserHome() {
               <div className={`size-14 ${c.tint} rounded-2xl flex items-center justify-center text-2xl`}>
                 {c.emoji}
               </div>
-              <span className="text-[10px] font-semibold text-center leading-tight">{c.name}</span>
+              <span className="text-[10px] font-semibold text-center leading-tight">{tService(c.slug, c.name)}</span>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Search results */}
       {query.trim() && (
         <section className="px-5 mb-6">
           <h2 className="font-bold text-lg font-sans mb-4">
@@ -151,7 +148,6 @@ function UserHome() {
         </section>
       )}
 
-      {/* Featured / Local Heroes */}
       {!query.trim() && (
         <section className="mb-6">
           <div className="px-5 flex justify-between items-center mb-3">
@@ -174,7 +170,6 @@ function UserHome() {
         </section>
       )}
 
-      {/* Nearby Workers */}
       {!query.trim() && (
         <section className="px-5 mb-8">
           <h2 className="font-bold text-lg font-sans mb-4">{t("userHome.nearby")}</h2>
@@ -195,7 +190,6 @@ function UserHome() {
         </section>
       )}
 
-      {/* Recent Booking */}
       {!query.trim() && lastBooking && (
         <section className="px-5 mb-8">
           <h2 className="font-bold text-lg font-sans mb-4">{t("userHome.recentBooking")}</h2>
@@ -209,7 +203,7 @@ function UserHome() {
                   {new Date(lastBooking.created_at).toLocaleDateString()}
                 </p>
                 <h4 className="text-sm font-bold truncate font-sans">
-                  {lastBooking.service ?? "Service"}
+                  {lastBooking.service ?? t("worker.service")}
                 </h4>
                 <div className="flex items-center gap-1 text-[10px] opacity-80">
                   <Star className="size-2.5 fill-current text-accent" /> ₹{lastBooking.amount ?? 0}
