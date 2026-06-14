@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { ChevronRight, Star, Camera, MapPin, IndianRupee, Briefcase, Clock, Settings, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryBySlug } from "@/lib/mock-data";
 import { initialsFromName, tintFromId } from "@/lib/workers-api";
+import { clearSession } from "@/lib/session";
 
 export const Route = createFileRoute("/member/profile")({
   component: MemberProfile,

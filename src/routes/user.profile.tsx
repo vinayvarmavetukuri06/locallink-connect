@@ -1,12 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { currentUser, bookings } from "@/lib/mock-data";
 import { ChevronRight, Heart, Star, Clock, LogOut, MapPin, Phone, Settings } from "lucide-react";
+import { clearSession } from "@/lib/session";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/user/profile")({
   component: UserProfile,
 });
 
 function UserProfile() {
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    clearSession();
+    navigate({ to: "/" });
+  }
+
   return (
     <>
       <header className="bg-primary text-primary-foreground px-5 pt-8 pb-20 rounded-b-3xl min-h-[160px]">
@@ -54,12 +63,12 @@ function UserProfile() {
       </section>
 
       <section className="px-5 mt-6 pb-6">
-        <Link
-          to="/"
+        <button
+          onClick={handleLogout}
           className="w-full bg-destructive/10 text-destructive flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm"
         >
           <LogOut className="size-4" /> Logout
-        </Link>
+        </button>
       </section>
     </>
   );
