@@ -6,6 +6,7 @@ import { ArrowLeft, Star, MapPin, MessageCircle, Phone, Calendar, Clock, MapPinn
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserProfile } from "@/lib/profile-store";
+import { SaveWorkerButton } from "@/components/save-worker-button";
 
 export const Route = createFileRoute("/user/worker/$id")({
   component: WorkerProfile,
