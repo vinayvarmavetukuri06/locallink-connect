@@ -5,6 +5,7 @@ import { categories } from "@/lib/mock-data";
 import { saveMemberProfile } from "@/lib/profile-store";
 import { supabase } from "@/integrations/supabase/client";
 import { hashPassword, DEMO_OTP } from "@/lib/password";
+import { saveSession } from "@/lib/session";
 import { PasswordPair } from "./auth.login";
 
 export const Route = createFileRoute("/auth/member")({
@@ -62,7 +63,7 @@ function MemberAuth() {
     if (!fullName.trim() || !area.trim()) return setErr("Name and location are required.");
     setLoading(true);
     const hash = await hashPassword(pw);
-    await saveMemberProfile(
+    const workerId = await saveMemberProfile(
       {
         name: fullName.trim(),
         mobile: `+91 ${mobile}`,
@@ -75,6 +76,14 @@ function MemberAuth() {
       hash,
     );
     setLoading(false);
+    if (workerId) {
+      saveSession({
+        role: "worker",
+        userId: workerId,
+        name: fullName.trim(),
+        mobile: `+91 ${mobile}`,
+      });
+    }
     setStep("pending");
   }
 

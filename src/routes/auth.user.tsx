@@ -4,6 +4,7 @@ import { ArrowLeft, Phone, User, MapPin, Loader2 } from "lucide-react";
 import { saveUserProfile } from "@/lib/profile-store";
 import { hashPassword, DEMO_OTP } from "@/lib/password";
 import { supabase } from "@/integrations/supabase/client";
+import { saveSession } from "@/lib/session";
 import { PasswordPair } from "./auth.login";
 
 export const Route = createFileRoute("/auth/user")({
@@ -60,7 +61,7 @@ function UserAuth() {
     if (!fullName.trim()) return setErr("Please enter your name.");
     setLoading(true);
     const hash = await hashPassword(password);
-    await saveUserProfile(
+    const userId = await saveUserProfile(
       {
         name: fullName.trim(),
         mobile: `+91 ${mobile}`,
@@ -69,6 +70,14 @@ function UserAuth() {
       hash,
     );
     setLoading(false);
+    if (userId) {
+      saveSession({
+        role: "customer",
+        userId,
+        name: fullName.trim(),
+        mobile: `+91 ${mobile}`,
+      });
+    }
     navigate({ to: "/user" });
   }
 
