@@ -5,6 +5,7 @@ import { saveUserProfile } from "@/lib/profile-store";
 import { hashPassword, DEMO_OTP } from "@/lib/password";
 import { supabase } from "@/integrations/supabase/client";
 import { saveSession } from "@/lib/session";
+import { useI18n } from "@/lib/i18n";
 import { PasswordPair } from "./auth.login";
 
 export const Route = createFileRoute("/auth/user")({
