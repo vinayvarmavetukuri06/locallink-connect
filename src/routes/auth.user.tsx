@@ -215,11 +215,16 @@ function UserAuth() {
             <Field
               icon={<User className="size-4" />}
               label="Full Name"
-              placeholder="Rahul Sharma"
+              placeholder={lang === "hi" ? "राहुल शर्मा" : lang === "te" ? "రాహుల్ శర్మ" : "Rahul Sharma"}
               autoFocus
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+              lang={lang}
+              inputMode="text"
+              autoComplete="name"
+              hint={lang === "hi" ? t("auth.nameHintHi") : lang === "te" ? t("auth.nameHintTe") : undefined}
             />
+
 
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
