@@ -394,8 +394,9 @@ function Row({
 function Field({
   icon,
   label,
+  hint,
   ...inputProps
-}: { icon: React.ReactNode; label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+}: { icon: React.ReactNode; label: string; hint?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div>
       <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -408,6 +409,7 @@ function Field({
           className="flex-1 bg-transparent outline-none text-sm font-medium disabled:opacity-60"
         />
       </div>
+      {hint && <p className="mt-1.5 text-[11px] text-muted-foreground">{hint}</p>}
     </div>
   );
 }
