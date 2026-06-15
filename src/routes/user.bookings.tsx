@@ -181,27 +181,31 @@ function UserBookings() {
             cancelled: "bg-destructive/15 text-destructive",
           };
           const cls = map[b.status] ?? "bg-secondary text-muted-foreground";
+          const workerName = (b.worker_id && workerNames[b.worker_id]) || t("userBookings.unknownWorker");
           return (
             <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <p className="font-bold text-sm font-sans">{b.service}</p>
-                  <p className="text-[11px] text-muted-foreground">#{b.id.slice(0, 8).toUpperCase()}</p>
+              <div className="flex items-start justify-between mb-3">
+                <div className="min-w-0">
+                  <p className="font-bold text-base font-sans truncate">{workerName}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{b.service}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{t("userBookings.bookingId")}: #{b.id.slice(0, 8).toUpperCase()}</p>
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide ${cls}`}>
+                <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide shrink-0 ${cls}`}>
                   {tStatus(b.status)}
                 </span>
               </div>
-              <div className="text-xs text-muted-foreground border-t border-border pt-3">
-                <p className="line-clamp-2">{b.problem_description ?? "—"}</p>
-                <p className="mt-1">{b.address}</p>
-                <div className="flex justify-between mt-2">
-                  <span>{b.date} · {b.time}</span>
+              <div className="text-xs text-muted-foreground border-t border-border pt-3 space-y-1">
+                {b.problem_description && <p className="line-clamp-2">{b.problem_description}</p>}
+                <p><span className="font-semibold text-foreground">{t("userBookings.address")}:</span> {b.address ?? "—"}</p>
+                <p><span className="font-semibold text-foreground">{t("userBookings.schedule")}:</span> {b.date} · {b.time}</p>
+                <div className="flex justify-between pt-1">
+                  <span className="font-semibold text-foreground">{t("userBookings.amount")}</span>
                   <span className="font-bold text-foreground">₹{b.amount ?? 0}</span>
                 </div>
               </div>
             </div>
           );
+
         })}
       </section>
     </>
