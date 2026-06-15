@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Search, Wrench, ChevronRight } from "lucide-react";
-import { LanguageButton } from "@components/language-selector";
+import { LanguageButton } from "@/components/language-selector";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth/")({
