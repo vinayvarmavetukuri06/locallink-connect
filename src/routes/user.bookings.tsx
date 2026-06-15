@@ -73,14 +73,18 @@ function UserBookings() {
           .in("id", workerIds);
         const userIds = (wps ?? []).map((w: any) => w.user_id).filter(Boolean);
         const { data: profs } = userIds.length
-          ? await supabase.from("profiles").select("id, full_name").in("id", userIds)
+          ? await supabase.from("profiles").select("id, full_name, mobile").in("id", userIds)
           : { data: [] as any[] };
-        const profMap = new Map((profs ?? []).map((p: any) => [p.id, p.full_name]));
-        const map: Record<string, string> = {};
+        const profMap = new Map((profs ?? []).map((p: any) => [p.id, p]));
+        const nameMap: Record<string, string> = {};
+        const mobileMap: Record<string, string> = {};
         (wps ?? []).forEach((w: any) => {
-          map[w.id] = profMap.get(w.user_id) ?? "";
+          const prof: any = profMap.get(w.user_id);
+          nameMap[w.id] = prof?.full_name ?? "";
+          mobileMap[w.id] = prof?.mobile ?? "";
         });
-        setWorkerNames(map);
+        setWorkerNames(nameMap);
+        setWorkerMobiles(mobileMap);
       }
     }
     setLoading(false);
