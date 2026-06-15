@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n";
 type Booking = {
   id: string;
   customer_id: string | null;
+  worker_id: string | null;
   service: string | null;
   date: string | null;
   time: string | null;
@@ -17,6 +18,7 @@ type Booking = {
   status: string;
   created_at: string;
 };
+
 
 export const Route = createFileRoute("/user/bookings")({
   component: UserBookings,
@@ -36,7 +38,9 @@ function UserBookings() {
 
   const [tab, setTab] = useState<string>("all");
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [workerNames, setWorkerNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+
   const [dismissed, setDismissed] = useState<Set<string>>(() => {
     if (typeof window === "undefined") return new Set();
     try { return new Set(JSON.parse(localStorage.getItem("lc:dismissed-cancellations") ?? "[]")); }
@@ -57,9 +61,30 @@ function UserBookings() {
     let q = supabase.from("bookings").select("*").order("created_at", { ascending: false });
     if (customerId) q = q.eq("customer_id", customerId);
     const { data, error } = await q;
-    if (!error && data) setBookings(data as Booking[]);
+    if (!error && data) {
+      const list = data as Booking[];
+      setBookings(list);
+      const workerIds = Array.from(new Set(list.map((b) => b.worker_id).filter(Boolean))) as string[];
+      if (workerIds.length) {
+        const { data: wps } = await supabase
+          .from("worker_profiles")
+          .select("id, user_id")
+          .in("id", workerIds);
+        const userIds = (wps ?? []).map((w: any) => w.user_id).filter(Boolean);
+        const { data: profs } = userIds.length
+          ? await supabase.from("profiles").select("id, full_name").in("id", userIds)
+          : { data: [] as any[] };
+        const profMap = new Map((profs ?? []).map((p: any) => [p.id, p.full_name]));
+        const map: Record<string, string> = {};
+        (wps ?? []).forEach((w: any) => {
+          map[w.id] = profMap.get(w.user_id) ?? "";
+        });
+        setWorkerNames(map);
+      }
+    }
     setLoading(false);
   }
+
 
   useEffect(() => {
     load();
@@ -156,27 +181,31 @@ function UserBookings() {
             cancelled: "bg-destructive/15 text-destructive",
           };
           const cls = map[b.status] ?? "bg-secondary text-muted-foreground";
+          const workerName = (b.worker_id && workerNames[b.worker_id]) || t("userBookings.unknownWorker");
           return (
             <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <p className="font-bold text-sm font-sans">{b.service}</p>
-                  <p className="text-[11px] text-muted-foreground">#{b.id.slice(0, 8).toUpperCase()}</p>
+              <div className="flex items-start justify-between mb-3">
+                <div className="min-w-0">
+                  <p className="font-bold text-base font-sans truncate">{workerName}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{b.service}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{t("userBookings.bookingId")}: #{b.id.slice(0, 8).toUpperCase()}</p>
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide ${cls}`}>
+                <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide shrink-0 ${cls}`}>
                   {tStatus(b.status)}
                 </span>
               </div>
-              <div className="text-xs text-muted-foreground border-t border-border pt-3">
-                <p className="line-clamp-2">{b.problem_description ?? "—"}</p>
-                <p className="mt-1">{b.address}</p>
-                <div className="flex justify-between mt-2">
-                  <span>{b.date} · {b.time}</span>
+              <div className="text-xs text-muted-foreground border-t border-border pt-3 space-y-1">
+                {b.problem_description && <p className="line-clamp-2">{b.problem_description}</p>}
+                <p><span className="font-semibold text-foreground">{t("userBookings.address")}:</span> {b.address ?? "—"}</p>
+                <p><span className="font-semibold text-foreground">{t("userBookings.schedule")}:</span> {b.date} · {b.time}</p>
+                <div className="flex justify-between pt-1">
+                  <span className="font-semibold text-foreground">{t("userBookings.amount")}</span>
                   <span className="font-bold text-foreground">₹{b.amount ?? 0}</span>
                 </div>
               </div>
             </div>
           );
+
         })}
       </section>
     </>

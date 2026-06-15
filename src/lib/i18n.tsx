@@ -211,6 +211,14 @@ const en: Dict = {
   "userBookings.empty": "No bookings yet.",
   "userBookings.unavailable": "Your worker is unavailable, please rebook",
   "userBookings.findAnother": "Find another worker",
+  "userBookings.worker": "Worker",
+  "userBookings.service": "Service",
+  "userBookings.bookingId": "Booking ID",
+  "userBookings.address": "Address",
+  "userBookings.schedule": "Date & Time",
+  "userBookings.amount": "Amount",
+  "userBookings.unknownWorker": "Worker",
+
 
   // chat
   "chat.title": "Messages",
@@ -679,6 +687,14 @@ const hi: Dict = {
   "userBookings.empty": "अभी कोई बुकिंग नहीं।",
   "userBookings.unavailable": "आपका कारीगर उपलब्ध नहीं है, कृपया फिर से बुक करें",
   "userBookings.findAnother": "दूसरा कारीगर खोजें",
+  "userBookings.worker": "कारीगर",
+  "userBookings.service": "सेवा",
+  "userBookings.bookingId": "बुकिंग आईडी",
+  "userBookings.address": "पता",
+  "userBookings.schedule": "तारीख और समय",
+  "userBookings.amount": "राशि",
+  "userBookings.unknownWorker": "कारीगर",
+
 
   "chat.title": "संदेश",
   "chat.empty": "कोई और संदेश नहीं",
@@ -1128,6 +1144,14 @@ const te: Dict = {
   "userBookings.empty": "ఇంకా బుకింగ్‌లు లేవు.",
   "userBookings.unavailable": "మీ కార్మికుడు అందుబాటులో లేరు, దయచేసి మళ్ళీ బుక్ చేయండి",
   "userBookings.findAnother": "మరో కార్మికుని కనుగొనండి",
+  "userBookings.worker": "కార్మికుడు",
+  "userBookings.service": "సేవ",
+  "userBookings.bookingId": "బుకింగ్ ఐడి",
+  "userBookings.address": "చిరునామా",
+  "userBookings.schedule": "తేదీ & సమయం",
+  "userBookings.amount": "మొత్తం",
+  "userBookings.unknownWorker": "కార్మికుడు",
+
 
   "chat.title": "సందేశాలు",
   "chat.empty": "మరిన్ని సందేశాలు లేవు",
