@@ -41,29 +41,8 @@ function AuthChooser() {
           </div>
         </div>
 
-        {/* How it works mini steps */}
-        <div className="mt-5 pt-5 border-t border-primary/10">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-primary/70 mb-2">
-            {t("auth.chooser.howItWorks")}
-          </p>
-          <div className="flex flex-col gap-y-1.5">
-            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Check className="size-3 text-primary" />
-              {t("auth.chooser.step1Title")}
-            </span>
-            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Check className="size-3 text-primary" />
-              {t("auth.chooser.step2Title")}
-            </span>
-            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Check className="size-3 text-primary" />
-              {t("auth.chooser.step3Title")}
-            </span>
-          </div>
-        </div>
-
         {/* Big prominent CTA button */}
-        <div className="mt-5">
+        <div className="mt-6">
           <div className="w-full bg-primary text-primary-foreground py-3.5 rounded-2xl font-bold text-base flex items-center justify-center gap-2 shadow-sm">
             {t("auth.chooser.userCta")}
             <ChevronRight className="size-5" />
@@ -71,8 +50,29 @@ function AuthChooser() {
         </div>
       </Link>
 
+      {/* How it works section — outside the card */}
+      <div className="mt-8">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-primary/70 mb-3">
+          {t("auth.chooser.howItWorks")}
+        </p>
+        <div className="flex flex-col gap-y-2.5">
+          <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <Check className="size-4 text-primary" />
+            {t("auth.chooser.step1Title")}
+          </span>
+          <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <Check className="size-4 text-primary" />
+            {t("auth.chooser.step2Title")}
+          </span>
+          <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <Check className="size-4 text-primary" />
+            {t("auth.chooser.step3Title")}
+          </span>
+        </div>
+      </div>
+
       {/* Spacer pushes member option to bottom */}
-      <div className="flex-1 min-h-8" />
+      <div className="flex-1 min-h-4" />
 
       {/* Tiny secondary option — I Provide Services */}
       <div className="flex justify-center">
