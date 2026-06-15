@@ -161,6 +161,7 @@ const en: Dict = {
   "signup.member.serviceArea": "Location / Service Area",
   "signup.member.years": "Years of Experience",
   "signup.member.yearsPh": "e.g. 5",
+  "signup.member.yearsMax": "Years of experience cannot exceed 50.",
   "signup.member.hourly": "Hourly Rate",
   "signup.member.bio": "Bio / About",
   "signup.member.bioPh": "Describe your skills and experience...",
