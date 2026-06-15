@@ -1158,6 +1158,8 @@ const te: Dict = {
   "userBookings.schedule": "తేదీ & సమయం",
   "userBookings.amount": "మొత్తం",
   "userBookings.unknownWorker": "కార్మికుడు",
+  "userBookings.callWorker": "కార్మికుడిని కాల్ చేయండి",
+  "userBookings.chatWorker": "కార్మికుడితో చాట్ చేయండి",
 
 
   "chat.title": "సందేశాలు",
