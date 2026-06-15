@@ -37,6 +37,7 @@ import { Route as AuthLoginRouteImport } from './routes/auth.login'
 import { Route as UserWorkerIdRouteImport } from './routes/user.worker.$id'
 import { Route as UserChatOtherIdRouteImport } from './routes/user.chat.$otherId'
 import { Route as UserCategorySlugRouteImport } from './routes/user.category.$slug'
+import { Route as MemberChatOtherIdRouteImport } from './routes/member.chat.$otherId'
 
 const UserRoute = UserRouteImport.update({
   id: '/user',
@@ -178,6 +179,11 @@ const UserCategorySlugRoute = UserCategorySlugRouteImport.update({
   path: '/category/$slug',
   getParentRoute: () => UserRoute,
 } as any)
+const MemberChatOtherIdRoute = MemberChatOtherIdRouteImport.update({
+  id: '/$otherId',
+  path: '/$otherId',
+  getParentRoute: () => MemberChatRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -188,7 +194,7 @@ export interface FileRoutesByFullPath {
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
-  '/member/chat': typeof MemberChatRoute
+  '/member/chat': typeof MemberChatRouteWithChildren
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/member/settings': typeof MemberSettingsRoute
@@ -205,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/member/': typeof MemberIndexRoute
   '/user/': typeof UserIndexRoute
+  '/member/chat/$otherId': typeof MemberChatOtherIdRoute
   '/user/category/$slug': typeof UserCategorySlugRoute
   '/user/chat/$otherId': typeof UserChatOtherIdRoute
   '/user/worker/$id': typeof UserWorkerIdRoute
@@ -215,7 +222,7 @@ export interface FileRoutesByTo {
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
-  '/member/chat': typeof MemberChatRoute
+  '/member/chat': typeof MemberChatRouteWithChildren
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/member/settings': typeof MemberSettingsRoute
@@ -232,6 +239,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/member': typeof MemberIndexRoute
   '/user': typeof UserIndexRoute
+  '/member/chat/$otherId': typeof MemberChatOtherIdRoute
   '/user/category/$slug': typeof UserCategorySlugRoute
   '/user/chat/$otherId': typeof UserChatOtherIdRoute
   '/user/worker/$id': typeof UserWorkerIdRoute
@@ -246,7 +254,7 @@ export interface FileRoutesById {
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
-  '/member/chat': typeof MemberChatRoute
+  '/member/chat': typeof MemberChatRouteWithChildren
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/member/settings': typeof MemberSettingsRoute
@@ -263,6 +271,7 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/member/': typeof MemberIndexRoute
   '/user/': typeof UserIndexRoute
+  '/member/chat/$otherId': typeof MemberChatOtherIdRoute
   '/user/category/$slug': typeof UserCategorySlugRoute
   '/user/chat/$otherId': typeof UserChatOtherIdRoute
   '/user/worker/$id': typeof UserWorkerIdRoute
@@ -295,6 +304,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/member/'
     | '/user/'
+    | '/member/chat/$otherId'
     | '/user/category/$slug'
     | '/user/chat/$otherId'
     | '/user/worker/$id'
@@ -322,6 +332,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/member'
     | '/user'
+    | '/member/chat/$otherId'
     | '/user/category/$slug'
     | '/user/chat/$otherId'
     | '/user/worker/$id'
@@ -352,6 +363,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/member/'
     | '/user/'
+    | '/member/chat/$otherId'
     | '/user/category/$slug'
     | '/user/chat/$otherId'
     | '/user/worker/$id'
@@ -566,6 +578,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserCategorySlugRouteImport
       parentRoute: typeof UserRoute
     }
+    '/member/chat/$otherId': {
+      id: '/member/chat/$otherId'
+      path: '/$otherId'
+      fullPath: '/member/chat/$otherId'
+      preLoaderRoute: typeof MemberChatOtherIdRouteImport
+      parentRoute: typeof MemberChatRoute
+    }
   }
 }
 
@@ -579,9 +598,21 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface MemberChatRouteChildren {
+  MemberChatOtherIdRoute: typeof MemberChatOtherIdRoute
+}
+
+const MemberChatRouteChildren: MemberChatRouteChildren = {
+  MemberChatOtherIdRoute: MemberChatOtherIdRoute,
+}
+
+const MemberChatRouteWithChildren = MemberChatRoute._addFileChildren(
+  MemberChatRouteChildren,
+)
+
 interface MemberRouteChildren {
   MemberBookingsRoute: typeof MemberBookingsRoute
-  MemberChatRoute: typeof MemberChatRoute
+  MemberChatRoute: typeof MemberChatRouteWithChildren
   MemberNotificationsRoute: typeof MemberNotificationsRoute
   MemberProfileRoute: typeof MemberProfileRoute
   MemberSettingsRoute: typeof MemberSettingsRoute
@@ -590,7 +621,7 @@ interface MemberRouteChildren {
 
 const MemberRouteChildren: MemberRouteChildren = {
   MemberBookingsRoute: MemberBookingsRoute,
-  MemberChatRoute: MemberChatRoute,
+  MemberChatRoute: MemberChatRouteWithChildren,
   MemberNotificationsRoute: MemberNotificationsRoute,
   MemberProfileRoute: MemberProfileRoute,
   MemberSettingsRoute: MemberSettingsRoute,
