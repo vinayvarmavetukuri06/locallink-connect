@@ -170,7 +170,8 @@ function WorkerProfile() {
       {bookingOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end" onClick={() => { setBookingOpen(false); }}>
           <div
-            className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-6 pb-10 max-h-[92vh] overflow-y-auto"
+            className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-6 max-h-[92vh] overflow-y-auto"
+            style={{ paddingBottom: "calc(96px + env(safe-area-inset-bottom))" }}
             onClick={(e) => e.stopPropagation()}
           >
             {!confirmed ? (
