@@ -1144,6 +1144,14 @@ const te: Dict = {
   "userBookings.empty": "ఇంకా బుకింగ్‌లు లేవు.",
   "userBookings.unavailable": "మీ కార్మికుడు అందుబాటులో లేరు, దయచేసి మళ్ళీ బుక్ చేయండి",
   "userBookings.findAnother": "మరో కార్మికుని కనుగొనండి",
+  "userBookings.worker": "కార్మికుడు",
+  "userBookings.service": "సేవ",
+  "userBookings.bookingId": "బుకింగ్ ఐడి",
+  "userBookings.address": "చిరునామా",
+  "userBookings.schedule": "తేదీ & సమయం",
+  "userBookings.amount": "మొత్తం",
+  "userBookings.unknownWorker": "కార్మికుడు",
+
 
   "chat.title": "సందేశాలు",
   "chat.empty": "మరిన్ని సందేశాలు లేవు",
