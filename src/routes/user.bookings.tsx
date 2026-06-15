@@ -61,9 +61,30 @@ function UserBookings() {
     let q = supabase.from("bookings").select("*").order("created_at", { ascending: false });
     if (customerId) q = q.eq("customer_id", customerId);
     const { data, error } = await q;
-    if (!error && data) setBookings(data as Booking[]);
+    if (!error && data) {
+      const list = data as Booking[];
+      setBookings(list);
+      const workerIds = Array.from(new Set(list.map((b) => b.worker_id).filter(Boolean))) as string[];
+      if (workerIds.length) {
+        const { data: wps } = await supabase
+          .from("worker_profiles")
+          .select("id, user_id")
+          .in("id", workerIds);
+        const userIds = (wps ?? []).map((w: any) => w.user_id).filter(Boolean);
+        const { data: profs } = userIds.length
+          ? await supabase.from("profiles").select("id, full_name").in("id", userIds)
+          : { data: [] as any[] };
+        const profMap = new Map((profs ?? []).map((p: any) => [p.id, p.full_name]));
+        const map: Record<string, string> = {};
+        (wps ?? []).forEach((w: any) => {
+          map[w.id] = profMap.get(w.user_id) ?? "";
+        });
+        setWorkerNames(map);
+      }
+    }
     setLoading(false);
   }
+
 
   useEffect(() => {
     load();
