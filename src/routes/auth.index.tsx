@@ -51,23 +51,42 @@ function AuthChooser() {
       </Link>
 
       {/* How it works section — outside the card */}
-      <div className="mt-8">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-primary/70 mb-3">
+      <div className="mt-8 space-y-3">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
           {t("auth.chooser.howItWorks")}
         </p>
-        <div className="flex flex-col gap-y-2.5">
-          <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-            <Check className="size-4 text-primary" />
-            {t("auth.chooser.step1Title")}
-          </span>
-          <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-            <Check className="size-4 text-primary" />
-            {t("auth.chooser.step2Title")}
-          </span>
-          <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-            <Check className="size-4 text-primary" />
-            {t("auth.chooser.step3Title")}
-          </span>
+
+        {/* Step 1 */}
+        <div className="bg-card border border-border rounded-2xl p-4 shadow-sm flex items-start gap-3">
+          <div className="size-9 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+            <Sparkles className="size-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-foreground">{t("auth.chooser.step1Numbered")}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("auth.chooser.step1Desc")}</p>
+          </div>
+        </div>
+
+        {/* Step 2 */}
+        <div className="bg-card border border-border rounded-2xl p-4 shadow-sm flex items-start gap-3">
+          <div className="size-9 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+            <User className="size-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-foreground">{t("auth.chooser.step2Numbered")}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("auth.chooser.step2Desc")}</p>
+          </div>
+        </div>
+
+        {/* Step 3 */}
+        <div className="bg-card border border-border rounded-2xl p-4 shadow-sm flex items-start gap-3">
+          <div className="size-9 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+            <Zap className="size-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-foreground">{t("auth.chooser.step3Numbered")}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("auth.chooser.step3Desc")}</p>
+          </div>
         </div>
       </div>
 
