@@ -50,7 +50,10 @@ export function BottomNav({ variant }: { variant: "user" | "member" | "admin" })
               active ? "text-primary" : "text-muted-foreground"
             }`}
           >
-            <div className={active ? "scale-110 transition-transform" : ""}>{item.icon}</div>
+            <div className={`relative ${active ? "scale-110 transition-transform" : ""}`}>
+              {item.icon}
+              {item.labelKey === "nav.chat" && variant !== "admin" && <ChatUnreadBadge />}
+            </div>
             <span className="text-[10px] font-bold">{label}</span>
           </Link>
         );
