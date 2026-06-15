@@ -93,6 +93,9 @@ const en: Dict = {
   "auth.chooser.step2Desc": "Compare ratings and prices.",
   "auth.chooser.step3Title": "Book instantly",
   "auth.chooser.step3Desc": "Confirm in seconds, get help fast.",
+  "auth.chooser.step1Numbered": "1. Choose a service",
+  "auth.chooser.step2Numbered": "2. Pick a worker",
+  "auth.chooser.step3Numbered": "3. Book instantly",
 
   // login
   "login.welcomeBack": "Welcome back",
@@ -564,6 +567,9 @@ const hi: Dict = {
   "auth.chooser.step2Desc": "रेटिंग और कीमत की तुलना करें।",
   "auth.chooser.step3Title": "तुरंत बुक करें",
   "auth.chooser.step3Desc": "सेकंडों में पुष्टि, तेज़ मदद।",
+  "auth.chooser.step1Numbered": "1. सेवा चुनें",
+  "auth.chooser.step2Numbered": "2. कारीगर चुनें",
+  "auth.chooser.step3Numbered": "3. तुरंत बुक करें",
 
   "login.welcomeBack": "वापसी पर स्वागत है",
   "login.subtitle": "मोबाइल और पासवर्ड से लॉगिन करें।",
@@ -1010,6 +1016,9 @@ const te: Dict = {
   "auth.chooser.step2Desc": "రేటింగ్‌లు మరియు ధరలను సరిపోల్చండి.",
   "auth.chooser.step3Title": "తక్షణమే బుక్ చేయండి",
   "auth.chooser.step3Desc": "సెకన్లలో నిర్ధారించండి, త్వరగా సహాయం పొందండి.",
+  "auth.chooser.step1Numbered": "1. సేవను ఎంచుకోండి",
+  "auth.chooser.step2Numbered": "2. కార్మికుని ఎంచుకోండి",
+  "auth.chooser.step3Numbered": "3. తక్షణమే బుక్ చేయండి",
 
   "login.welcomeBack": "తిరిగి స్వాగతం",
   "login.subtitle": "మీ మొబైల్ మరియు పాస్‌వర్డ్‌తో లాగిన్ చేయండి.",
