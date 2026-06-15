@@ -3,6 +3,7 @@ import { Home, Calendar, MessageCircle, User, LayoutDashboard, BadgeIndianRupee,
 // Note: BadgeIndianRupee retained for admin nav only.
 import type { ReactNode } from "react";
 import { useI18n } from "@/lib/i18n";
+import { ChatUnreadBadge } from "@/components/chat-unread-badge";
 
 type NavItem = { to: string; labelKey: string; fallback: string; icon: ReactNode };
 
