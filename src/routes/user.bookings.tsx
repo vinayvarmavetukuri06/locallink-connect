@@ -187,6 +187,8 @@ function UserBookings() {
           };
           const cls = map[b.status] ?? "bg-secondary text-muted-foreground";
           const workerName = (b.worker_id && workerNames[b.worker_id]) || t("userBookings.unknownWorker");
+          const workerMobile = b.worker_id ? workerMobiles[b.worker_id] : "";
+          const canContact = b.status === "accepted" || b.status === "in_progress";
           return (
             <div key={b.id} className="bg-card border border-border rounded-2xl p-4">
               <div className="flex items-start justify-between mb-3">
@@ -208,6 +210,22 @@ function UserBookings() {
                   <span className="font-bold text-foreground">₹{b.amount ?? 0}</span>
                 </div>
               </div>
+              {canContact && (
+                <div className="mt-3 pt-3 border-t border-border flex gap-2">
+                  <a
+                    href={workerMobile ? `tel:${workerMobile.replace(/\s+/g, "")}` : undefined}
+                    className={`flex-1 inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground text-xs font-bold px-3 py-2.5 rounded-xl ${!workerMobile ? "opacity-50 pointer-events-none" : ""}`}
+                  >
+                    <Phone className="size-3.5" /> {t("userBookings.callWorker")}
+                  </a>
+                  <Link
+                    to="/user/chat"
+                    className="flex-1 inline-flex items-center justify-center gap-2 bg-secondary text-foreground text-xs font-bold px-3 py-2.5 rounded-xl"
+                  >
+                    <MessageCircle className="size-3.5" /> {t("userBookings.chatWorker")}
+                  </Link>
+                </div>
+              )}
             </div>
           );
 
