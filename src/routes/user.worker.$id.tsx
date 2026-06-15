@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { categoryBySlug } from "@/lib/mock-data";
 import { WorkerAvatar, AvailabilityBadge } from "@/components/worker-card";
 import { useWorkerById } from "@/lib/workers-api";
-import { ArrowLeft, Star, MapPin, MessageCircle, Phone, Calendar, Clock, MapPinned, FileText, Loader2 } from "lucide-react";
+import { ArrowLeft, Star, MapPin, Calendar, Clock, MapPinned, FileText, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserProfile } from "@/lib/profile-store";
@@ -145,22 +145,10 @@ function WorkerProfile() {
       </section>
 
       <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md px-5 pb-2 z-40">
-        <div className="bg-card border border-border rounded-3xl p-3 shadow-lg shadow-black/5 flex gap-2">
-          <a
-            href={w.mobile ? `tel:${w.mobile.replace(/\s+/g, "")}` : undefined}
-            className="size-12 rounded-2xl bg-secondary flex items-center justify-center"
-          >
-            <Phone className="size-5" />
-          </a>
-          <button
-            onClick={() => navigate({ to: "/user/chat" })}
-            className="size-12 rounded-2xl bg-secondary flex items-center justify-center"
-          >
-            <MessageCircle className="size-5" />
-          </button>
+        <div className="bg-card border border-border rounded-3xl p-3 shadow-lg shadow-black/5">
           <button
             onClick={() => setBookingOpen(true)}
-            className="flex-1 bg-primary text-primary-foreground rounded-2xl font-bold text-sm"
+            className="w-full bg-primary text-primary-foreground rounded-2xl font-bold text-sm py-3"
           >
             {t("worker.bookNow")} · ₹{w.startingPrice}
           </button>

@@ -161,6 +161,7 @@ const en: Dict = {
   "signup.member.serviceArea": "Location / Service Area",
   "signup.member.years": "Years of Experience",
   "signup.member.yearsPh": "e.g. 5",
+  "signup.member.yearsMax": "Years of experience cannot exceed 50.",
   "signup.member.hourly": "Hourly Rate",
   "signup.member.bio": "Bio / About",
   "signup.member.bioPh": "Describe your skills and experience...",
@@ -218,6 +219,8 @@ const en: Dict = {
   "userBookings.schedule": "Date & Time",
   "userBookings.amount": "Amount",
   "userBookings.unknownWorker": "Worker",
+  "userBookings.callWorker": "Call Worker",
+  "userBookings.chatWorker": "Chat with Worker",
 
 
   // chat
@@ -640,6 +643,7 @@ const hi: Dict = {
   "signup.member.serviceArea": "स्थान / सेवा क्षेत्र",
   "signup.member.years": "अनुभव के वर्ष",
   "signup.member.yearsPh": "जैसे 5",
+  "signup.member.yearsMax": "अनुभव के वर्ष 50 से अधिक नहीं हो सकते।",
   "signup.member.hourly": "प्रति घंटा दर",
   "signup.member.bio": "बायो / परिचय",
   "signup.member.bioPh": "अपने कौशल और अनुभव का वर्णन करें...",
@@ -694,6 +698,8 @@ const hi: Dict = {
   "userBookings.schedule": "तारीख और समय",
   "userBookings.amount": "राशि",
   "userBookings.unknownWorker": "कारीगर",
+  "userBookings.callWorker": "कारीगर को कॉल करें",
+  "userBookings.chatWorker": "कारीगर से चैट करें",
 
 
   "chat.title": "संदेश",
@@ -1097,6 +1103,7 @@ const te: Dict = {
   "signup.member.serviceArea": "స్థానం / సేవా ప్రాంతం",
   "signup.member.years": "అనుభవ సంవత్సరాలు",
   "signup.member.yearsPh": "ఉదా. 5",
+  "signup.member.yearsMax": "అనుభవ సంవత్సరాలు 50 మించకూడదు.",
   "signup.member.hourly": "గంట రేటు",
   "signup.member.bio": "బయో / గురించి",
   "signup.member.bioPh": "మీ నైపుణ్యాలు మరియు అనుభవాన్ని వివరించండి...",
@@ -1151,6 +1158,8 @@ const te: Dict = {
   "userBookings.schedule": "తేదీ & సమయం",
   "userBookings.amount": "మొత్తం",
   "userBookings.unknownWorker": "కార్మికుడు",
+  "userBookings.callWorker": "కార్మికుడిని కాల్ చేయండి",
+  "userBookings.chatWorker": "కార్మికుడితో చాట్ చేయండి",
 
 
   "chat.title": "సందేశాలు",

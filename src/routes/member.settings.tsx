@@ -165,7 +165,11 @@ function MemberSettings() {
               min={0}
               inputMode="numeric"
               value={form.years}
-              onChange={(e) => setForm((f) => ({ ...f, years: e.target.value }))}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, "").slice(0, 2);
+                const n = v ? parseInt(v, 10) : 0;
+                setForm((f) => ({ ...f, years: n > 50 ? "50" : v }));
+              }}
               placeholder={t("memberSettings.yearsPh")}
               className="w-full bg-card border border-border rounded-xl px-3 py-2.5 text-sm"
             />

@@ -63,6 +63,8 @@ function MemberAuth() {
   async function handleSubmit() {
     setErr(null);
     if (!fullName.trim() || !area.trim()) return setErr(t("signup.member.nameLocReq"));
+    const yrs = experience ? parseInt(experience, 10) : 0;
+    if (experience && (isNaN(yrs) || yrs < 0 || yrs > 50)) return setErr(t("signup.member.yearsMax"));
     setLoading(true);
     const hash = await hashPassword(pw);
     const workerId = await saveMemberProfile(
@@ -271,7 +273,12 @@ function MemberAuth() {
               placeholder={t("signup.member.yearsPh")}
               inputMode="numeric"
               value={experience}
-              onChange={(e) => setExperience(e.target.value)}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, "").slice(0, 2);
+                const n = v ? parseInt(v, 10) : 0;
+                if (n > 50) setExperience("50");
+                else setExperience(v);
+              }}
             />
 
             <div>
