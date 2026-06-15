@@ -1103,6 +1103,7 @@ const te: Dict = {
   "signup.member.serviceArea": "స్థానం / సేవా ప్రాంతం",
   "signup.member.years": "అనుభవ సంవత్సరాలు",
   "signup.member.yearsPh": "ఉదా. 5",
+  "signup.member.yearsMax": "అనుభవ సంవత్సరాలు 50 మించకూడదు.",
   "signup.member.hourly": "గంట రేటు",
   "signup.member.bio": "బయో / గురించి",
   "signup.member.bioPh": "మీ నైపుణ్యాలు మరియు అనుభవాన్ని వివరించండి...",
