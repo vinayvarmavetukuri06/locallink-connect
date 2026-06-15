@@ -219,6 +219,8 @@ const en: Dict = {
   "userBookings.schedule": "Date & Time",
   "userBookings.amount": "Amount",
   "userBookings.unknownWorker": "Worker",
+  "userBookings.callWorker": "Call Worker",
+  "userBookings.chatWorker": "Chat with Worker",
 
 
   // chat
