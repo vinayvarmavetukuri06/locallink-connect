@@ -275,17 +275,10 @@ function AvailabilityPill({
       }
     }
 
-    if (!next && rowId) {
-      const { data: cancelled } = await supabase
-        .from("bookings")
-        .update({ status: "cancelled" })
-        .eq("worker_id", rowId)
-        .in("status", ["accepted", "in_progress"])
-        .select("id");
-      if (cancelled && cancelled.length > 0) {
-        toast.warning(`${cancelled.length} ${t("memberHome.cancelledN")}`);
-      }
-    }
+    // NOTE: Availability toggle only affects whether the worker is shown in
+    // search / listings for NEW bookings. Existing bookings (pending,
+    // accepted, in_progress) are intentionally left untouched.
+
 
     toast.success(next ? t("memberHome.nowAvailable") : t("memberHome.nowUnavailable"));
     setSaving(false);
