@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { categoryBySlug } from "@/lib/mock-data";
 import { WorkerAvatar, AvailabilityBadge } from "@/components/worker-card";
 import { useWorkerById } from "@/lib/workers-api";
-import { ArrowLeft, Star, MapPin, MessageCircle, Phone, Calendar, Clock, MapPinned, FileText, Loader2 } from "lucide-react";
+import { ArrowLeft, Star, MapPin, Calendar, Clock, MapPinned, FileText, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserProfile } from "@/lib/profile-store";
