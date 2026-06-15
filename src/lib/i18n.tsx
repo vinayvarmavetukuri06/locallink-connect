@@ -211,6 +211,14 @@ const en: Dict = {
   "userBookings.empty": "No bookings yet.",
   "userBookings.unavailable": "Your worker is unavailable, please rebook",
   "userBookings.findAnother": "Find another worker",
+  "userBookings.worker": "Worker",
+  "userBookings.service": "Service",
+  "userBookings.bookingId": "Booking ID",
+  "userBookings.address": "Address",
+  "userBookings.schedule": "Date & Time",
+  "userBookings.amount": "Amount",
+  "userBookings.unknownWorker": "Worker",
+
 
   // chat
   "chat.title": "Messages",
