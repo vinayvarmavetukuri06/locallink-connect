@@ -687,6 +687,14 @@ const hi: Dict = {
   "userBookings.empty": "अभी कोई बुकिंग नहीं।",
   "userBookings.unavailable": "आपका कारीगर उपलब्ध नहीं है, कृपया फिर से बुक करें",
   "userBookings.findAnother": "दूसरा कारीगर खोजें",
+  "userBookings.worker": "कारीगर",
+  "userBookings.service": "सेवा",
+  "userBookings.bookingId": "बुकिंग आईडी",
+  "userBookings.address": "पता",
+  "userBookings.schedule": "तारीख और समय",
+  "userBookings.amount": "राशि",
+  "userBookings.unknownWorker": "कारीगर",
+
 
   "chat.title": "संदेश",
   "chat.empty": "कोई और संदेश नहीं",
