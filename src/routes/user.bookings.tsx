@@ -38,7 +38,9 @@ function UserBookings() {
 
   const [tab, setTab] = useState<string>("all");
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [workerNames, setWorkerNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+
   const [dismissed, setDismissed] = useState<Set<string>>(() => {
     if (typeof window === "undefined") return new Set();
     try { return new Set(JSON.parse(localStorage.getItem("lc:dismissed-cancellations") ?? "[]")); }
