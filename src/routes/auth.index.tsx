@@ -46,16 +46,16 @@ function AuthChooser() {
           <p className="text-[10px] font-semibold uppercase tracking-wider text-primary/70 mb-2">
             {t("auth.chooser.howItWorks")}
           </p>
-          <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+          <div className="flex flex-col gap-y-1.5">
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
               <Check className="size-3 text-primary" />
               {t("auth.chooser.step1Title")}
             </span>
-            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
               <Check className="size-3 text-primary" />
               {t("auth.chooser.step2Title")}
             </span>
-            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
               <Check className="size-3 text-primary" />
               {t("auth.chooser.step3Title")}
             </span>
@@ -75,13 +75,15 @@ function AuthChooser() {
       <div className="flex-1 min-h-8" />
 
       {/* Tiny secondary option — I Provide Services */}
-      <Link
-        to="/auth/member"
-        className="flex items-center justify-center gap-2 py-3 text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <Wrench className="size-3.5" />
-        <span className="text-xs font-medium">{t("auth.chooser.memberCta")}</span>
-      </Link>
+      <div className="flex justify-center">
+        <Link
+          to="/auth/member"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-muted/40 text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-colors"
+        >
+          <Wrench className="size-3.5" />
+          <span className="text-xs font-medium">{t("auth.chooser.memberCta")}</span>
+        </Link>
+      </div>
     </div>
   );
 }
