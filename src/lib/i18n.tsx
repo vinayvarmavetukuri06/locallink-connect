@@ -643,6 +643,7 @@ const hi: Dict = {
   "signup.member.serviceArea": "स्थान / सेवा क्षेत्र",
   "signup.member.years": "अनुभव के वर्ष",
   "signup.member.yearsPh": "जैसे 5",
+  "signup.member.yearsMax": "अनुभव के वर्ष 50 से अधिक नहीं हो सकते।",
   "signup.member.hourly": "प्रति घंटा दर",
   "signup.member.bio": "बायो / परिचय",
   "signup.member.bioPh": "अपने कौशल और अनुभव का वर्णन करें...",
