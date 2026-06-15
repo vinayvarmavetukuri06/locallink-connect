@@ -3,6 +3,7 @@ import { Home, Calendar, MessageCircle, User, LayoutDashboard, BadgeIndianRupee,
 // Note: BadgeIndianRupee retained for admin nav only.
 import type { ReactNode } from "react";
 import { useI18n } from "@/lib/i18n";
+import { ChatUnreadBadge } from "@/components/chat-unread-badge";
 
 type NavItem = { to: string; labelKey: string; fallback: string; icon: ReactNode };
 
@@ -49,7 +50,10 @@ export function BottomNav({ variant }: { variant: "user" | "member" | "admin" })
               active ? "text-primary" : "text-muted-foreground"
             }`}
           >
-            <div className={active ? "scale-110 transition-transform" : ""}>{item.icon}</div>
+            <div className={`relative ${active ? "scale-110 transition-transform" : ""}`}>
+              {item.icon}
+              {item.labelKey === "nav.chat" && variant !== "admin" && <ChatUnreadBadge />}
+            </div>
             <span className="text-[10px] font-bold">{label}</span>
           </Link>
         );
