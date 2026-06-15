@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Search, Wrench, ChevronRight, Check } from "lucide-react";
+import { ArrowLeft, Search, Wrench, ChevronRight, Sparkles, User, Zap } from "lucide-react";
 import { LanguageButton } from "@/components/language-selector";
 import { useI18n } from "@/lib/i18n";
 
