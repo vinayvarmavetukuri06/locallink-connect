@@ -115,22 +115,31 @@ export function useApprovedWorkers() {
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     let cancelled = false;
+    const reload = () => {
+      fetchApprovedWorkers()
+        .then((rows) => {
+          if (!cancelled) {
+            setWorkers(rows);
+            setError(null);
+          }
+        })
+        .catch((e) => {
+          if (!cancelled) setError(e?.message ?? "Failed to load workers");
+        })
+        .finally(() => {
+          if (!cancelled) setLoading(false);
+        });
+    };
     setLoading(true);
-    fetchApprovedWorkers()
-      .then((rows) => {
-        if (!cancelled) {
-          setWorkers(rows);
-          setError(null);
-        }
-      })
-      .catch((e) => {
-        if (!cancelled) setError(e?.message ?? "Failed to load workers");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+    reload();
+    const channel = supabase
+      .channel("worker_profiles_changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "worker_profiles" }, reload)
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, reload)
+      .subscribe();
     return () => {
       cancelled = true;
+      supabase.removeChannel(channel);
     };
   }, []);
   return { workers, loading, error };
