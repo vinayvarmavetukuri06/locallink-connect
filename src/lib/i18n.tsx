@@ -229,6 +229,15 @@ const en: Dict = {
   "chat.startNew": "Start a new conversation by booking a worker.",
   "chat.findWorker": "Find a Worker",
   "chat.customerChats": "Customer Chats",
+  "chat.noConversations": "No conversations yet",
+  "chat.noConversationsSubUser": "Book a worker to start chatting.",
+  "chat.noConversationsSubWorker": "Customers you have bookings with will appear here.",
+  "chat.typeMessage": "Type a message",
+  "chat.send": "Send",
+  "chat.online": "Online",
+  "chat.lastMessage": "Last message",
+  "chat.noMessagesYet": "No messages yet. Say hello!",
+  "chat.bookingRequired": "Chat will be available once a booking is in progress.",
 
   // profile (user)
   "profile.title": "Profile",
