@@ -144,7 +144,7 @@ export function ChatRoom({ meId, otherId, resolveBookingId, backTo, fallbackName
   }
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-6rem)]">
+    <>
       <header className="bg-card px-4 pt-5 pb-3 border-b border-border sticky top-0 z-30 flex items-center gap-3">
         <Link to={backTo} aria-label={t("common.back")}>
           <ArrowLeft className="size-5" />
@@ -159,8 +159,8 @@ export function ChatRoom({ meId, otherId, resolveBookingId, backTo, fallbackName
 
       <div
         ref={scrollerRef}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-2 bg-secondary/30"
-        style={{ paddingBottom: "1rem" }}
+        className="px-4 py-4 space-y-2 bg-secondary/30 min-h-[calc(100vh-10rem)]"
+        style={{ paddingBottom: "calc(96px + env(safe-area-inset-bottom))" }}
       >
         {loading ? (
           <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
@@ -189,8 +189,8 @@ export function ChatRoom({ meId, otherId, resolveBookingId, backTo, fallbackName
 
       <form
         onSubmit={send}
-        className="sticky bg-card border-t border-border px-3 py-2 flex items-center gap-2"
-        style={{ bottom: "calc(72px + env(safe-area-inset-bottom))" }}
+        className="fixed left-1/2 -translate-x-1/2 w-full max-w-md bg-card border-t border-border px-3 py-2 flex items-center gap-2 z-40"
+        style={{ bottom: "calc(64px + env(safe-area-inset-bottom))" }}
       >
         <input
           type="text"
@@ -209,6 +209,6 @@ export function ChatRoom({ meId, otherId, resolveBookingId, backTo, fallbackName
           <Send className="size-4" />
         </button>
       </form>
-    </div>
+    </>
   );
 }
