@@ -698,6 +698,8 @@ const hi: Dict = {
   "userBookings.schedule": "तारीख और समय",
   "userBookings.amount": "राशि",
   "userBookings.unknownWorker": "कारीगर",
+  "userBookings.callWorker": "कारीगर को कॉल करें",
+  "userBookings.chatWorker": "कारीगर से चैट करें",
 
 
   "chat.title": "संदेश",
