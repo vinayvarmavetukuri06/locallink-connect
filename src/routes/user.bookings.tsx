@@ -39,6 +39,7 @@ function UserBookings() {
   const [tab, setTab] = useState<string>("all");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [workerNames, setWorkerNames] = useState<Record<string, string>>({});
+  const [workerMobiles, setWorkerMobiles] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
   const [dismissed, setDismissed] = useState<Set<string>>(() => {
