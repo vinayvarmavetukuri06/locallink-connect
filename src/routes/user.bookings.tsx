@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n";
 type Booking = {
   id: string;
   customer_id: string | null;
+  worker_id: string | null;
   service: string | null;
   date: string | null;
   time: string | null;
@@ -17,6 +18,7 @@ type Booking = {
   status: string;
   created_at: string;
 };
+
 
 export const Route = createFileRoute("/user/bookings")({
   component: UserBookings,
