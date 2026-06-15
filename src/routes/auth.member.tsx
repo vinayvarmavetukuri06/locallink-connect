@@ -273,7 +273,12 @@ function MemberAuth() {
               placeholder={t("signup.member.yearsPh")}
               inputMode="numeric"
               value={experience}
-              onChange={(e) => setExperience(e.target.value)}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, "").slice(0, 2);
+                const n = v ? parseInt(v, 10) : 0;
+                if (n > 50) setExperience("50");
+                else setExperience(v);
+              }}
             />
 
             <div>
