@@ -256,6 +256,7 @@ export type Database = {
           id: string
           is_available: boolean
           rating: number
+          service_categories: string[]
           service_category: string | null
           status: string
           user_id: string | null
@@ -268,6 +269,7 @@ export type Database = {
           id?: string
           is_available?: boolean
           rating?: number
+          service_categories?: string[]
           service_category?: string | null
           status?: string
           user_id?: string | null
@@ -280,6 +282,7 @@ export type Database = {
           id?: string
           is_available?: boolean
           rating?: number
+          service_categories?: string[]
           service_category?: string | null
           status?: string
           user_id?: string | null
