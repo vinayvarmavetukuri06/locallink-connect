@@ -140,8 +140,8 @@ function UserHome() {
               params={{ slug: c.slug }}
               className="flex flex-col items-center gap-2 active:scale-95 transition-transform"
             >
-              <div className={`size-14 ${c.tint} rounded-2xl flex items-center justify-center text-2xl`}>
-                {c.emoji}
+              <div className={`size-14 ${c.tint} rounded-2xl flex items-center justify-center text-lg font-bold text-foreground/80`}>
+                {tService(c.slug, c.name).trim().charAt(0).toUpperCase()}
               </div>
               <span className="text-[10px] font-semibold text-center leading-tight">{tService(c.slug, c.name)}</span>
             </Link>
@@ -215,8 +215,8 @@ function UserHome() {
           <h2 className="font-bold text-lg font-sans mb-4">{t("userHome.recentBooking")}</h2>
           <div className="bg-foreground text-background rounded-2xl p-4 flex items-center justify-between">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="size-10 rounded-full bg-background/10 flex items-center justify-center text-lg shrink-0">
-                {lastCategory?.emoji ?? "🛠️"}
+              <div className="size-10 rounded-full bg-background/10 flex items-center justify-center text-sm font-bold shrink-0">
+                {(lastCategory ? tService(lastCategory.slug, lastCategory.name) : "?").trim().charAt(0).toUpperCase()}
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-medium opacity-60">

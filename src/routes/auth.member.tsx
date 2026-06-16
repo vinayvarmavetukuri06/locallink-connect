@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
-import { ArrowLeft, Phone, User, Clock, FileText, Camera, Loader2, Briefcase, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, Phone, User, Clock, FileText, Camera, Loader2, Briefcase, X, ChevronDown, Check } from "lucide-react";
 import { CityAutocomplete } from "@/components/city-autocomplete";
 import { categories } from "@/lib/mock-data";
 import { saveMemberProfile } from "@/lib/profile-store";
@@ -58,14 +58,27 @@ function MemberAuth() {
 
   const isValid = Object.keys(errors).length === 0;
   const requiredCount = 6;
-  const completedCount = [
+  const completedFlags = [
     fullName.trim().length >= 3,
     cats.length >= 1,
-    !!mobile,
+    mobile.length === 10,
     area.trim().length >= 3,
-    experience && parseInt(experience, 10) >= 1 && parseInt(experience, 10) <= 50,
+    !!experience && parseInt(experience, 10) >= 1 && parseInt(experience, 10) <= 50,
     bio.trim().length >= 20,
-  ].filter(Boolean).length;
+  ];
+  const completedCount = completedFlags.filter((v) => v === true).length;
+
+  // categories dropdown
+  const [catsOpen, setCatsOpen] = useState(false);
+  const catsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!catsOpen) return;
+    function onDoc(e: MouseEvent) {
+      if (!catsRef.current?.contains(e.target as Node)) setCatsOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [catsOpen]);
 
   async function handleMobileNext() {
     setErr(null);
@@ -352,28 +365,45 @@ function MemberAuth() {
             <div>
               <FieldLabel>{t("signup.member.categories")} <Req /></FieldLabel>
               <p className="text-[11px] text-muted-foreground mt-1">{t("signup.member.categoriesHint")}</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {categories.map((c) => {
-                  const active = cats.includes(c.slug);
-                  return (
-                    <button
-                      key={c.slug}
-                      type="button"
-                      onClick={() => toggleCat(c.slug)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold border transition-colors ${
-                        active
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-secondary text-foreground border-transparent"
-                      }`}
-                    >
-                      <span>{c.emoji}</span>
-                      <span>{tService(c.slug, c.name)}</span>
-                    </button>
-                  );
-                })}
+              <div className="relative mt-2" ref={catsRef}>
+                <button
+                  type="button"
+                  onClick={() => setCatsOpen((o) => !o)}
+                  className="w-full flex items-center gap-2 bg-secondary rounded-2xl px-4 py-3.5 text-left"
+                  aria-expanded={catsOpen}
+                >
+                  <Briefcase className="size-4 text-muted-foreground shrink-0" />
+                  <span className={`flex-1 text-sm font-medium truncate ${cats.length === 0 ? "text-muted-foreground" : ""}`}>
+                    {cats.length === 0
+                      ? t("signup.member.categoriesSelect")
+                      : cats.map((s) => tService(s, categories.find((c) => c.slug === s)?.name ?? s)).join(", ")}
+                  </span>
+                  <ChevronDown className={`size-4 text-muted-foreground shrink-0 transition-transform ${catsOpen ? "rotate-180" : ""}`} />
+                </button>
+                {catsOpen && (
+                  <div className="absolute z-20 mt-2 left-0 right-0 bg-card border border-border rounded-2xl shadow-lg max-h-72 overflow-y-auto py-1">
+                    {categories.map((c) => {
+                      const active = cats.includes(c.slug);
+                      return (
+                        <button
+                          key={c.slug}
+                          type="button"
+                          onClick={() => toggleCat(c.slug)}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-secondary"
+                        >
+                          <span className={`size-5 rounded border flex items-center justify-center ${active ? "bg-success border-success text-success-foreground" : "border-border bg-background"}`}>
+                            {active && <Check className="size-3.5" />}
+                          </span>
+                          <span className="text-sm font-medium">{tService(c.slug, c.name)}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
               {touched && errors.categories && <ErrorText>{errors.categories}</ErrorText>}
             </div>
+
 
             {/* Area */}
             <div>
