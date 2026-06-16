@@ -42,6 +42,7 @@ function MemberBookings() {
   const [customers, setCustomers] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [completeId, setCompleteId] = useState<string | null>(null);
 
   async function load() {
     const { data, error } = await supabase
