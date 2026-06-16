@@ -15,7 +15,11 @@ function CategoryPage() {
   const { slug } = Route.useParams();
   const cat = categoryBySlug(slug);
   const { workers, loading, error } = useApprovedWorkers();
-  const list = useMemo(() => workers.filter((w) => w.category === slug), [workers, slug]);
+  const list = useMemo(
+    () => workers.filter((w) => w.categories?.includes(slug) || w.category === slug),
+    [workers, slug],
+  );
+
 
   if (!cat) {
     return (

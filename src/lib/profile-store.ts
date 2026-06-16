@@ -11,12 +11,13 @@ export type UserProfile = {
 export type MemberProfile = {
   name: string;
   mobile: string;
-  category: string; // slug
+  categories: string[]; // slugs
   area: string;
   experience: string;
-  hourlyRate: string;
   bio: string;
+  avatarPath?: string | null;
 };
+
 
 type State = {
   user: UserProfile;
@@ -102,6 +103,7 @@ export async function saveMemberProfile(m: MemberProfile, passwordHash?: string)
       role: "worker",
     };
     if (passwordHash) row.password_hash = passwordHash;
+    if (m.avatarPath !== undefined) row.avatar_url = m.avatarPath;
     const { data: profile, error: pErr } = await supabase
       .from("profiles")
       .upsert(row, { onConflict: "mobile" })
@@ -111,13 +113,14 @@ export async function saveMemberProfile(m: MemberProfile, passwordHash?: string)
     const profileId = profile?.id;
     if (!profileId) return null;
 
+    const cats = m.categories.filter(Boolean);
     const { data: worker, error: wErr } = await supabase
       .from("worker_profiles")
       .insert({
         user_id: profileId,
-        service_category: m.category,
+        service_category: cats[0] ?? null,
+        service_categories: cats,
         years_of_experience: m.experience ? parseInt(m.experience, 10) : null,
-        hourly_rate: m.hourlyRate ? Number(m.hourlyRate) : null,
         bio: m.bio,
         status: "pending",
       })
@@ -134,6 +137,7 @@ export async function saveMemberProfile(m: MemberProfile, passwordHash?: string)
     return null;
   }
 }
+
 
 
 function subscribe(l: () => void) {
@@ -161,10 +165,11 @@ export function useMemberProfile() {
   return useProfileStore().member ?? {
     name: defaultMember.name,
     mobile: defaultMember.mobile,
-    category: "ac-repair",
+    categories: ["ac-repair"],
     area: defaultMember.area,
     experience: "10",
-    hourlyRate: "299",
     bio: "",
+    avatarPath: null,
   };
+
 }

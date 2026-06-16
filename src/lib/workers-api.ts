@@ -1,23 +1,26 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryBySlug } from "@/lib/mock-data";
+import { signedAvatarUrls } from "@/lib/avatar";
 
 export type RealWorker = {
   id: string;            // worker_profiles.id
   userId: string;        // profiles.id
   name: string;
   mobile: string;
-  category: string;      // service_category slug
+  category: string;      // primary slug (legacy)
+  categories: string[];  // all selected slugs
   trade: string;         // category display name
   area: string;          // profiles.location
   rating: number;
-  startingPrice: number; // hourly_rate
+  startingPrice: number; // hourly_rate (legacy)
   experience: number;
   bio: string;
   available: boolean;
   status: string;
   initials: string;
   tint: string;
+  avatarUrl: string | null;
 };
 
 const TINTS = [
@@ -46,7 +49,10 @@ export function tintFromId(id: string): string {
 }
 
 function mapRow(row: any): RealWorker {
-  const slug: string = row.service_category ?? "";
+  const legacy: string = row.service_category ?? "";
+  const arr: string[] = Array.isArray(row.service_categories) ? row.service_categories.filter(Boolean) : [];
+  const cats = arr.length ? arr : legacy ? [legacy] : [];
+  const slug = cats[0] ?? legacy;
   const profile = row.profiles ?? {};
   const id: string = row.id;
   const name: string = profile.full_name ?? "Worker";
@@ -56,6 +62,7 @@ function mapRow(row: any): RealWorker {
     name,
     mobile: profile.mobile ?? "",
     category: slug,
+    categories: cats,
     trade: categoryBySlug(slug)?.name ?? slug,
     area: profile.location ?? "",
     rating: Number(row.rating ?? 0),
@@ -66,48 +73,63 @@ function mapRow(row: any): RealWorker {
     status: row.status ?? "pending",
     initials: initialsFromName(name),
     tint: tintFromId(id),
-  };
+    avatarUrl: null,
+    _avatarPath: profile.avatar_url ?? null,
+  } as RealWorker & { _avatarPath: string | null };
 }
+
+async function resolveAvatars(workers: RealWorker[]): Promise<RealWorker[]> {
+  const paths = workers.map((w) => (w as any)._avatarPath as string | null);
+  const urls = await signedAvatarUrls(paths);
+  return workers.map((w, i) => ({ ...w, avatarUrl: urls[i] ?? null }));
+}
+
+const SELECT_COLS =
+  "id, user_id, service_category, service_categories, is_available, status, rating, hourly_rate, bio, years_of_experience";
 
 export async function fetchApprovedWorkers(): Promise<RealWorker[]> {
   const { data, error } = await supabase
     .from("worker_profiles")
     .select(
-      "id, user_id, service_category, is_available, status, rating, hourly_rate, bio, years_of_experience, profiles:profiles!worker_profiles_user_id_fkey(full_name, mobile, location)"
+      `${SELECT_COLS}, profiles:profiles!worker_profiles_user_id_fkey(full_name, mobile, location, avatar_url)`,
     )
     .eq("status", "approved")
     .eq("is_available", true)
     .order("rating", { ascending: false });
+  let mapped: RealWorker[];
   if (error) {
-    // Fallback for environments where the FK relationship isn't named — fetch profiles separately
     const basic = await supabase
       .from("worker_profiles")
-      .select("id, user_id, service_category, is_available, status, rating, hourly_rate, bio, years_of_experience")
+      .select(SELECT_COLS)
       .eq("status", "approved")
       .eq("is_available", true);
     if (basic.error || !basic.data) throw error;
     const userIds = basic.data.map((r) => r.user_id).filter(Boolean) as string[];
     const profs = userIds.length
-      ? await supabase.from("profiles").select("id, full_name, mobile, location").in("id", userIds)
+      ? await supabase.from("profiles").select("id, full_name, mobile, location, avatar_url").in("id", userIds)
       : { data: [] as any[], error: null };
     const map = new Map((profs.data ?? []).map((p: any) => [p.id, p]));
-    return basic.data.map((r: any) => mapRow({ ...r, profiles: map.get(r.user_id) ?? {} }));
+    mapped = basic.data.map((r: any) => mapRow({ ...r, profiles: map.get(r.user_id) ?? {} }));
+  } else {
+    mapped = (data ?? []).map(mapRow);
   }
-  return (data ?? []).map(mapRow);
+  return resolveAvatars(mapped);
 }
 
 export async function fetchWorkerById(id: string): Promise<RealWorker | null> {
   const { data, error } = await supabase
     .from("worker_profiles")
-    .select("id, user_id, service_category, is_available, status, rating, hourly_rate, bio, years_of_experience")
+    .select(SELECT_COLS)
     .eq("id", id)
     .maybeSingle();
   if (error || !data) return null;
   const prof = data.user_id
-    ? await supabase.from("profiles").select("id, full_name, mobile, location").eq("id", data.user_id).maybeSingle()
+    ? await supabase.from("profiles").select("id, full_name, mobile, location, avatar_url").eq("id", data.user_id).maybeSingle()
     : { data: null };
-  return mapRow({ ...data, profiles: prof.data ?? {} });
+  const [w] = await resolveAvatars([mapRow({ ...data, profiles: prof.data ?? {} })]);
+  return w;
 }
+
 
 export function useApprovedWorkers() {
   const [workers, setWorkers] = useState<RealWorker[]>([]);

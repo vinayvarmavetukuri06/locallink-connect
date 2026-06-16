@@ -80,12 +80,13 @@ function Login() {
       setMemberProfile({
         name: profile.full_name ?? "",
         mobile: profile.mobile ?? fullMobile,
-        category: "ac-repair",
+        categories: ["ac-repair"],
         area: profile.location ?? "",
         experience: "",
-        hourlyRate: "",
         bio: "",
+        avatarPath: null,
       });
+
       navigate({ to: "/member" });
     } else {
       setUserProfile({
