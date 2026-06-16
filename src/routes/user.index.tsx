@@ -140,8 +140,8 @@ function UserHome() {
               params={{ slug: c.slug }}
               className="flex flex-col items-center gap-2 active:scale-95 transition-transform"
             >
-              <div className={`size-14 ${c.tint} rounded-2xl flex items-center justify-center text-lg font-bold text-foreground/80`}>
-                {tService(c.slug, c.name).trim().charAt(0).toUpperCase()}
+              <div className={`size-14 ${c.tint} rounded-2xl flex items-center justify-center text-2xl`}>
+                <span aria-hidden>{c.emoji || tService(c.slug, c.name).trim().charAt(0).toUpperCase()}</span>
               </div>
               <span className="text-[10px] font-semibold text-center leading-tight">{tService(c.slug, c.name)}</span>
             </Link>
