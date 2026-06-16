@@ -190,14 +190,14 @@ function MemberHome() {
         </div>
         {loading ? (
           <p className="text-xs text-muted-foreground">{t("memberHome.loading")}</p>
-        ) : pending.length === 0 ? (
+        ) : active.length === 0 ? (
           <div className="bg-card border border-dashed border-border rounded-2xl p-6 text-center">
             <p className="text-sm font-semibold">{t("memberHome.noPending")}</p>
             <p className="text-xs text-muted-foreground mt-1">{t("memberHome.noPendingSub")}</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {pending.slice(0, 5).map((b) => (
+            {active.slice(0, 5).map((b) => (
               <RequestCard key={b.id} booking={b} onChanged={() => loadBookings(workerRowId)} />
             ))}
           </div>
