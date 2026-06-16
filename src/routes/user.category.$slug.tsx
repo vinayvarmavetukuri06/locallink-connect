@@ -39,8 +39,8 @@ function CategoryPage() {
           <ArrowLeft className="size-4" /> {t("common.back")}
         </Link>
         <div className="flex items-center gap-3">
-          <div className={`size-12 ${cat.tint} rounded-2xl flex items-center justify-center text-2xl`}>
-            {cat.emoji}
+          <div className={`size-12 ${cat.tint} rounded-2xl flex items-center justify-center text-lg font-bold text-foreground/80`}>
+            {catName.trim().charAt(0).toUpperCase()}
           </div>
           <div>
             <h1 className="font-serif text-2xl">{catName}</h1>
