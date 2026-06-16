@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
-import { ArrowLeft, Phone, User, Clock, FileText, Camera, Loader2, Briefcase, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, Phone, User, Clock, FileText, Camera, Loader2, Briefcase, X, ChevronDown, Check } from "lucide-react";
 import { CityAutocomplete } from "@/components/city-autocomplete";
 import { categories } from "@/lib/mock-data";
 import { saveMemberProfile } from "@/lib/profile-store";
