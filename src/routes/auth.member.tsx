@@ -438,7 +438,7 @@ function MemberAuth() {
 
             {/* Bio */}
             <div>
-              <FieldLabel>{t("signup.member.bio")} <Req /></FieldLabel>
+              <FieldLabel>{t("signup.member.bio")} <span className="text-[11px] font-normal text-muted-foreground">({t("signup.member.optional")})</span></FieldLabel>
               <div className="mt-2 flex items-start gap-2 bg-secondary rounded-2xl px-4 py-3.5">
                 <FileText className="size-4 text-muted-foreground pt-0.5" />
                 <textarea
@@ -449,11 +449,8 @@ function MemberAuth() {
                   className="flex-1 bg-transparent outline-none text-sm font-medium resize-none"
                 />
               </div>
-              <div className="mt-1 flex items-center justify-between">
-                {touched && errors.bio ? <ErrorText>{errors.bio}</ErrorText> : <span />}
-                <span className="text-[11px] text-muted-foreground">{bio.trim().length}/20</span>
-              </div>
             </div>
+
           </div>
 
           {err && <p className="mt-4 text-xs text-destructive text-center font-semibold">{err}</p>}
