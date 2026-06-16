@@ -1370,7 +1370,7 @@ const te: Dict = {
   "worker.rating": "రేటింగ్",
   "worker.yrs": "సంవత్సరాలు",
   "worker.bookNow": "ఇప్పుడే బుక్ చేయండి",
-  "worker.fillRequired": "దయచేసి తేదీ, సమయం, చిరునామా మరియు సమస్యను పూరించండి.",
+  "worker.fillRequired": "దయచేసి తేదీ మరియు సమయ స్లాట్ ఎంచుకోండి.",
   "worker.date": "తేదీ",
   "worker.timeSlot": "సమయ స్లాట్",
   "worker.address": "చిరునామా",
