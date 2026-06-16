@@ -1219,6 +1219,7 @@ const te: Dict = {
   "signup.member.yearsMax": "అనుభవ సంవత్సరాలు 50 మించకూడదు.",
   "signup.member.hourly": "గంట రేటు",
   "signup.member.bio": "బయో / గురించి",
+  "signup.member.optional": "ఐచ్ఛికం",
   "signup.member.bioPh": "మీ నైపుణ్యాలు మరియు అనుభవాన్ని వివరించండి...",
   "signup.member.photo": "ప్రొఫైల్ ఫోటో",
   "signup.member.upload": "ఫోటో అప్‌లోడ్ చేయండి",
