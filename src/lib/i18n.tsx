@@ -565,6 +565,8 @@ const hi: Dict = {
   "splash.terms": "जारी रखने पर आप हमारी शर्तें और गोपनीयता से सहमत हैं",
 
   "common.back": "वापस",
+  "common.optional": "वैकल्पिक",
+
   "common.loading": "लोड हो रहा है…",
   "common.save": "सेव",
   "common.cancel": "रद्द करें",
