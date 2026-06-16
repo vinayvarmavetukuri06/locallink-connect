@@ -196,7 +196,7 @@ function WorkerProfile() {
                       type="date"
                       value={date}
                       min={new Date().toISOString().split("T")[0]}
-                      onChange={(e) => setDate(e.target.value)}
+                      onChange={(e) => { setDate(e.target.value); setErrMsg(null); }}
                       className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none"
                     />
                   </div>
