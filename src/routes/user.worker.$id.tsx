@@ -43,10 +43,15 @@ function WorkerProfile() {
   async function handleConfirm() {
     if (!w) return;
     setErrMsg(null);
-    if (!date || !time) {
-      setErrMsg(t("worker.fillRequired"));
+    if (!date) {
+      setErrMsg(t("worker.selectDate"));
       return;
     }
+    if (!time) {
+      setErrMsg(t("worker.selectTime"));
+      return;
+    }
+
 
     setSubmitting(true);
     const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
