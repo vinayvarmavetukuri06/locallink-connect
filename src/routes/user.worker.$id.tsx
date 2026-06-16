@@ -230,7 +230,7 @@ function WorkerProfile() {
                     <input
                       type="text"
                       value={address}
-                      onChange={(e) => setAddress(e.target.value)}
+                      onChange={(e) => { setAddress(e.target.value); setErrMsg(null); }}
                       placeholder={t("worker.addressPh")}
                       className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none"
                     />
