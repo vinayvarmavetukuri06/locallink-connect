@@ -329,6 +329,9 @@ const en: Dict = {
   "worker.yrs": "yrs",
   "worker.bookNow": "Book Now",
   "worker.fillRequired": "Please select a date and time slot.",
+  "worker.selectDate": "Please select a date.",
+  "worker.selectTime": "Please select a time slot.",
+
   "worker.date": "Date",
   "worker.timeSlot": "Time Slot",
   "worker.address": "Address",
