@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { BottomNav } from "@/components/bottom-nav";
 
 export const Route = createFileRoute("/member")({
@@ -6,9 +6,12 @@ export const Route = createFileRoute("/member")({
 });
 
 function MemberLayout() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
     <div className="mobile-shell pb-24">
-      <Outlet />
+      <div key={pathname} className="animate-page-in">
+        <Outlet />
+      </div>
       <BottomNav variant="member" />
     </div>
   );
