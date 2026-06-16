@@ -329,6 +329,9 @@ const en: Dict = {
   "worker.yrs": "yrs",
   "worker.bookNow": "Book Now",
   "worker.fillRequired": "Please select a date and time slot.",
+  "worker.selectDate": "Please select a date.",
+  "worker.selectTime": "Please select a time slot.",
+
   "worker.date": "Date",
   "worker.timeSlot": "Time Slot",
   "worker.address": "Address",
@@ -859,6 +862,9 @@ const hi: Dict = {
   "worker.yrs": "वर्ष",
   "worker.bookNow": "अभी बुक करें",
   "worker.fillRequired": "कृपया तिथि और समय स्लॉट चुनें।",
+  "worker.selectDate": "कृपया तिथि चुनें।",
+  "worker.selectTime": "कृपया समय स्लॉट चुनें।",
+
   "worker.date": "तिथि",
   "worker.timeSlot": "समय स्लॉट",
   "worker.address": "पता",
@@ -1377,6 +1383,9 @@ const te: Dict = {
   "worker.yrs": "సంవత్సరాలు",
   "worker.bookNow": "ఇప్పుడే బుక్ చేయండి",
   "worker.fillRequired": "దయచేసి తేదీ మరియు సమయ స్లాట్ ఎంచుకోండి.",
+  "worker.selectDate": "దయచేసి తేదీ ఎంచుకోండి.",
+  "worker.selectTime": "దయచేసి సమయ స్లాట్ ఎంచుకోండి.",
+
   "worker.date": "తేదీ",
   "worker.timeSlot": "సమయ స్లాట్",
   "worker.address": "చిరునామా",
