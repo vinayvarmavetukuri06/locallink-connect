@@ -38,11 +38,11 @@ export function LanguageSheet({ onClose }: { onClose: () => void }) {
   }
   return (
     <div
-      className="fixed inset-0 z-[60] bg-black/40 flex items-end"
+      className="fixed inset-0 z-[60] bg-black/40 flex items-end animate-backdrop-in"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-6 pb-10"
+        className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-6 pb-10 animate-sheet-up"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-10 h-1.5 bg-border rounded-full mx-auto mb-4" />
