@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Loader2, AlertTriangle, X, Phone, MessageCircle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Loader2, AlertTriangle, X, Phone, MessageCircle, Star, CircleCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { categorySlugFromService } from "@/lib/mock-data";
 import { useI18n } from "@/lib/i18n";
+import { RateBookingDialog } from "@/components/rate-booking-dialog";
 
 type Booking = {
   id: string;
