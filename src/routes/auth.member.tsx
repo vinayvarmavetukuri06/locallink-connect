@@ -58,14 +58,27 @@ function MemberAuth() {
 
   const isValid = Object.keys(errors).length === 0;
   const requiredCount = 6;
-  const completedCount = [
+  const completedFlags = [
     fullName.trim().length >= 3,
     cats.length >= 1,
-    !!mobile,
+    mobile.length === 10,
     area.trim().length >= 3,
-    experience && parseInt(experience, 10) >= 1 && parseInt(experience, 10) <= 50,
+    !!experience && parseInt(experience, 10) >= 1 && parseInt(experience, 10) <= 50,
     bio.trim().length >= 20,
-  ].filter(Boolean).length;
+  ];
+  const completedCount = completedFlags.filter((v) => v === true).length;
+
+  // categories dropdown
+  const [catsOpen, setCatsOpen] = useState(false);
+  const catsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!catsOpen) return;
+    function onDoc(e: MouseEvent) {
+      if (!catsRef.current?.contains(e.target as Node)) setCatsOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [catsOpen]);
 
   async function handleMobileNext() {
     setErr(null);
