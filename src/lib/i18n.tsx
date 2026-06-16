@@ -164,6 +164,7 @@ const en: Dict = {
   "signup.member.yearsMax": "Years of experience cannot exceed 50.",
   "signup.member.hourly": "Hourly Rate",
   "signup.member.bio": "Bio / About",
+  "signup.member.optional": "Optional",
   "signup.member.bioPh": "Describe your skills and experience...",
   "signup.member.photo": "Profile Photo",
   "signup.member.upload": "Upload Photo",
