@@ -52,21 +52,20 @@ function MemberAuth() {
     if (area.trim().length < 3) e.area = t("signup.member.err.area");
     const yrs = experience ? parseInt(experience, 10) : 0;
     if (!experience || isNaN(yrs) || yrs < 1 || yrs > 50) e.experience = t("signup.member.err.experience");
-    if (bio.trim().length < 20) e.bio = t("signup.member.err.bio");
     return e;
-  }, [fullName, cats, area, experience, bio, t]);
+  }, [fullName, cats, area, experience, t]);
 
   const isValid = Object.keys(errors).length === 0;
-  const requiredCount = 6;
+  const requiredCount = 5;
   const completedFlags = [
     fullName.trim().length >= 3,
     cats.length >= 1,
     mobile.length === 10,
     area.trim().length >= 3,
     !!experience && parseInt(experience, 10) >= 1 && parseInt(experience, 10) <= 50,
-    bio.trim().length >= 20,
   ];
   const completedCount = completedFlags.filter((v) => v === true).length;
+
 
   // categories dropdown
   const [catsOpen, setCatsOpen] = useState(false);
