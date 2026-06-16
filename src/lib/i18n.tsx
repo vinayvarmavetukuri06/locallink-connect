@@ -1383,6 +1383,9 @@ const te: Dict = {
   "worker.yrs": "సంవత్సరాలు",
   "worker.bookNow": "ఇప్పుడే బుక్ చేయండి",
   "worker.fillRequired": "దయచేసి తేదీ మరియు సమయ స్లాట్ ఎంచుకోండి.",
+  "worker.selectDate": "దయచేసి తేదీ ఎంచుకోండి.",
+  "worker.selectTime": "దయచేసి సమయ స్లాట్ ఎంచుకోండి.",
+
   "worker.date": "తేదీ",
   "worker.timeSlot": "సమయ స్లాట్",
   "worker.address": "చిరునామా",
