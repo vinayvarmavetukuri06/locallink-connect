@@ -174,105 +174,112 @@ function WorkerProfile() {
       {bookingOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end" onClick={() => { setBookingOpen(false); }}>
           <div
-            className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-6 max-h-[92vh] overflow-y-auto overscroll-contain"
-            style={{ paddingBottom: "calc(160px + env(safe-area-inset-bottom))" }}
+            className="w-full max-w-md mx-auto bg-card rounded-t-3xl flex flex-col h-[92vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {!confirmed ? (
               <>
-                <div className="w-10 h-1.5 bg-border rounded-full mx-auto mb-4" />
-                <div className="flex items-center gap-3">
-                  <WorkerAvatar worker={w} size="md" />
-                  <div className="flex-1 min-w-0">
-                    <h2 className="font-serif text-xl truncate">{w.name}</h2>
-                    <p className="text-xs text-muted-foreground">{tradeLabel}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] uppercase text-muted-foreground tracking-wider">{t("worker.hourly")}</p>
-                    <p className="font-bold text-primary">₹{w.startingPrice}</p>
-                  </div>
+                <div className="pt-3 pb-2 shrink-0">
+                  <div className="w-12 h-1.5 bg-border rounded-full mx-auto" />
                 </div>
-
-                <div className="mt-6 space-y-4">
-                  <div>
-                    <label htmlFor="booking-date" className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                      <Calendar className="size-3.5" /> {t("worker.date")}
-                    </label>
-                    <input
-                      id="booking-date"
-                      type="date"
-                      value={date}
-                      min={new Date().toISOString().split("T")[0]}
-                      onChange={(e) => { setDate(e.target.value); setErrMsg(null); }}
-                      className="mt-2 w-full bg-secondary border border-border rounded-2xl px-4 py-3.5 text-base font-medium text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                      style={{ colorScheme: "light", minHeight: 52 }}
-                    />
-                  </div>
-
-
-                  <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                      <Clock className="size-3.5" /> {t("worker.timeSlot")}
-                    </label>
-                    <div className="mt-2 grid grid-cols-3 gap-2">
-                      {TIME_SLOTS.map((s) => (
-                        <button
-                          key={s}
-                          type="button"
-                          onClick={() => { setTime(s); setErrMsg(null); }}
-                          className={`py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
-                            time === s
-                              ? "bg-primary text-primary-foreground border-primary"
-                              : "bg-secondary border-transparent text-foreground"
-                          }`}
-                        >
-                          {s}
-                        </button>
-                      ))}
+                <div className="px-6 pb-3 shrink-0 border-b border-border">
+                  <div className="flex items-center gap-3">
+                    <WorkerAvatar worker={w} size="md" />
+                    <div className="flex-1 min-w-0">
+                      <h2 className="font-serif text-xl truncate">{w.name}</h2>
+                      <p className="text-xs text-muted-foreground">{tradeLabel}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] uppercase text-muted-foreground tracking-wider">{t("worker.hourly")}</p>
+                      <p className="font-bold text-primary">₹{w.startingPrice}</p>
                     </div>
                   </div>
-
-                  <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                      <MapPinned className="size-3.5" /> {t("worker.address")} <span className="normal-case tracking-normal text-muted-foreground/70">({t("common.optional")})</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={address}
-                      onChange={(e) => { setAddress(e.target.value); setErrMsg(null); }}
-                      placeholder={t("worker.addressPh")}
-                      className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                      <FileText className="size-3.5" /> {t("worker.describeProblem")} <span className="normal-case tracking-normal text-muted-foreground/70">({t("common.optional")})</span>
-                    </label>
-
-                    <textarea
-                      rows={3}
-                      value={problem}
-                      onChange={(e) => { setProblem(e.target.value); setErrMsg(null); }}
-                      placeholder={t("worker.problemPh")}
-                      className="mt-2 w-full bg-secondary rounded-2xl p-3 text-sm outline-none resize-none"
-                    />
-                  </div>
                 </div>
 
-                {errMsg && <p className="mt-3 text-xs text-destructive">{errMsg}</p>}
-
-                <button
-                  onClick={handleConfirm}
-                  disabled={submitting}
-                  className="mt-6 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold flex items-center justify-center gap-2 disabled:opacity-60"
+                <div
+                  className="flex-1 overflow-y-auto overscroll-contain px-6 pt-5"
+                  style={{ paddingBottom: "calc(120px + env(safe-area-inset-bottom))" }}
                 >
-                  {submitting && <Loader2 className="size-4 animate-spin" />}
-                  {t("worker.confirmBooking")}
-                </button>
+                  <div className="space-y-5">
+                    <div>
+                      <label htmlFor="booking-date" className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
+                        <Calendar className="size-3.5" /> {t("worker.date")}
+                      </label>
+                      <input
+                        id="booking-date"
+                        type="date"
+                        value={date}
+                        min={new Date().toISOString().split("T")[0]}
+                        onChange={(e) => { setDate(e.target.value); setErrMsg(null); }}
+                        className="mt-2 w-full bg-secondary border border-border rounded-2xl px-4 py-3.5 text-base font-medium text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                        style={{ colorScheme: "light", minHeight: 52 }}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
+                        <Clock className="size-3.5" /> {t("worker.timeSlot")}
+                      </label>
+                      <div className="mt-2 grid grid-cols-3 gap-2">
+                        {TIME_SLOTS.map((s) => (
+                          <button
+                            key={s}
+                            type="button"
+                            onClick={() => { setTime(s); setErrMsg(null); }}
+                            className={`py-3 rounded-xl text-sm font-semibold border transition-colors ${
+                              time === s
+                                ? "bg-primary text-primary-foreground border-primary"
+                                : "bg-secondary border-transparent text-foreground"
+                            }`}
+                          >
+                            {s}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
+                        <MapPinned className="size-3.5" /> {t("worker.address")} <span className="normal-case tracking-normal text-muted-foreground/70">({t("common.optional")})</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={address}
+                        onChange={(e) => { setAddress(e.target.value); setErrMsg(null); }}
+                        placeholder={t("worker.addressPh")}
+                        className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
+                        <FileText className="size-3.5" /> {t("worker.describeProblem")} <span className="normal-case tracking-normal text-muted-foreground/70">({t("common.optional")})</span>
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={problem}
+                        onChange={(e) => { setProblem(e.target.value); setErrMsg(null); }}
+                        placeholder={t("worker.problemPh")}
+                        className="mt-2 w-full bg-secondary rounded-2xl p-3 text-sm outline-none resize-none"
+                      />
+                    </div>
+
+                    {errMsg && <p className="text-xs text-destructive">{errMsg}</p>}
+
+                    <button
+                      onClick={handleConfirm}
+                      disabled={submitting}
+                      className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold flex items-center justify-center gap-2 disabled:opacity-60"
+                    >
+                      {submitting && <Loader2 className="size-4 animate-spin" />}
+                      {t("worker.confirmBooking")}
+                    </button>
+                  </div>
+                </div>
               </>
             ) : (
-              <div className="py-2">
+              <div className="flex-1 overflow-y-auto p-6">
+
                 <div className="size-16 mx-auto bg-success/15 text-success rounded-full flex items-center justify-center text-3xl">
                   ✓
                 </div>
