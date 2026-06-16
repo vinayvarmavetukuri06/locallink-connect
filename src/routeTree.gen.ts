@@ -24,16 +24,16 @@ import { Route as UserProfileRouteImport } from './routes/user.profile'
 import { Route as UserNotificationsRouteImport } from './routes/user.notifications'
 import { Route as UserHistoryRouteImport } from './routes/user.history'
 import { Route as UserHelpRouteImport } from './routes/user.help'
-import { Route as UserChatRouteImport } from './routes/user.chat'
 import { Route as UserBookingsRouteImport } from './routes/user.bookings'
 import { Route as MemberSettingsRouteImport } from './routes/member.settings'
 import { Route as MemberProfileRouteImport } from './routes/member.profile'
 import { Route as MemberNotificationsRouteImport } from './routes/member.notifications'
-import { Route as MemberChatRouteImport } from './routes/member.chat'
 import { Route as MemberBookingsRouteImport } from './routes/member.bookings'
 import { Route as AuthUserRouteImport } from './routes/auth.user'
 import { Route as AuthMemberRouteImport } from './routes/auth.member'
 import { Route as AuthLoginRouteImport } from './routes/auth.login'
+import { Route as UserChatIndexRouteImport } from './routes/user.chat.index'
+import { Route as MemberChatIndexRouteImport } from './routes/member.chat.index'
 import { Route as UserWorkerIdRouteImport } from './routes/user.worker.$id'
 import { Route as UserChatOtherIdRouteImport } from './routes/user.chat.$otherId'
 import { Route as UserCategorySlugRouteImport } from './routes/user.category.$slug'
@@ -114,11 +114,6 @@ const UserHelpRoute = UserHelpRouteImport.update({
   path: '/help',
   getParentRoute: () => UserRoute,
 } as any)
-const UserChatRoute = UserChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => UserRoute,
-} as any)
 const UserBookingsRoute = UserBookingsRouteImport.update({
   id: '/bookings',
   path: '/bookings',
@@ -137,11 +132,6 @@ const MemberProfileRoute = MemberProfileRouteImport.update({
 const MemberNotificationsRoute = MemberNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
-  getParentRoute: () => MemberRoute,
-} as any)
-const MemberChatRoute = MemberChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
   getParentRoute: () => MemberRoute,
 } as any)
 const MemberBookingsRoute = MemberBookingsRouteImport.update({
@@ -164,15 +154,25 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserChatIndexRoute = UserChatIndexRouteImport.update({
+  id: '/chat/',
+  path: '/chat/',
+  getParentRoute: () => UserRoute,
+} as any)
+const MemberChatIndexRoute = MemberChatIndexRouteImport.update({
+  id: '/chat/',
+  path: '/chat/',
+  getParentRoute: () => MemberRoute,
+} as any)
 const UserWorkerIdRoute = UserWorkerIdRouteImport.update({
   id: '/worker/$id',
   path: '/worker/$id',
   getParentRoute: () => UserRoute,
 } as any)
 const UserChatOtherIdRoute = UserChatOtherIdRouteImport.update({
-  id: '/$otherId',
-  path: '/$otherId',
-  getParentRoute: () => UserChatRoute,
+  id: '/chat/$otherId',
+  path: '/chat/$otherId',
+  getParentRoute: () => UserRoute,
 } as any)
 const UserCategorySlugRoute = UserCategorySlugRouteImport.update({
   id: '/category/$slug',
@@ -180,9 +180,9 @@ const UserCategorySlugRoute = UserCategorySlugRouteImport.update({
   getParentRoute: () => UserRoute,
 } as any)
 const MemberChatOtherIdRoute = MemberChatOtherIdRouteImport.update({
-  id: '/$otherId',
-  path: '/$otherId',
-  getParentRoute: () => MemberChatRoute,
+  id: '/chat/$otherId',
+  path: '/chat/$otherId',
+  getParentRoute: () => MemberRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -194,12 +194,10 @@ export interface FileRoutesByFullPath {
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
-  '/member/chat': typeof MemberChatRouteWithChildren
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/member/settings': typeof MemberSettingsRoute
   '/user/bookings': typeof UserBookingsRoute
-  '/user/chat': typeof UserChatRouteWithChildren
   '/user/help': typeof UserHelpRoute
   '/user/history': typeof UserHistoryRoute
   '/user/notifications': typeof UserNotificationsRoute
@@ -215,6 +213,8 @@ export interface FileRoutesByFullPath {
   '/user/category/$slug': typeof UserCategorySlugRoute
   '/user/chat/$otherId': typeof UserChatOtherIdRoute
   '/user/worker/$id': typeof UserWorkerIdRoute
+  '/member/chat/': typeof MemberChatIndexRoute
+  '/user/chat/': typeof UserChatIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -222,12 +222,10 @@ export interface FileRoutesByTo {
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
-  '/member/chat': typeof MemberChatRouteWithChildren
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/member/settings': typeof MemberSettingsRoute
   '/user/bookings': typeof UserBookingsRoute
-  '/user/chat': typeof UserChatRouteWithChildren
   '/user/help': typeof UserHelpRoute
   '/user/history': typeof UserHistoryRoute
   '/user/notifications': typeof UserNotificationsRoute
@@ -243,6 +241,8 @@ export interface FileRoutesByTo {
   '/user/category/$slug': typeof UserCategorySlugRoute
   '/user/chat/$otherId': typeof UserChatOtherIdRoute
   '/user/worker/$id': typeof UserWorkerIdRoute
+  '/member/chat': typeof MemberChatIndexRoute
+  '/user/chat': typeof UserChatIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -254,12 +254,10 @@ export interface FileRoutesById {
   '/auth/member': typeof AuthMemberRoute
   '/auth/user': typeof AuthUserRoute
   '/member/bookings': typeof MemberBookingsRoute
-  '/member/chat': typeof MemberChatRouteWithChildren
   '/member/notifications': typeof MemberNotificationsRoute
   '/member/profile': typeof MemberProfileRoute
   '/member/settings': typeof MemberSettingsRoute
   '/user/bookings': typeof UserBookingsRoute
-  '/user/chat': typeof UserChatRouteWithChildren
   '/user/help': typeof UserHelpRoute
   '/user/history': typeof UserHistoryRoute
   '/user/notifications': typeof UserNotificationsRoute
@@ -275,6 +273,8 @@ export interface FileRoutesById {
   '/user/category/$slug': typeof UserCategorySlugRoute
   '/user/chat/$otherId': typeof UserChatOtherIdRoute
   '/user/worker/$id': typeof UserWorkerIdRoute
+  '/member/chat/': typeof MemberChatIndexRoute
+  '/user/chat/': typeof UserChatIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -287,12 +287,10 @@ export interface FileRouteTypes {
     | '/auth/member'
     | '/auth/user'
     | '/member/bookings'
-    | '/member/chat'
     | '/member/notifications'
     | '/member/profile'
     | '/member/settings'
     | '/user/bookings'
-    | '/user/chat'
     | '/user/help'
     | '/user/history'
     | '/user/notifications'
@@ -308,6 +306,8 @@ export interface FileRouteTypes {
     | '/user/category/$slug'
     | '/user/chat/$otherId'
     | '/user/worker/$id'
+    | '/member/chat/'
+    | '/user/chat/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -315,12 +315,10 @@ export interface FileRouteTypes {
     | '/auth/member'
     | '/auth/user'
     | '/member/bookings'
-    | '/member/chat'
     | '/member/notifications'
     | '/member/profile'
     | '/member/settings'
     | '/user/bookings'
-    | '/user/chat'
     | '/user/help'
     | '/user/history'
     | '/user/notifications'
@@ -336,6 +334,8 @@ export interface FileRouteTypes {
     | '/user/category/$slug'
     | '/user/chat/$otherId'
     | '/user/worker/$id'
+    | '/member/chat'
+    | '/user/chat'
   id:
     | '__root__'
     | '/'
@@ -346,12 +346,10 @@ export interface FileRouteTypes {
     | '/auth/member'
     | '/auth/user'
     | '/member/bookings'
-    | '/member/chat'
     | '/member/notifications'
     | '/member/profile'
     | '/member/settings'
     | '/user/bookings'
-    | '/user/chat'
     | '/user/help'
     | '/user/history'
     | '/user/notifications'
@@ -367,6 +365,8 @@ export interface FileRouteTypes {
     | '/user/category/$slug'
     | '/user/chat/$otherId'
     | '/user/worker/$id'
+    | '/member/chat/'
+    | '/user/chat/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -487,13 +487,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserHelpRouteImport
       parentRoute: typeof UserRoute
     }
-    '/user/chat': {
-      id: '/user/chat'
-      path: '/chat'
-      fullPath: '/user/chat'
-      preLoaderRoute: typeof UserChatRouteImport
-      parentRoute: typeof UserRoute
-    }
     '/user/bookings': {
       id: '/user/bookings'
       path: '/bookings'
@@ -520,13 +513,6 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/member/notifications'
       preLoaderRoute: typeof MemberNotificationsRouteImport
-      parentRoute: typeof MemberRoute
-    }
-    '/member/chat': {
-      id: '/member/chat'
-      path: '/chat'
-      fullPath: '/member/chat'
-      preLoaderRoute: typeof MemberChatRouteImport
       parentRoute: typeof MemberRoute
     }
     '/member/bookings': {
@@ -557,6 +543,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/user/chat/': {
+      id: '/user/chat/'
+      path: '/chat'
+      fullPath: '/user/chat/'
+      preLoaderRoute: typeof UserChatIndexRouteImport
+      parentRoute: typeof UserRoute
+    }
+    '/member/chat/': {
+      id: '/member/chat/'
+      path: '/chat'
+      fullPath: '/member/chat/'
+      preLoaderRoute: typeof MemberChatIndexRouteImport
+      parentRoute: typeof MemberRoute
+    }
     '/user/worker/$id': {
       id: '/user/worker/$id'
       path: '/worker/$id'
@@ -566,10 +566,10 @@ declare module '@tanstack/react-router' {
     }
     '/user/chat/$otherId': {
       id: '/user/chat/$otherId'
-      path: '/$otherId'
+      path: '/chat/$otherId'
       fullPath: '/user/chat/$otherId'
       preLoaderRoute: typeof UserChatOtherIdRouteImport
-      parentRoute: typeof UserChatRoute
+      parentRoute: typeof UserRoute
     }
     '/user/category/$slug': {
       id: '/user/category/$slug'
@@ -580,10 +580,10 @@ declare module '@tanstack/react-router' {
     }
     '/member/chat/$otherId': {
       id: '/member/chat/$otherId'
-      path: '/$otherId'
+      path: '/chat/$otherId'
       fullPath: '/member/chat/$otherId'
       preLoaderRoute: typeof MemberChatOtherIdRouteImport
-      parentRoute: typeof MemberChatRoute
+      parentRoute: typeof MemberRoute
     }
   }
 }
@@ -598,54 +598,31 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface MemberChatRouteChildren {
-  MemberChatOtherIdRoute: typeof MemberChatOtherIdRoute
-}
-
-const MemberChatRouteChildren: MemberChatRouteChildren = {
-  MemberChatOtherIdRoute: MemberChatOtherIdRoute,
-}
-
-const MemberChatRouteWithChildren = MemberChatRoute._addFileChildren(
-  MemberChatRouteChildren,
-)
-
 interface MemberRouteChildren {
   MemberBookingsRoute: typeof MemberBookingsRoute
-  MemberChatRoute: typeof MemberChatRouteWithChildren
   MemberNotificationsRoute: typeof MemberNotificationsRoute
   MemberProfileRoute: typeof MemberProfileRoute
   MemberSettingsRoute: typeof MemberSettingsRoute
   MemberIndexRoute: typeof MemberIndexRoute
+  MemberChatOtherIdRoute: typeof MemberChatOtherIdRoute
+  MemberChatIndexRoute: typeof MemberChatIndexRoute
 }
 
 const MemberRouteChildren: MemberRouteChildren = {
   MemberBookingsRoute: MemberBookingsRoute,
-  MemberChatRoute: MemberChatRouteWithChildren,
   MemberNotificationsRoute: MemberNotificationsRoute,
   MemberProfileRoute: MemberProfileRoute,
   MemberSettingsRoute: MemberSettingsRoute,
   MemberIndexRoute: MemberIndexRoute,
+  MemberChatOtherIdRoute: MemberChatOtherIdRoute,
+  MemberChatIndexRoute: MemberChatIndexRoute,
 }
 
 const MemberRouteWithChildren =
   MemberRoute._addFileChildren(MemberRouteChildren)
 
-interface UserChatRouteChildren {
-  UserChatOtherIdRoute: typeof UserChatOtherIdRoute
-}
-
-const UserChatRouteChildren: UserChatRouteChildren = {
-  UserChatOtherIdRoute: UserChatOtherIdRoute,
-}
-
-const UserChatRouteWithChildren = UserChatRoute._addFileChildren(
-  UserChatRouteChildren,
-)
-
 interface UserRouteChildren {
   UserBookingsRoute: typeof UserBookingsRoute
-  UserChatRoute: typeof UserChatRouteWithChildren
   UserHelpRoute: typeof UserHelpRoute
   UserHistoryRoute: typeof UserHistoryRoute
   UserNotificationsRoute: typeof UserNotificationsRoute
@@ -655,12 +632,13 @@ interface UserRouteChildren {
   UserSettingsRoute: typeof UserSettingsRoute
   UserIndexRoute: typeof UserIndexRoute
   UserCategorySlugRoute: typeof UserCategorySlugRoute
+  UserChatOtherIdRoute: typeof UserChatOtherIdRoute
   UserWorkerIdRoute: typeof UserWorkerIdRoute
+  UserChatIndexRoute: typeof UserChatIndexRoute
 }
 
 const UserRouteChildren: UserRouteChildren = {
   UserBookingsRoute: UserBookingsRoute,
-  UserChatRoute: UserChatRouteWithChildren,
   UserHelpRoute: UserHelpRoute,
   UserHistoryRoute: UserHistoryRoute,
   UserNotificationsRoute: UserNotificationsRoute,
@@ -670,7 +648,9 @@ const UserRouteChildren: UserRouteChildren = {
   UserSettingsRoute: UserSettingsRoute,
   UserIndexRoute: UserIndexRoute,
   UserCategorySlugRoute: UserCategorySlugRoute,
+  UserChatOtherIdRoute: UserChatOtherIdRoute,
   UserWorkerIdRoute: UserWorkerIdRoute,
+  UserChatIndexRoute: UserChatIndexRoute,
 }
 
 const UserRouteWithChildren = UserRoute._addFileChildren(UserRouteChildren)
@@ -688,13 +668,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
