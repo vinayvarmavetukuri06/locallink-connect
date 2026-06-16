@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { hashPassword, verifyPassword } from "@/lib/password";
 import { useI18n } from "@/lib/i18n";
+import { CityAutocomplete } from "@/components/city-autocomplete";
 
 export const Route = createFileRoute("/user/settings")({
   component: Settings,
@@ -99,7 +100,7 @@ function Settings() {
             </div>
             <div>
               <label className="text-xs font-semibold">{t("settings.location")}</label>
-              <input value={location} onChange={(e) => setLocation(e.target.value)} className="w-full mt-1 bg-secondary rounded-2xl px-4 py-3 text-sm outline-none" />
+              <CityAutocomplete value={location} onChange={setLocation} />
             </div>
             <button disabled={saving} type="submit" className="w-full bg-primary text-primary-foreground py-3 rounded-2xl font-bold text-sm">
               {saving ? t("common.saving") : t("settings.saveChanges")}

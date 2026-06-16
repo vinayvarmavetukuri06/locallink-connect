@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Phone, User, MapPin, Loader2 } from "lucide-react";
+import { ArrowLeft, Phone, User, Loader2 } from "lucide-react";
+import { CityAutocomplete } from "@/components/city-autocomplete";
 import { saveUserProfile } from "@/lib/profile-store";
 import { hashPassword, DEMO_OTP } from "@/lib/password";
 import { supabase } from "@/integrations/supabase/client";
@@ -239,12 +240,11 @@ function UserAuth() {
               </div>
             </div>
 
-            <Field
-              icon={<MapPin className="size-4" />}
+            <CityAutocomplete
               label={t("signup.location")}
               placeholder={t("signup.locationPlaceholder")}
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={setLocation}
             />
           </div>
 

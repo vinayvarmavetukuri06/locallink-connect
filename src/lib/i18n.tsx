@@ -507,6 +507,18 @@ const en: Dict = {
   // language selector
   "lang.choose": "Choose Language",
   "lang.subtitle": "App will switch to the selected language instantly.",
+
+  // city / location picker
+  "city.placeholder": "Start typing your city...",
+  "city.modalTitle": "Change Location",
+  "city.modalSub": "Pick your city to see workers near you",
+  "city.searchPh": "Search Indian cities...",
+  "city.noResults": "No cities found. Try a different name.",
+  "city.change": "Change location",
+  "city.setLocation": "Set location",
+  "city.updated": "Location updated",
+  "city.updateFailed": "Could not update location",
+  "userHome.noWorkersInArea": "No workers available in your area yet",
 };
 
 const hi: Dict = {
@@ -976,6 +988,17 @@ const hi: Dict = {
 
   "lang.choose": "भाषा चुनें",
   "lang.subtitle": "ऐप तुरंत चुनी गई भाषा में बदल जाएगा।",
+
+  "city.placeholder": "अपना शहर लिखना शुरू करें...",
+  "city.modalTitle": "स्थान बदलें",
+  "city.modalSub": "अपने पास के कारीगर देखने के लिए शहर चुनें",
+  "city.searchPh": "भारतीय शहर खोजें...",
+  "city.noResults": "कोई शहर नहीं मिला। दूसरा नाम आज़माएँ।",
+  "city.change": "स्थान बदलें",
+  "city.setLocation": "स्थान चुनें",
+  "city.updated": "स्थान अपडेट हो गया",
+  "city.updateFailed": "स्थान अपडेट नहीं हो सका",
+  "userHome.noWorkersInArea": "आपके क्षेत्र में अभी कोई कारीगर उपलब्ध नहीं है",
 };
 
 const te: Dict = {
@@ -1445,6 +1468,17 @@ const te: Dict = {
 
   "lang.choose": "భాషను ఎంచుకోండి",
   "lang.subtitle": "యాప్ ఎంచుకున్న భాషకు తక్షణమే మారుతుంది.",
+
+  "city.placeholder": "మీ నగరం టైప్ చేయడం ప్రారంభించండి...",
+  "city.modalTitle": "ప్రాంతం మార్చండి",
+  "city.modalSub": "మీ సమీపంలోని కార్మికులను చూడటానికి నగరాన్ని ఎంచుకోండి",
+  "city.searchPh": "భారతీయ నగరాలను శోధించండి...",
+  "city.noResults": "నగరాలు కనుగొనబడలేదు. వేరే పేరును ప్రయత్నించండి.",
+  "city.change": "ప్రాంతం మార్చండి",
+  "city.setLocation": "ప్రాంతాన్ని ఎంచుకోండి",
+  "city.updated": "ప్రాంతం నవీకరించబడింది",
+  "city.updateFailed": "ప్రాంతం నవీకరించడం సాధ్యం కాలేదు",
+  "userHome.noWorkersInArea": "మీ ప్రాంతంలో ఇప్పటివరకు కార్మికులు లేరు",
 };
 
 const dicts: Record<Lang, Dict> = { en, hi, te };
