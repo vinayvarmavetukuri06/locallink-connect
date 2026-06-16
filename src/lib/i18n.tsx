@@ -862,6 +862,9 @@ const hi: Dict = {
   "worker.yrs": "वर्ष",
   "worker.bookNow": "अभी बुक करें",
   "worker.fillRequired": "कृपया तिथि और समय स्लॉट चुनें।",
+  "worker.selectDate": "कृपया तिथि चुनें।",
+  "worker.selectTime": "कृपया समय स्लॉट चुनें।",
+
   "worker.date": "तिथि",
   "worker.timeSlot": "समय स्लॉट",
   "worker.address": "पता",
