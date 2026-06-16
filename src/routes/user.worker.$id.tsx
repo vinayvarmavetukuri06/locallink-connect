@@ -125,6 +125,16 @@ function WorkerProfile() {
           </div>
         </div>
 
+        {w.categories?.length > 0 && (
+          <div className="mt-5">
+            <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
+              {t("worker.services")}
+            </h3>
+            <CategoryBadges slugs={w.categories} />
+          </div>
+        )}
+
+
         <div className="grid grid-cols-3 gap-3 mt-6">
           <Stat label={t("worker.experience")} value={`${w.experience} ${t("worker.yrs")}`} />
           <Stat label={t("worker.hourly")} value={`₹${w.startingPrice}`} />
