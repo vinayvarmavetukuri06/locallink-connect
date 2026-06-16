@@ -326,7 +326,7 @@ const en: Dict = {
   "worker.rating": "Rating",
   "worker.yrs": "yrs",
   "worker.bookNow": "Book Now",
-  "worker.fillRequired": "Please fill date, time, address, and problem description.",
+  "worker.fillRequired": "Please select a date and time slot.",
   "worker.date": "Date",
   "worker.timeSlot": "Time Slot",
   "worker.address": "Address",
