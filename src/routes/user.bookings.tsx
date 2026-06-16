@@ -63,12 +63,21 @@ function UserBookings() {
   }
 
   async function load() {
-    const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
+    const cid = customerId;
     let q = supabase.from("bookings").select("*").order("created_at", { ascending: false });
-    if (customerId) q = q.eq("customer_id", customerId);
+    if (cid) q = q.eq("customer_id", cid);
     const { data, error } = await q;
     if (!error && data) {
       const list = data as Booking[];
+      // Detect a booking that just flipped to completed → open rating popup.
+      const prev = prevStatusRef.current;
+      const justCompleted = list.find(
+        (b) => b.status === "completed" && prev[b.id] && prev[b.id] !== "completed",
+      );
+      const nextMap: Record<string, string> = {};
+      list.forEach((b) => { nextMap[b.id] = b.status; });
+      prevStatusRef.current = nextMap;
+
       setBookings(list);
       const workerIds = Array.from(new Set(list.map((b) => b.worker_id).filter(Boolean))) as string[];
       if (workerIds.length) {
@@ -91,9 +100,27 @@ function UserBookings() {
         setWorkerNames(nameMap);
         setWorkerMobiles(mobileMap);
       }
+
+      // Load this customer's existing reviews so we can hide the Rate button.
+      const completedIds = list.filter((b) => b.status === "completed").map((b) => b.id);
+      if (completedIds.length && cid) {
+        const { data: revs } = await supabase
+          .from("reviews")
+          .select("booking_id")
+          .eq("customer_id", cid)
+          .in("booking_id", completedIds);
+        setReviewedIds(new Set((revs ?? []).map((r: any) => r.booking_id as string)));
+      } else {
+        setReviewedIds(new Set());
+      }
+
+      if (justCompleted && !reviewedIds.has(justCompleted.id)) {
+        setRateBooking(justCompleted);
+      }
     }
     setLoading(false);
   }
+
 
 
   useEffect(() => {
