@@ -20,6 +20,8 @@ const en: Dict = {
 
   // common
   "common.back": "Back",
+  "common.optional": "optional",
+
   "common.loading": "Loading…",
   "common.save": "Save",
   "common.cancel": "Cancel",
@@ -326,7 +328,7 @@ const en: Dict = {
   "worker.rating": "Rating",
   "worker.yrs": "yrs",
   "worker.bookNow": "Book Now",
-  "worker.fillRequired": "Please fill date, time, address, and problem description.",
+  "worker.fillRequired": "Please select a date and time slot.",
   "worker.date": "Date",
   "worker.timeSlot": "Time Slot",
   "worker.address": "Address",
@@ -565,6 +567,8 @@ const hi: Dict = {
   "splash.terms": "जारी रखने पर आप हमारी शर्तें और गोपनीयता से सहमत हैं",
 
   "common.back": "वापस",
+  "common.optional": "वैकल्पिक",
+
   "common.loading": "लोड हो रहा है…",
   "common.save": "सेव",
   "common.cancel": "रद्द करें",
@@ -854,7 +858,7 @@ const hi: Dict = {
   "worker.rating": "रेटिंग",
   "worker.yrs": "वर्ष",
   "worker.bookNow": "अभी बुक करें",
-  "worker.fillRequired": "कृपया तिथि, समय, पता और समस्या भरें।",
+  "worker.fillRequired": "कृपया तिथि और समय स्लॉट चुनें।",
   "worker.date": "तिथि",
   "worker.timeSlot": "समय स्लॉट",
   "worker.address": "पता",
@@ -1081,6 +1085,8 @@ const te: Dict = {
   "splash.terms": "కొనసాగించడం ద్వారా మీరు మా నిబంధనలు & గోప్యతకు అంగీకరిస్తారు",
 
   "common.back": "వెనుకకు",
+  "common.optional": "ఐచ్ఛికం",
+
   "common.loading": "లోడ్ అవుతోంది…",
   "common.save": "సేవ్",
   "common.cancel": "రద్దు",
@@ -1370,7 +1376,7 @@ const te: Dict = {
   "worker.rating": "రేటింగ్",
   "worker.yrs": "సంవత్సరాలు",
   "worker.bookNow": "ఇప్పుడే బుక్ చేయండి",
-  "worker.fillRequired": "దయచేసి తేదీ, సమయం, చిరునామా మరియు సమస్యను పూరించండి.",
+  "worker.fillRequired": "దయచేసి తేదీ మరియు సమయ స్లాట్ ఎంచుకోండి.",
   "worker.date": "తేదీ",
   "worker.timeSlot": "సమయ స్లాట్",
   "worker.address": "చిరునామా",

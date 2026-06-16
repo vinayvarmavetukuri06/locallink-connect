@@ -43,10 +43,11 @@ function WorkerProfile() {
   async function handleConfirm() {
     if (!w) return;
     setErrMsg(null);
-    if (!date || !time || !address.trim() || !problem.trim()) {
+    if (!date || !time) {
       setErrMsg(t("worker.fillRequired"));
       return;
     }
+
     setSubmitting(true);
     const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
     const payload = {
@@ -225,7 +226,7 @@ function WorkerProfile() {
 
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                      <MapPinned className="size-3.5" /> {t("worker.address")}
+                      <MapPinned className="size-3.5" /> {t("worker.address")} <span className="normal-case tracking-normal text-muted-foreground/70">({t("common.optional")})</span>
                     </label>
                     <input
                       type="text"
@@ -238,8 +239,9 @@ function WorkerProfile() {
 
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                      <FileText className="size-3.5" /> {t("worker.describeProblem")}
+                      <FileText className="size-3.5" /> {t("worker.describeProblem")} <span className="normal-case tracking-normal text-muted-foreground/70">({t("common.optional")})</span>
                     </label>
+
                     <textarea
                       rows={3}
                       value={problem}
