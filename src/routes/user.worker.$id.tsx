@@ -243,7 +243,7 @@ function WorkerProfile() {
                     <textarea
                       rows={3}
                       value={problem}
-                      onChange={(e) => setProblem(e.target.value)}
+                      onChange={(e) => { setProblem(e.target.value); setErrMsg(null); }}
                       placeholder={t("worker.problemPh")}
                       className="mt-2 w-full bg-secondary rounded-2xl p-3 text-sm outline-none resize-none"
                     />
