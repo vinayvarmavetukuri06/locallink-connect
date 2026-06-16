@@ -52,21 +52,20 @@ function MemberAuth() {
     if (area.trim().length < 3) e.area = t("signup.member.err.area");
     const yrs = experience ? parseInt(experience, 10) : 0;
     if (!experience || isNaN(yrs) || yrs < 1 || yrs > 50) e.experience = t("signup.member.err.experience");
-    if (bio.trim().length < 20) e.bio = t("signup.member.err.bio");
     return e;
-  }, [fullName, cats, area, experience, bio, t]);
+  }, [fullName, cats, area, experience, t]);
 
   const isValid = Object.keys(errors).length === 0;
-  const requiredCount = 6;
+  const requiredCount = 5;
   const completedFlags = [
     fullName.trim().length >= 3,
     cats.length >= 1,
     mobile.length === 10,
     area.trim().length >= 3,
     !!experience && parseInt(experience, 10) >= 1 && parseInt(experience, 10) <= 50,
-    bio.trim().length >= 20,
   ];
   const completedCount = completedFlags.filter((v) => v === true).length;
+
 
   // categories dropdown
   const [catsOpen, setCatsOpen] = useState(false);
@@ -439,7 +438,7 @@ function MemberAuth() {
 
             {/* Bio */}
             <div>
-              <FieldLabel>{t("signup.member.bio")} <Req /></FieldLabel>
+              <FieldLabel>{t("signup.member.bio")} <span className="text-[11px] font-normal text-muted-foreground">({t("signup.member.optional")})</span></FieldLabel>
               <div className="mt-2 flex items-start gap-2 bg-secondary rounded-2xl px-4 py-3.5">
                 <FileText className="size-4 text-muted-foreground pt-0.5" />
                 <textarea
@@ -450,11 +449,8 @@ function MemberAuth() {
                   className="flex-1 bg-transparent outline-none text-sm font-medium resize-none"
                 />
               </div>
-              <div className="mt-1 flex items-center justify-between">
-                {touched && errors.bio ? <ErrorText>{errors.bio}</ErrorText> : <span />}
-                <span className="text-[11px] text-muted-foreground">{bio.trim().length}/20</span>
-              </div>
             </div>
+
           </div>
 
           {err && <p className="mt-4 text-xs text-destructive text-center font-semibold">{err}</p>}
