@@ -703,6 +703,7 @@ const hi: Dict = {
   "signup.member.yearsMax": "अनुभव के वर्ष 50 से अधिक नहीं हो सकते।",
   "signup.member.hourly": "प्रति घंटा दर",
   "signup.member.bio": "बायो / परिचय",
+  "signup.member.optional": "वैकल्पिक",
   "signup.member.bioPh": "अपने कौशल और अनुभव का वर्णन करें...",
   "signup.member.photo": "प्रोफ़ाइल फ़ोटो",
   "signup.member.upload": "फ़ोटो अपलोड करें",
