@@ -43,10 +43,11 @@ function WorkerProfile() {
   async function handleConfirm() {
     if (!w) return;
     setErrMsg(null);
-    if (!date || !time || !address.trim() || !problem.trim()) {
+    if (!date || !time) {
       setErrMsg(t("worker.fillRequired"));
       return;
     }
+
     setSubmitting(true);
     const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
     const payload = {
