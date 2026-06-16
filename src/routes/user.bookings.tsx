@@ -42,6 +42,10 @@ function UserBookings() {
   const [workerNames, setWorkerNames] = useState<Record<string, string>>({});
   const [workerMobiles, setWorkerMobiles] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+  const [reviewedIds, setReviewedIds] = useState<Set<string>>(new Set());
+  const [rateBooking, setRateBooking] = useState<Booking | null>(null);
+  const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
+  const prevStatusRef = useRef<Record<string, string>>({});
 
   const [dismissed, setDismissed] = useState<Set<string>>(() => {
     if (typeof window === "undefined") return new Set();
