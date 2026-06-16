@@ -16,6 +16,7 @@ function AdminLayout() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     setAuthed(sessionStorage.getItem(STORAGE_KEY) === "1");
