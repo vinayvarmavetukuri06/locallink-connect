@@ -4,7 +4,7 @@ import { Loader2, MessageSquareOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/user/chat")({
+export const Route = createFileRoute("/user/chat/")({
   component: Chat,
 });
 
