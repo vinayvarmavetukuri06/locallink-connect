@@ -388,6 +388,23 @@ const en: Dict = {
   "memberBookings.accept": "Accept",
   "memberBookings.markInProgress": "Mark In Progress",
   "memberBookings.markCompleted": "Mark Completed",
+  "memberBookings.markComplete": "Mark as Complete",
+  "memberBookings.confirmCompleteTitle": "Mark this job as completed?",
+  "memberBookings.confirmCompleteMsg": "Are you sure you want to mark this job as completed? Make sure the work is fully done before confirming.",
+  "memberBookings.completed": "Completed",
+  "memberBookings.earned": "Earned",
+  "memberBookings.completeFailed": "Couldn't mark as completed",
+
+  "userBookings.completed": "Completed",
+  "userBookings.rateReview": "Rate & Review",
+  "rate.title": "Rate Your Experience",
+  "rate.subtitle": "How was your service with",
+  "rate.commentPh": "Share your feedback (optional)",
+  "rate.submit": "Submit Review",
+  "rate.skip": "Skip",
+  "rate.thanks": "Thanks for your feedback!",
+  "rate.selectStars": "Please select a star rating",
+  "rate.submitFailed": "Couldn't submit your review",
 
   // member profile
   "memberProfile.title": "My Profile",
