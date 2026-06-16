@@ -1,5 +1,6 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+
 import { Lock, LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
