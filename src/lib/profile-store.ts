@@ -11,12 +11,13 @@ export type UserProfile = {
 export type MemberProfile = {
   name: string;
   mobile: string;
-  category: string; // slug
+  categories: string[]; // slugs
   area: string;
   experience: string;
-  hourlyRate: string;
   bio: string;
+  avatarPath?: string | null;
 };
+
 
 type State = {
   user: UserProfile;
