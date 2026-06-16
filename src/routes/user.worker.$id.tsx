@@ -168,8 +168,8 @@ function WorkerProfile() {
       {bookingOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end" onClick={() => { setBookingOpen(false); }}>
           <div
-            className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-6 max-h-[92vh] overflow-y-auto"
-            style={{ paddingBottom: "calc(96px + env(safe-area-inset-bottom))" }}
+            className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-6 max-h-[92vh] overflow-y-auto overscroll-contain"
+            style={{ paddingBottom: "calc(160px + env(safe-area-inset-bottom))" }}
             onClick={(e) => e.stopPropagation()}
           >
             {!confirmed ? (
@@ -196,7 +196,7 @@ function WorkerProfile() {
                       type="date"
                       value={date}
                       min={new Date().toISOString().split("T")[0]}
-                      onChange={(e) => setDate(e.target.value)}
+                      onChange={(e) => { setDate(e.target.value); setErrMsg(null); }}
                       className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none"
                     />
                   </div>
@@ -210,7 +210,7 @@ function WorkerProfile() {
                         <button
                           key={s}
                           type="button"
-                          onClick={() => setTime(s)}
+                          onClick={() => { setTime(s); setErrMsg(null); }}
                           className={`py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
                             time === s
                               ? "bg-primary text-primary-foreground border-primary"
@@ -230,7 +230,7 @@ function WorkerProfile() {
                     <input
                       type="text"
                       value={address}
-                      onChange={(e) => setAddress(e.target.value)}
+                      onChange={(e) => { setAddress(e.target.value); setErrMsg(null); }}
                       placeholder={t("worker.addressPh")}
                       className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none"
                     />
@@ -243,7 +243,7 @@ function WorkerProfile() {
                     <textarea
                       rows={3}
                       value={problem}
-                      onChange={(e) => setProblem(e.target.value)}
+                      onChange={(e) => { setProblem(e.target.value); setErrMsg(null); }}
                       placeholder={t("worker.problemPh")}
                       className="mt-2 w-full bg-secondary rounded-2xl p-3 text-sm outline-none resize-none"
                     />
@@ -258,7 +258,7 @@ function WorkerProfile() {
                   className="mt-6 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {submitting && <Loader2 className="size-4 animate-spin" />}
-                  {t("worker.confirmBooking")} · ₹{w.startingPrice}
+                  {t("worker.confirmBooking")}
                 </button>
               </>
             ) : (
