@@ -132,6 +132,7 @@ function MemberHome() {
     [bookings],
   );
   const pending = bookings.filter((b) => b.status === "pending");
+  const active = bookings.filter((b) => b.status === "pending" || b.status === "accepted" || b.status === "in_progress");
 
   return (
     <>
