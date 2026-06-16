@@ -66,6 +66,8 @@ export function SaveWorkerButton({
       if (!error) {
         setSaved(true);
         setRowId(data?.id ?? null);
+        setPop(true);
+        setTimeout(() => setPop(false), 400);
       }
     }
     setBusy(false);
@@ -80,13 +82,13 @@ export function SaveWorkerButton({
       onClick={toggle}
       aria-label={saved ? t("worker.removeSave") : t("worker.save")}
       aria-pressed={saved}
-      className={`${dim} rounded-full bg-card/90 backdrop-blur border border-border flex items-center justify-center shrink-0 active:scale-90 transition-transform ${className}`}
+      className={`${dim} rounded-full bg-card/90 backdrop-blur border border-border flex items-center justify-center shrink-0 ${className}`}
     >
       {busy ? (
         <Loader2 className={`${icon} animate-spin text-muted-foreground`} />
       ) : (
         <Heart
-          className={`${icon} ${saved ? "text-red-500 fill-red-500" : "text-muted-foreground"}`}
+          className={`${icon} ${saved ? "text-red-500 fill-red-500" : "text-muted-foreground"} ${pop ? "animate-pop" : ""}`}
         />
       )}
     </button>
