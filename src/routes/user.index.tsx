@@ -9,6 +9,7 @@ import { useUserProfile } from "@/lib/profile-store";
 import { FeaturedWorkerCard, WorkerListCard, NoWorkersCard } from "@/components/worker-card";
 import { useApprovedWorkers } from "@/lib/workers-api";
 import { supabase } from "@/integrations/supabase/client";
+import { LocationPickerModal } from "@/components/location-picker-modal";
 
 type RecentBooking = {
   id: string;
@@ -26,18 +27,32 @@ function UserHome() {
   const { t, tService } = useI18n();
   const { workers, loading, error } = useApprovedWorkers();
   const [query, setQuery] = useState("");
+  const [locationOpen, setLocationOpen] = useState(false);
+
+  const userCity = (currentUser.location ?? "").split(",")[0].trim();
+  const userCityLc = userCity.toLowerCase();
+  const hasCity = userCityLc && userCityLc !== "—";
+
+  const cityWorkers = useMemo(() => {
+    if (!hasCity) return workers;
+    return workers.filter((w) => {
+      const area = (w.area ?? "").toLowerCase();
+      if (!area) return false;
+      return area.includes(userCityLc) || userCityLc.includes(area);
+    });
+  }, [workers, userCityLc, hasCity]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return workers;
-    return workers.filter(
+    if (!q) return cityWorkers;
+    return cityWorkers.filter(
       (w) =>
         w.name.toLowerCase().includes(q) ||
         w.trade.toLowerCase().includes(q) ||
         w.category.toLowerCase().includes(q) ||
         w.area.toLowerCase().includes(q),
     );
-  }, [workers, query]);
+  }, [cityWorkers, query]);
 
   const featured = filtered.slice(0, 6);
   const nearby = filtered.slice(0, 8);
@@ -85,10 +100,15 @@ function UserHome() {
             <h1 className="font-serif text-2xl truncate">{currentUser.name}</h1>
           </div>
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1 bg-secondary px-3 py-1.5 rounded-full border border-border">
+            <button
+              type="button"
+              onClick={() => setLocationOpen(true)}
+              className="flex items-center gap-1 bg-secondary px-3 py-1.5 rounded-full border border-border active:scale-95 transition"
+              aria-label={t("city.change")}
+            >
               <MapPin className="size-3 text-primary" />
               <span className="text-xs font-semibold truncate max-w-[10ch]">
-                {currentUser.location.split(",")[0]}
+                {hasCity ? userCity : t("city.setLocation")}
               </span>
             </button>
             <LanguageButton />
