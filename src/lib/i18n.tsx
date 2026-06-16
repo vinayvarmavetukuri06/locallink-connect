@@ -20,6 +20,8 @@ const en: Dict = {
 
   // common
   "common.back": "Back",
+  "common.optional": "optional",
+
   "common.loading": "Loading…",
   "common.save": "Save",
   "common.cancel": "Cancel",
