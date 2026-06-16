@@ -8,18 +8,18 @@ export type Category = {
 };
 
 export const categories: Category[] = [
-  { slug: "ac-repair", name: "AC Repair", emoji: "", tint: "bg-blue-100" },
-  { slug: "electrician", name: "Electrician", emoji: "", tint: "bg-yellow-100" },
-  { slug: "plumber", name: "Plumber", emoji: "", tint: "bg-indigo-100" },
-  { slug: "mechanic", name: "Mechanic", emoji: "", tint: "bg-orange-100" },
-  { slug: "carpenter", name: "Carpenter", emoji: "", tint: "bg-amber-100" },
-  { slug: "painter", name: "Painter", emoji: "", tint: "bg-pink-100" },
-  { slug: "mobile-repair", name: "Mobile Repair", emoji: "", tint: "bg-purple-100" },
-  { slug: "cleaning", name: "Cleaning", emoji: "", tint: "bg-emerald-100" },
-  { slug: "ro-service", name: "RO Service", emoji: "", tint: "bg-cyan-100" },
-  { slug: "appliance", name: "Appliance", emoji: "", tint: "bg-rose-100" },
-  { slug: "car-repair", name: "Car Repair", emoji: "", tint: "bg-red-100" },
-  { slug: "bike-repair", name: "Bike Repair", emoji: "", tint: "bg-violet-100" },
+  { slug: "ac-repair", name: "AC Repair", emoji: "❄️", tint: "bg-blue-100" },
+  { slug: "electrician", name: "Electrician", emoji: "⚡", tint: "bg-yellow-100" },
+  { slug: "plumber", name: "Plumber", emoji: "🔧", tint: "bg-indigo-100" },
+  { slug: "mechanic", name: "Mechanic", emoji: "⚙️", tint: "bg-orange-100" },
+  { slug: "carpenter", name: "Carpenter", emoji: "🪚", tint: "bg-amber-100" },
+  { slug: "painter", name: "Painter", emoji: "🎨", tint: "bg-pink-100" },
+  { slug: "mobile-repair", name: "Mobile Repair", emoji: "📱", tint: "bg-purple-100" },
+  { slug: "cleaning", name: "Cleaning", emoji: "🧹", tint: "bg-emerald-100" },
+  { slug: "ro-service", name: "RO Service", emoji: "💧", tint: "bg-cyan-100" },
+  { slug: "appliance", name: "Appliance", emoji: "🔌", tint: "bg-rose-100" },
+  { slug: "car-repair", name: "Car Repair", emoji: "🚗", tint: "bg-red-100" },
+  { slug: "bike-repair", name: "Bike Repair", emoji: "🏍️", tint: "bg-violet-100" },
 ];
 
 export function categoryInitial(name: string): string {
