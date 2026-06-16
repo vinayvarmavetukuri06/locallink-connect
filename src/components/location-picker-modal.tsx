@@ -48,9 +48,9 @@ export function LocationPickerModal({ open, onClose, userId }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 animate-backdrop-in" onClick={onClose}>
       <div
-        className="w-full sm:max-w-md bg-card rounded-t-3xl sm:rounded-3xl max-h-[80vh] flex flex-col"
+        className="w-full sm:max-w-md bg-card rounded-t-3xl sm:rounded-3xl max-h-[80vh] flex flex-col animate-sheet-up"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-border">

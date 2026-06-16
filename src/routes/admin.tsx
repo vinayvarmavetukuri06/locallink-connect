@@ -1,5 +1,6 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+
 import { Lock, LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -15,6 +16,7 @@ function AdminLayout() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     setAuthed(sessionStorage.getItem(STORAGE_KEY) === "1");
@@ -79,7 +81,9 @@ function AdminLayout() {
           <LogOut className="size-3.5" /> Logout
         </button>
       </div>
-      <Outlet />
+      <div key={pathname} className="animate-page-in">
+        <Outlet />
+      </div>
     </div>
   );
 }

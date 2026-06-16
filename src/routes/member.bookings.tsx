@@ -113,7 +113,7 @@ function MemberBookings() {
         })}
       </div>
 
-      <section className="px-5 py-5 space-y-3">
+      <section className="px-5 py-5 space-y-3 stagger-cards">
         {loading && (
           <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
         )}

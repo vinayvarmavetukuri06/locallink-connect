@@ -51,7 +51,7 @@ function CategoryPage() {
         </div>
       </header>
 
-      <section className="px-5 py-5 space-y-3">
+      <section className="px-5 py-5 space-y-3 stagger-cards">
         {loading ? (
           <div className="flex items-center justify-center py-10 text-muted-foreground">
             <Loader2 className="size-5 animate-spin" />

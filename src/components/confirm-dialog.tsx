@@ -32,8 +32,8 @@ export function ConfirmDialog({
         ? "bg-destructive text-destructive-foreground"
         : "bg-primary text-primary-foreground";
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-card w-full max-w-sm rounded-3xl p-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-backdrop-in">
+      <div className="bg-card w-full max-w-sm rounded-3xl p-5 animate-sheet-up">
         <h2 className="font-bold text-base font-sans">{title}</h2>
         <p className="text-sm text-muted-foreground mt-2">{message}</p>
         <div className="flex gap-2 mt-5">
