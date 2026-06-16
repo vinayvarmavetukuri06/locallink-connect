@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#2563EB" },
       { title: "LocalConnect — Find Trusted Local Workers Near You" },
       {
@@ -94,11 +94,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Book trusted local electricians, plumbers, AC techs, carpenters and more — near you, in minutes.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "LocalConnect" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "LocalConnect — Find Trusted Local Workers Near You" },
-      { name: "description", content: "LocalLink Connect is a mobile marketplace connecting users with local service providers." },
-      { property: "og:description", content: "LocalLink Connect is a mobile marketplace connecting users with local service providers." },
-      { name: "twitter:description", content: "LocalLink Connect is a mobile marketplace connecting users with local service providers." },
+      { name: "twitter:description", content: "Book trusted local electricians, plumbers, AC techs, carpenters and more — near you, in minutes." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b6b2d4fb-9646-4840-a0ee-4c92f12402a1/id-preview-68e3dac0--cebd4817-b1ee-41dc-8e01-afec2d33c1ec.lovable.app-1781241429430.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b6b2d4fb-9646-4840-a0ee-4c92f12402a1/id-preview-68e3dac0--cebd4817-b1ee-41dc-8e01-afec2d33c1ec.lovable.app-1781241429430.png" },
     ],
