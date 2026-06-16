@@ -258,11 +258,40 @@ function UserBookings() {
                   </Link>
                 </div>
               )}
+              {b.status === "completed" && !reviewedIds.has(b.id) && (
+                <div className="mt-3 pt-3 border-t border-border">
+                  <button
+                    onClick={() => setRateBooking(b)}
+                    className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground text-xs font-bold px-3 py-2.5 rounded-xl"
+                  >
+                    <Star className="size-3.5" /> {t("userBookings.rateReview")}
+                  </button>
+                </div>
+              )}
+              {b.status === "completed" && reviewedIds.has(b.id) && (
+                <div className="mt-3 pt-3 border-t border-border inline-flex items-center gap-1.5 text-xs text-success font-bold">
+                  <CircleCheck className="size-4" /> {t("userBookings.completed")}
+                </div>
+              )}
             </div>
           );
 
         })}
       </section>
+
+      <RateBookingDialog
+        open={rateBooking !== null}
+        bookingId={rateBooking?.id ?? ""}
+        workerId={rateBooking?.worker_id ?? null}
+        customerId={customerId}
+        workerName={(rateBooking?.worker_id && workerNames[rateBooking.worker_id]) || undefined}
+        onClose={() => setRateBooking(null)}
+        onSubmitted={() => {
+          if (rateBooking) {
+            setReviewedIds((s) => new Set(s).add(rateBooking.id));
+          }
+        }}
+      />
     </>
   );
 }
