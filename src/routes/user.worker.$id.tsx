@@ -210,7 +210,7 @@ function WorkerProfile() {
                         <button
                           key={s}
                           type="button"
-                          onClick={() => setTime(s)}
+                          onClick={() => { setTime(s); setErrMsg(null); }}
                           className={`py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
                             time === s
                               ? "bg-primary text-primary-foreground border-primary"
