@@ -195,17 +195,20 @@ function WorkerProfile() {
 
                 <div className="mt-6 space-y-4">
                   <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
+                    <label htmlFor="booking-date" className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
                       <Calendar className="size-3.5" /> {t("worker.date")}
                     </label>
                     <input
+                      id="booking-date"
                       type="date"
                       value={date}
                       min={new Date().toISOString().split("T")[0]}
                       onChange={(e) => { setDate(e.target.value); setErrMsg(null); }}
-                      className="mt-2 w-full bg-secondary rounded-2xl px-3 py-3 text-sm outline-none"
+                      className="mt-2 w-full bg-secondary border border-border rounded-2xl px-4 py-3.5 text-base font-medium text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      style={{ colorScheme: "light", minHeight: 52 }}
                     />
                   </div>
+
 
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
