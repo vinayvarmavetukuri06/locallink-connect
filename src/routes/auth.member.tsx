@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Phone, User, MapPin, Briefcase, Clock, IndianRupee, FileText, Camera, Loader2 } from "lucide-react";
+import { ArrowLeft, Phone, User, Briefcase, Clock, IndianRupee, FileText, Camera, Loader2 } from "lucide-react";
+import { CityAutocomplete } from "@/components/city-autocomplete";
 import { categories } from "@/lib/mock-data";
 import { saveMemberProfile } from "@/lib/profile-store";
 import { supabase } from "@/integrations/supabase/client";
@@ -260,12 +261,11 @@ function MemberAuth() {
               </select>
             </div>
 
-            <Field
-              icon={<MapPin className="size-4" />}
+            <CityAutocomplete
               label={t("signup.member.serviceArea")}
               placeholder={t("signup.locationPlaceholder")}
               value={area}
-              onChange={(e) => setArea(e.target.value)}
+              onChange={setArea}
             />
             <Field
               icon={<Clock className="size-4" />}

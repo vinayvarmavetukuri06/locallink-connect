@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { categories } from "@/lib/mock-data";
 import { useI18n } from "@/lib/i18n";
+import { CityAutocomplete } from "@/components/city-autocomplete";
 
 export const Route = createFileRoute("/member/settings")({
   component: MemberSettings,
@@ -138,12 +139,11 @@ function MemberSettings() {
           </Field>
 
           <Field label={t("memberSettings.location")}>
-            <input
-              type="text"
+            <CityAutocomplete
+              variant="card"
               value={form.location}
-              onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
+              onChange={(v) => setForm((f) => ({ ...f, location: v }))}
               placeholder={t("memberSettings.locationPh")}
-              className="w-full bg-card border border-border rounded-xl px-3 py-2.5 text-sm"
             />
           </Field>
 
