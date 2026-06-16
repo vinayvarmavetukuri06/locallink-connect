@@ -1081,6 +1081,8 @@ const te: Dict = {
   "splash.terms": "కొనసాగించడం ద్వారా మీరు మా నిబంధనలు & గోప్యతకు అంగీకరిస్తారు",
 
   "common.back": "వెనుకకు",
+  "common.optional": "ఐచ్ఛికం",
+
   "common.loading": "లోడ్ అవుతోంది…",
   "common.save": "సేవ్",
   "common.cancel": "రద్దు",
