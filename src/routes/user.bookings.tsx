@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Loader2, AlertTriangle, X, Phone, MessageCircle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Loader2, AlertTriangle, X, Phone, MessageCircle, Star, CircleCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { categorySlugFromService } from "@/lib/mock-data";
 import { useI18n } from "@/lib/i18n";
+import { RateBookingDialog } from "@/components/rate-booking-dialog";
 
 type Booking = {
   id: string;
@@ -41,6 +42,10 @@ function UserBookings() {
   const [workerNames, setWorkerNames] = useState<Record<string, string>>({});
   const [workerMobiles, setWorkerMobiles] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+  const [reviewedIds, setReviewedIds] = useState<Set<string>>(new Set());
+  const [rateBooking, setRateBooking] = useState<Booking | null>(null);
+  const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
+  const prevStatusRef = useRef<Record<string, string>>({});
 
   const [dismissed, setDismissed] = useState<Set<string>>(() => {
     if (typeof window === "undefined") return new Set();
@@ -58,12 +63,21 @@ function UserBookings() {
   }
 
   async function load() {
-    const customerId = typeof window !== "undefined" ? localStorage.getItem("lc:user-id") : null;
+    const cid = customerId;
     let q = supabase.from("bookings").select("*").order("created_at", { ascending: false });
-    if (customerId) q = q.eq("customer_id", customerId);
+    if (cid) q = q.eq("customer_id", cid);
     const { data, error } = await q;
     if (!error && data) {
       const list = data as Booking[];
+      // Detect a booking that just flipped to completed → open rating popup.
+      const prev = prevStatusRef.current;
+      const justCompleted = list.find(
+        (b) => b.status === "completed" && prev[b.id] && prev[b.id] !== "completed",
+      );
+      const nextMap: Record<string, string> = {};
+      list.forEach((b) => { nextMap[b.id] = b.status; });
+      prevStatusRef.current = nextMap;
+
       setBookings(list);
       const workerIds = Array.from(new Set(list.map((b) => b.worker_id).filter(Boolean))) as string[];
       if (workerIds.length) {
@@ -86,9 +100,27 @@ function UserBookings() {
         setWorkerNames(nameMap);
         setWorkerMobiles(mobileMap);
       }
+
+      // Load this customer's existing reviews so we can hide the Rate button.
+      const completedIds = list.filter((b) => b.status === "completed").map((b) => b.id);
+      if (completedIds.length && cid) {
+        const { data: revs } = await supabase
+          .from("reviews")
+          .select("booking_id")
+          .eq("customer_id", cid)
+          .in("booking_id", completedIds);
+        setReviewedIds(new Set((revs ?? []).map((r: any) => r.booking_id as string)));
+      } else {
+        setReviewedIds(new Set());
+      }
+
+      if (justCompleted && !reviewedIds.has(justCompleted.id)) {
+        setRateBooking(justCompleted);
+      }
     }
     setLoading(false);
   }
+
 
 
   useEffect(() => {
@@ -226,11 +258,40 @@ function UserBookings() {
                   </Link>
                 </div>
               )}
+              {b.status === "completed" && !reviewedIds.has(b.id) && (
+                <div className="mt-3 pt-3 border-t border-border">
+                  <button
+                    onClick={() => setRateBooking(b)}
+                    className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground text-xs font-bold px-3 py-2.5 rounded-xl"
+                  >
+                    <Star className="size-3.5" /> {t("userBookings.rateReview")}
+                  </button>
+                </div>
+              )}
+              {b.status === "completed" && reviewedIds.has(b.id) && (
+                <div className="mt-3 pt-3 border-t border-border inline-flex items-center gap-1.5 text-xs text-success font-bold">
+                  <CircleCheck className="size-4" /> {t("userBookings.completed")}
+                </div>
+              )}
             </div>
           );
 
         })}
       </section>
+
+      <RateBookingDialog
+        open={rateBooking !== null}
+        bookingId={rateBooking?.id ?? ""}
+        workerId={rateBooking?.worker_id ?? null}
+        customerId={customerId}
+        workerName={(rateBooking?.worker_id && workerNames[rateBooking.worker_id]) || undefined}
+        onClose={() => setRateBooking(null)}
+        onSubmitted={() => {
+          if (rateBooking) {
+            setReviewedIds((s) => new Set(s).add(rateBooking.id));
+          }
+        }}
+      />
     </>
   );
 }

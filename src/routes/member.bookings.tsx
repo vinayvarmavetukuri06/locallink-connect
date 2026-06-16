@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Phone, MapPin, Loader2 } from "lucide-react";
+import { Phone, MapPin, Loader2, CircleCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { toast } from "sonner";
 
 type Booking = {
   id: string;
@@ -40,6 +42,7 @@ function MemberBookings() {
   const [customers, setCustomers] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [completeId, setCompleteId] = useState<string | null>(null);
 
   async function load() {
     const { data, error } = await supabase
@@ -162,41 +165,82 @@ function MemberBookings() {
                 </div>
               )}
               {b.status === "accepted" && (
-                <div className="flex gap-2 mt-3">
+                <div className="space-y-2 mt-3">
                   <button
-                    onClick={() => updateStatus(b.id, "cancelled")}
-                    className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-destructive text-destructive-foreground"
+                    onClick={() => setCompleteId(b.id)}
+                    className="w-full py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground flex items-center justify-center gap-1.5"
                   >
-                    {t("common.cancel")}
+                    <CircleCheck className="size-3.5" /> {t("memberBookings.markComplete")}
                   </button>
-                  <button
-                    onClick={() => updateStatus(b.id, "in_progress")}
-                    className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-primary text-primary-foreground"
-                  >
-                    {t("memberBookings.markInProgress")}
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => updateStatus(b.id, "cancelled")}
+                      className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-destructive text-destructive-foreground"
+                    >
+                      {t("common.cancel")}
+                    </button>
+                    <button
+                      onClick={() => updateStatus(b.id, "in_progress")}
+                      className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-primary text-primary-foreground"
+                    >
+                      {t("memberBookings.markInProgress")}
+                    </button>
+                  </div>
                 </div>
               )}
               {b.status === "in_progress" && (
-                <div className="flex gap-2 mt-3">
+                <div className="space-y-2 mt-3">
+                  <button
+                    onClick={() => setCompleteId(b.id)}
+                    className="w-full py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground flex items-center justify-center gap-1.5"
+                  >
+                    <CircleCheck className="size-3.5" /> {t("memberBookings.markComplete")}
+                  </button>
                   <button
                     onClick={() => updateStatus(b.id, "cancelled")}
-                    className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-destructive text-destructive-foreground"
+                    className="w-full py-2.5 text-xs font-bold rounded-xl bg-destructive text-destructive-foreground"
                   >
                     {t("common.cancel")}
                   </button>
-                  <button
-                    onClick={() => updateStatus(b.id, "completed")}
-                    className="flex-1 py-2.5 text-xs font-bold rounded-xl bg-success text-success-foreground"
-                  >
-                    {t("memberBookings.markCompleted")}
-                  </button>
+                </div>
+              )}
+              {b.status === "completed" && (
+                <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-success bg-success/15 px-2.5 py-1 rounded-full">
+                    <CircleCheck className="size-3.5" /> {t("memberBookings.completed")}
+                  </span>
+                  <span className="text-xs font-bold text-success">
+                    {t("memberBookings.earned")}: ₹{Number(b.amount ?? 0).toLocaleString("en-IN")}
+                  </span>
                 </div>
               )}
             </div>
           );
         })}
       </section>
+
+      <ConfirmDialog
+        open={completeId !== null}
+        title={t("memberBookings.confirmCompleteTitle")}
+        message={t("memberBookings.confirmCompleteMsg")}
+        confirmLabel={t("common.confirm")}
+        confirmVariant="success"
+        busy={updatingId === completeId}
+        onCancel={() => setCompleteId(null)}
+        onConfirm={async () => {
+          if (!completeId) return;
+          const id = completeId;
+          setUpdatingId(id);
+          const { error } = await supabase.from("bookings").update({ status: "completed" }).eq("id", id);
+          setUpdatingId(null);
+          setCompleteId(null);
+          if (error) {
+            toast.error(t("memberBookings.completeFailed"));
+            return;
+          }
+          setBookings((bs) => bs.map((b) => (b.id === id ? { ...b, status: "completed" } : b)));
+        }}
+      />
     </>
   );
 }

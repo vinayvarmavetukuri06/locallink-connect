@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryBySlug } from "@/lib/mock-data";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 
 export const Route = createFileRoute("/member/")({
   component: MemberHome,
@@ -132,6 +133,7 @@ function MemberHome() {
     [bookings],
   );
   const pending = bookings.filter((b) => b.status === "pending");
+  const active = bookings.filter((b) => b.status === "pending" || b.status === "accepted" || b.status === "in_progress");
 
   return (
     <>
@@ -189,14 +191,14 @@ function MemberHome() {
         </div>
         {loading ? (
           <p className="text-xs text-muted-foreground">{t("memberHome.loading")}</p>
-        ) : pending.length === 0 ? (
+        ) : active.length === 0 ? (
           <div className="bg-card border border-dashed border-border rounded-2xl p-6 text-center">
             <p className="text-sm font-semibold">{t("memberHome.noPending")}</p>
             <p className="text-xs text-muted-foreground mt-1">{t("memberHome.noPendingSub")}</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {pending.slice(0, 5).map((b) => (
+            {active.slice(0, 5).map((b) => (
               <RequestCard key={b.id} booking={b} onChanged={() => loadBookings(workerRowId)} />
             ))}
           </div>
@@ -313,11 +315,12 @@ function AvailabilityPill({
 
 function RequestCard({ booking, onChanged }: { booking: BookingRow; onChanged: () => void }) {
   const { t } = useI18n();
-  const [busy, setBusy] = useState<"accept" | "reject" | null>(null);
+  const [busy, setBusy] = useState<"accept" | "reject" | "complete" | null>(null);
   const [localStatus, setLocalStatus] = useState<string>(booking.status);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  async function update(status: "accepted" | "cancelled") {
-    setBusy(status === "accepted" ? "accept" : "reject");
+  async function update(status: "accepted" | "cancelled" | "completed", kind: "accept" | "reject" | "complete") {
+    setBusy(kind);
     const { error } = await supabase.from("bookings").update({ status }).eq("id", booking.id);
     setBusy(null);
     if (error) {
@@ -353,29 +356,52 @@ function RequestCard({ booking, onChanged }: { booking: BookingRow; onChanged: (
       {localStatus === "pending" ? (
         <div className="flex gap-2 mt-3">
           <button
-            onClick={() => update("cancelled")}
+            onClick={() => update("cancelled", "reject")}
             disabled={busy !== null}
             className="flex-1 py-2 text-xs font-bold rounded-lg bg-secondary disabled:opacity-50"
           >
             {busy === "reject" ? "…" : t("memberHome.reject")}
           </button>
           <button
-            onClick={() => update("accepted")}
+            onClick={() => update("accepted", "accept")}
             disabled={busy !== null}
             className="flex-1 py-2 text-xs font-bold rounded-lg bg-success text-success-foreground disabled:opacity-50"
           >
             {busy === "accept" ? "…" : t("memberHome.accept")}
           </button>
         </div>
-      ) : localStatus === "accepted" ? (
-        <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-success font-bold">
-          <CircleCheck className="size-4" /> {t("memberHome.accepted")}
+      ) : (localStatus === "accepted" || localStatus === "in_progress") ? (
+        <div className="mt-3 space-y-2">
+          <div className="inline-flex items-center gap-1.5 text-xs text-success font-bold">
+            <CircleCheck className="size-4" /> {t("memberHome.accepted")}
+          </div>
+          <button
+            onClick={() => setConfirmOpen(true)}
+            disabled={busy !== null}
+            className="w-full py-2 text-xs font-bold rounded-lg bg-success text-success-foreground flex items-center justify-center gap-1.5 disabled:opacity-50"
+          >
+            <CircleCheck className="size-3.5" /> {busy === "complete" ? "…" : t("memberBookings.markComplete")}
+          </button>
         </div>
       ) : (
         <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-destructive font-bold">
           <CircleAlert className="size-4" /> {t("memberHome.rejected")}
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title={t("memberBookings.confirmCompleteTitle")}
+        message={t("memberBookings.confirmCompleteMsg")}
+        confirmLabel={t("common.confirm")}
+        confirmVariant="success"
+        busy={busy === "complete"}
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={async () => {
+          setConfirmOpen(false);
+          await update("completed", "complete");
+        }}
+      />
     </div>
   );
 }
