@@ -165,10 +165,11 @@ export function useMemberProfile() {
   return useProfileStore().member ?? {
     name: defaultMember.name,
     mobile: defaultMember.mobile,
-    category: "ac-repair",
+    categories: ["ac-repair"],
     area: defaultMember.area,
     experience: "10",
-    hourlyRate: "299",
     bio: "",
+    avatarPath: null,
   };
+
 }
