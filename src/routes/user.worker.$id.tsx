@@ -258,7 +258,7 @@ function WorkerProfile() {
                   className="mt-6 w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {submitting && <Loader2 className="size-4 animate-spin" />}
-                  {t("worker.confirmBooking")} · ₹{w.startingPrice}
+                  {t("worker.confirmBooking")}
                 </button>
               </>
             ) : (
