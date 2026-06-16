@@ -81,7 +81,9 @@ function AdminLayout() {
           <LogOut className="size-3.5" /> Logout
         </button>
       </div>
-      <Outlet />
+      <div key={pathname} className="animate-page-in">
+        <Outlet />
+      </div>
     </div>
   );
 }
