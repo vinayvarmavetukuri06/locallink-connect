@@ -142,7 +142,7 @@ function UserBookings() {
       </header>
 
       {cancelledAlerts.length > 0 && (
-        <div className="px-5 pt-4 space-y-3">
+        <div className="px-5 pt-4 space-y-3 stagger-cards">
           {cancelledAlerts.map((b) => {
             const slug = categorySlugFromService(b.service);
             return (
@@ -201,7 +201,7 @@ function UserBookings() {
         ))}
       </div>
 
-      <section className="px-5 py-5 space-y-3">
+      <section className="px-5 py-5 space-y-3 stagger-cards">
         {loading && (
           <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
         )}
