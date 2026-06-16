@@ -14,6 +14,7 @@ export function SaveWorkerButton({
 }) {
   const { t } = useI18n();
   const [saved, setSaved] = useState(false);
+  const [pop, setPop] = useState(false);
   const [, setRowId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
