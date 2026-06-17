@@ -35,11 +35,25 @@ export function RateBookingDialog({ open, bookingId, workerId, customerId, worke
       rating,
       comment: comment.trim() || null,
     });
-    setBusy(false);
     if (error) {
+      setBusy(false);
       toast.error(t("rate.submitFailed"));
       return;
     }
+    if (workerId) {
+      const { data: rows } = await supabase
+        .from("reviews")
+        .select("rating")
+        .eq("worker_id", workerId);
+      if (rows && rows.length > 0) {
+        const avg = rows.reduce((s, r: any) => s + Number(r.rating ?? 0), 0) / rows.length;
+        await supabase
+          .from("worker_profiles")
+          .update({ rating: Math.round(avg * 10) / 10 })
+          .eq("id", workerId);
+      }
+    }
+    setBusy(false);
     toast.success(t("rate.thanks"));
     onSubmitted?.();
     onClose();
