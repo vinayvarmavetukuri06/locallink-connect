@@ -180,7 +180,7 @@ function UserHome() {
           {loading ? (
             <div className="px-5"><LoadingRow /></div>
           ) : featured.length === 0 ? (
-            <div className="px-5"><NoWorkersCard message={hasCity ? t("userHome.noWorkersInArea") : undefined} /></div>
+            <div className="px-5"><NoWorkersCard message={hasCity ? t("userHome.noWorkersInCity").replace("{city}", userCity) : undefined} /></div>
           ) : (
             <div className="flex overflow-x-auto gap-4 px-5 pb-2 no-scrollbar [&>*:last-child]:mr-4">
               {featured.map((w) => (
