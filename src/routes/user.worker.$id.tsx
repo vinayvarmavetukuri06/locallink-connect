@@ -103,70 +103,68 @@ function WorkerProfile() {
 
   return (
     <>
-      <header className="bg-card px-5 pt-6 pb-4 sticky top-0 z-30 border-b border-border flex items-center justify-between">
-        <Link to="/user" className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-          <ArrowLeft className="size-4" /> {t("common.back")}
-        </Link>
-        <SaveWorkerButton workerId={w.id} />
-      </header>
+      <div className="min-h-screen flex flex-col">
+        <header className="bg-card px-5 pt-6 pb-4 sticky top-0 z-30 border-b border-border flex items-center justify-between">
+          <Link to="/user" className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <ArrowLeft className="size-4" /> {t("common.back")}
+          </Link>
+          <SaveWorkerButton workerId={w.id} />
+        </header>
 
-      <section className="px-5 py-6">
-        <div className="flex items-start gap-4">
-          <WorkerAvatar worker={w} size="lg" />
-          <div className="flex-1">
-            <h1 className="font-serif text-2xl">{w.name}</h1>
-            <p className="text-sm text-muted-foreground">{tradeLabel}</p>
-            <div className="flex items-center gap-3 text-xs mt-2">
-              <div className="flex items-center gap-1">
-                <Star className="size-3.5 text-accent fill-current" />
-                <span className="font-bold">{w.rating.toFixed(1)}</span>
-              </div>
-              {w.area && (
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <MapPin className="size-3.5" /> {w.area}
+        <main className="flex-1 px-5 py-6 pb-32 space-y-6">
+          <section className="flex items-start gap-4">
+            <WorkerAvatar worker={w} size="lg" />
+            <div className="flex-1">
+              <h1 className="font-serif text-2xl">{w.name}</h1>
+              <p className="text-sm text-muted-foreground">{tradeLabel}</p>
+              <div className="flex items-center gap-3 text-xs mt-2">
+                <div className="flex items-center gap-1">
+                  <Star className="size-3.5 text-accent fill-current" />
+                  <span className="font-bold">{w.rating.toFixed(1)}</span>
                 </div>
-              )}
-              <AvailabilityBadge available={w.available} />
+                {w.area && (
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <MapPin className="size-3.5" /> {w.area}
+                  </div>
+                )}
+                <AvailabilityBadge available={w.available} />
+              </div>
             </div>
-          </div>
-        </div>
+          </section>
 
-        {w.categories?.length > 0 && (
-          <div className="mt-5">
-            <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
-              {t("worker.services")}
-            </h3>
-            <CategoryBadges slugs={w.categories} />
-          </div>
-        )}
+          {w.categories?.length > 0 && (
+            <section>
+              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
+                {t("worker.services")}
+              </h3>
+              <CategoryBadges slugs={w.categories} />
+            </section>
+          )}
 
+          <section className="grid grid-cols-2 gap-3">
+            <Stat label={t("worker.experience")} value={`${w.experience} ${t("worker.yrs")}`} />
+            <Stat label={t("worker.rating")} value={w.rating.toFixed(1)} />
+          </section>
 
-        <div className="grid grid-cols-3 gap-3 mt-6">
-          <Stat label={t("worker.experience")} value={`${w.experience} ${t("worker.yrs")}`} />
-          <Stat label={t("worker.hourly")} value={`₹${w.startingPrice}`} />
-          <Stat label={t("worker.rating")} value={w.rating.toFixed(1)} />
-        </div>
+          {w.bio && (
+            <section className="bg-card border border-border rounded-2xl p-4">
+              <h3 className="font-bold text-sm font-sans mb-2">{t("worker.about")}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{w.bio}</p>
+            </section>
+          )}
 
-        {w.bio && (
-          <div className="mt-6">
-            <h3 className="font-bold text-sm font-sans mb-2">{t("worker.about")}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">{w.bio}</p>
-          </div>
-        )}
+          <section className="bg-card border border-border rounded-2xl p-4">
+            <h3 className="font-bold text-sm font-sans mb-1">{t("worker.serviceArea")}</h3>
+            <p className="text-sm text-muted-foreground">{w.area || "—"}{cat ? ` • ${tService(cat.slug, cat.name)}` : ""}</p>
+          </section>
+        </main>
 
-        <div className="mt-6 bg-secondary rounded-2xl p-4">
-          <h3 className="font-bold text-sm font-sans mb-1">{t("worker.serviceArea")}</h3>
-          <p className="text-sm text-muted-foreground">{w.area || "—"}{cat ? ` • ${tService(cat.slug, cat.name)}` : ""}</p>
-        </div>
-      </section>
-
-      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md px-5 pb-2 z-40">
-        <div className="bg-card border border-border rounded-3xl p-3 shadow-lg shadow-black/5">
+        <div className="fixed bottom-16 left-1/2 -translate-x-1/2 w-full max-w-md px-5 py-3 z-40">
           <button
             onClick={() => setBookingOpen(true)}
-            className="w-full bg-primary text-primary-foreground rounded-2xl font-bold text-sm py-3"
+            className="w-full bg-primary text-primary-foreground rounded-2xl font-bold text-sm py-3.5"
           >
-            {t("worker.bookNow")} · ₹{w.startingPrice}
+            {t("worker.bookNow")}
           </button>
         </div>
       </div>
