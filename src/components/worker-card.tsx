@@ -117,15 +117,12 @@ export function FeaturedWorkerCard({ worker }: { worker: RealWorker }) {
       >
         <div className="flex justify-between items-start">
           <WorkerAvatar worker={worker} size="sm" />
-          <div className="text-right text-[10px] font-medium opacity-80 pr-10">
-            <p className="text-lg font-bold text-foreground">₹{worker.startingPrice}/hr</p>
+          <div className="flex items-center gap-1 text-[11px] font-bold text-accent pr-10">
+            <Star className="size-3 fill-current" />
+            <span>{worker.rating.toFixed(1)}</span>
           </div>
         </div>
         <div className="min-w-0">
-          <div className="flex items-center gap-1 mb-1">
-            <Star className="size-3 text-accent fill-current shrink-0" />
-            <span className="text-[10px] font-bold">{worker.rating.toFixed(1)}</span>
-          </div>
           <h3 className="font-bold text-base leading-tight font-sans truncate">{worker.name}</h3>
           <p className="text-xs opacity-80 mt-0.5 truncate">{tService(worker.category, worker.trade)}</p>
           <div className="mt-1.5">
