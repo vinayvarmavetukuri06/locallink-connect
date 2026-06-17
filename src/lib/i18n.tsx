@@ -1084,6 +1084,9 @@ const hi: Dict = {
   "city.updated": "स्थान अपडेट हो गया",
   "city.updateFailed": "स्थान अपडेट नहीं हो सका",
   "userHome.noWorkersInArea": "आपके क्षेत्र में अभी कोई कारीगर उपलब्ध नहीं है",
+  "userHome.noWorkersInCity": "{city} में अभी कोई कारीगर नहीं मिला। हम बढ़ रहे हैं! जल्द देखें।",
+  "city.filterIn": "{city} में",
+  "city.tapToChange": "शहर बदलने के लिए टैप करें",
 };
 
 const te: Dict = {
