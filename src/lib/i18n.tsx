@@ -560,6 +560,9 @@ const en: Dict = {
   "city.updated": "Location updated",
   "city.updateFailed": "Could not update location",
   "userHome.noWorkersInArea": "No workers available in your area yet",
+  "userHome.noWorkersInCity": "No workers found in {city} yet. We're growing! Check back soon.",
+  "city.filterIn": "In {city}",
+  "city.tapToChange": "Tap to change city",
 };
 
 const hi: Dict = {
