@@ -204,13 +204,8 @@ function MemberProfile() {
   async function saveArea(next: string) {
     if (!workerUserId) return;
     const value = next.trim();
-    const [{ error: e1 }, { error: e2 }] = await Promise.all([
-      supabase.from("profiles").update({ location: value }).eq("id", workerUserId),
-      supabase.from("worker_profiles").update({ bio: undefined as any }).eq("user_id", workerUserId).select().limit(0),
-    ]);
-    // also store on worker_profiles via a separate update without touching unrelated cols
-    await supabase.from("worker_profiles").update({}).eq("user_id", workerUserId);
-    if (e1 || e2) {
+    const { error } = await supabase.from("profiles").update({ location: value }).eq("id", workerUserId);
+    if (error) {
       toast.error(t("memberProfile.saveFailed"));
       return;
     }
