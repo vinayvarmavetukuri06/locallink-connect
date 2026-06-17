@@ -197,7 +197,7 @@ function UserHome() {
           {loading ? (
             <LoadingRow />
           ) : nearby.length === 0 ? (
-            <NoWorkersCard message={hasCity ? t("userHome.noWorkersInArea") : undefined} />
+            <NoWorkersCard message={hasCity ? t("userHome.noWorkersInCity").replace("{city}", userCity) : undefined} />
           ) : (
             <div className="space-y-3">
               {nearby.map((w) => (
