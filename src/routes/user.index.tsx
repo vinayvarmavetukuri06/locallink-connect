@@ -157,7 +157,8 @@ function UserHome() {
           {loading ? (
             <LoadingRow />
           ) : filtered.length === 0 ? (
-            <NoWorkersCard message={hasCity && cityWorkers.length === 0 ? t("userHome.noWorkersInArea") : t("userHome.noMatch")} />
+            <NoWorkersCard message={hasCity ? t("userHome.noWorkersInCity").replace("{city}", userCity) : t("userHome.noMatch")} />
+
           ) : (
             <div className="space-y-3">
               {filtered.map((w) => (
