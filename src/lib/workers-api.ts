@@ -158,6 +158,7 @@ export function useApprovedWorkers() {
       .channel("worker_profiles_changes")
       .on("postgres_changes", { event: "*", schema: "public", table: "worker_profiles" }, reload)
       .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, reload)
+      .on("postgres_changes", { event: "*", schema: "public", table: "reviews" }, reload)
       .subscribe();
     return () => {
       cancelled = true;
