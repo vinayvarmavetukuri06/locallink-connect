@@ -1111,6 +1111,8 @@ const hi: Dict = {
   "userHome.noWorkersInCity": "{city} में अभी कोई कारीगर नहीं मिला। हम बढ़ रहे हैं! जल्द देखें।",
   "city.filterIn": "{city} में",
   "city.tapToChange": "शहर बदलने के लिए टैप करें",
+  "city.searching": "स्थान खोज रहे हैं...",
+  "city.typeHint": "भारत के किसी भी शहर, गाँव या कस्बे को खोजने के लिए कम से कम 2 अक्षर लिखें",
 };
 
 const te: Dict = {
