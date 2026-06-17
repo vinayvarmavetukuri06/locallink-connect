@@ -157,7 +157,8 @@ function UserHome() {
           {loading ? (
             <LoadingRow />
           ) : filtered.length === 0 ? (
-            <NoWorkersCard message={hasCity && cityWorkers.length === 0 ? t("userHome.noWorkersInArea") : t("userHome.noMatch")} />
+            <NoWorkersCard message={hasCity ? t("userHome.noWorkersInCity").replace("{city}", userCity) : t("userHome.noMatch")} />
+
           ) : (
             <div className="space-y-3">
               {filtered.map((w) => (
@@ -179,7 +180,7 @@ function UserHome() {
           {loading ? (
             <div className="px-5"><LoadingRow /></div>
           ) : featured.length === 0 ? (
-            <div className="px-5"><NoWorkersCard message={hasCity ? t("userHome.noWorkersInArea") : undefined} /></div>
+            <div className="px-5"><NoWorkersCard message={hasCity ? t("userHome.noWorkersInCity").replace("{city}", userCity) : undefined} /></div>
           ) : (
             <div className="flex overflow-x-auto gap-4 px-5 pb-2 no-scrollbar [&>*:last-child]:mr-4">
               {featured.map((w) => (
@@ -196,7 +197,7 @@ function UserHome() {
           {loading ? (
             <LoadingRow />
           ) : nearby.length === 0 ? (
-            <NoWorkersCard message={hasCity ? t("userHome.noWorkersInArea") : undefined} />
+            <NoWorkersCard message={hasCity ? t("userHome.noWorkersInCity").replace("{city}", userCity) : undefined} />
           ) : (
             <div className="space-y-3">
               {nearby.map((w) => (

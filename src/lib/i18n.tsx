@@ -560,6 +560,9 @@ const en: Dict = {
   "city.updated": "Location updated",
   "city.updateFailed": "Could not update location",
   "userHome.noWorkersInArea": "No workers available in your area yet",
+  "userHome.noWorkersInCity": "No workers found in {city} yet. We're growing! Check back soon.",
+  "city.filterIn": "In {city}",
+  "city.tapToChange": "Tap to change city",
 };
 
 const hi: Dict = {
@@ -1081,6 +1084,9 @@ const hi: Dict = {
   "city.updated": "स्थान अपडेट हो गया",
   "city.updateFailed": "स्थान अपडेट नहीं हो सका",
   "userHome.noWorkersInArea": "आपके क्षेत्र में अभी कोई कारीगर उपलब्ध नहीं है",
+  "userHome.noWorkersInCity": "{city} में अभी कोई कारीगर नहीं मिला। हम बढ़ रहे हैं! जल्द देखें।",
+  "city.filterIn": "{city} में",
+  "city.tapToChange": "शहर बदलने के लिए टैप करें",
 };
 
 const te: Dict = {
@@ -1602,6 +1608,9 @@ const te: Dict = {
   "city.updated": "ప్రాంతం నవీకరించబడింది",
   "city.updateFailed": "ప్రాంతం నవీకరించడం సాధ్యం కాలేదు",
   "userHome.noWorkersInArea": "మీ ప్రాంతంలో ఇప్పటివరకు కార్మికులు లేరు",
+  "userHome.noWorkersInCity": "{city}లో ఇంకా కార్మికులు లేరు. మేము పెరుగుతున్నాము! త్వరలో మళ్లీ చూడండి.",
+  "city.filterIn": "{city}లో",
+  "city.tapToChange": "నగరం మార్చడానికి నొక్కండి",
 };
 
 const dicts: Record<Lang, Dict> = { en, hi, te };
