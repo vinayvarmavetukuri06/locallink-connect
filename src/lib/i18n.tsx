@@ -574,6 +574,8 @@ const en: Dict = {
   "userHome.noWorkersInCity": "No workers found in {city} yet. We're growing! Check back soon.",
   "city.filterIn": "In {city}",
   "city.tapToChange": "Tap to change city",
+  "city.searching": "Searching locations...",
+  "city.typeHint": "Type at least 2 characters to search any city, town or village in India",
 };
 
 const hi: Dict = {
@@ -1109,6 +1111,8 @@ const hi: Dict = {
   "userHome.noWorkersInCity": "{city} में अभी कोई कारीगर नहीं मिला। हम बढ़ रहे हैं! जल्द देखें।",
   "city.filterIn": "{city} में",
   "city.tapToChange": "शहर बदलने के लिए टैप करें",
+  "city.searching": "स्थान खोज रहे हैं...",
+  "city.typeHint": "भारत के किसी भी शहर, गाँव या कस्बे को खोजने के लिए कम से कम 2 अक्षर लिखें",
 };
 
 const te: Dict = {
@@ -1644,6 +1648,8 @@ const te: Dict = {
   "userHome.noWorkersInCity": "{city}లో ఇంకా కార్మికులు లేరు. మేము పెరుగుతున్నాము! త్వరలో మళ్లీ చూడండి.",
   "city.filterIn": "{city}లో",
   "city.tapToChange": "నగరం మార్చడానికి నొక్కండి",
+  "city.searching": "ప్రాంతాలను శోధిస్తోంది...",
+  "city.typeHint": "భారతదేశంలోని ఏదైనా నగరం, పట్టణం లేదా గ్రామాన్ని శోధించడానికి కనీసం 2 అక్షరాలను టైప్ చేయండి",
 };
 
 const dicts: Record<Lang, Dict> = { en, hi, te };
