@@ -1608,6 +1608,9 @@ const te: Dict = {
   "city.updated": "ప్రాంతం నవీకరించబడింది",
   "city.updateFailed": "ప్రాంతం నవీకరించడం సాధ్యం కాలేదు",
   "userHome.noWorkersInArea": "మీ ప్రాంతంలో ఇప్పటివరకు కార్మికులు లేరు",
+  "userHome.noWorkersInCity": "{city}లో ఇంకా కార్మికులు లేరు. మేము పెరుగుతున్నాము! త్వరలో మళ్లీ చూడండి.",
+  "city.filterIn": "{city}లో",
+  "city.tapToChange": "నగరం మార్చడానికి నొక్కండి",
 };
 
 const dicts: Record<Lang, Dict> = { en, hi, te };
