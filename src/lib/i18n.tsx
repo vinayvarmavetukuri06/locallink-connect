@@ -1648,6 +1648,8 @@ const te: Dict = {
   "userHome.noWorkersInCity": "{city}లో ఇంకా కార్మికులు లేరు. మేము పెరుగుతున్నాము! త్వరలో మళ్లీ చూడండి.",
   "city.filterIn": "{city}లో",
   "city.tapToChange": "నగరం మార్చడానికి నొక్కండి",
+  "city.searching": "ప్రాంతాలను శోధిస్తోంది...",
+  "city.typeHint": "భారతదేశంలోని ఏదైనా నగరం, పట్టణం లేదా గ్రామాన్ని శోధించడానికి కనీసం 2 అక్షరాలను టైప్ చేయండి",
 };
 
 const dicts: Record<Lang, Dict> = { en, hi, te };
