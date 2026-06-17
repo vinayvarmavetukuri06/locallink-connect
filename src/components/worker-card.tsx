@@ -85,8 +85,7 @@ export function WorkerListCard({ worker }: { worker: RealWorker }) {
               <AvailabilityBadge available={worker.available} />
             </div>
             <div className="text-right shrink-0">
-              <p className="text-xs font-bold text-primary">₹{worker.startingPrice}/hr</p>
-              <div className="flex items-center gap-0.5 text-[10px] font-bold text-accent justify-end">
+              <div className="flex items-center gap-0.5 text-[11px] font-bold text-accent justify-end">
                 <Star className="size-3 fill-current" />
                 <span>{worker.rating.toFixed(1)}</span>
               </div>
