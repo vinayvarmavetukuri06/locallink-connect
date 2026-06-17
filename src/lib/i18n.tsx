@@ -574,6 +574,8 @@ const en: Dict = {
   "userHome.noWorkersInCity": "No workers found in {city} yet. We're growing! Check back soon.",
   "city.filterIn": "In {city}",
   "city.tapToChange": "Tap to change city",
+  "city.searching": "Searching locations...",
+  "city.typeHint": "Type at least 2 characters to search any city, town or village in India",
 };
 
 const hi: Dict = {
